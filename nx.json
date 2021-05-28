@@ -25,6 +25,12 @@
     "robocode-e2e": {
       "tags": [],
       "implicitDependencies": ["robocode"]
+    },
+    "robocode-backend": {
+      "tags": []
+    },
+    "ui": {
+      "tags": []
     }
   }
 }

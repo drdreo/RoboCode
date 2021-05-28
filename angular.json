@@ -94,7 +94,8 @@
               "browserTarget": "robocode:build:production"
             },
             "development": {
-              "browserTarget": "robocode:build:development"
+              "browserTarget": "robocode:build:development",
+              "proxyConfig": "apps/robocode/src/proxy.config.json"
             }
           },
           "defaultConfiguration": "development"
@@ -146,6 +147,78 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/robocode-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "robocode-backend": {
+      "root": "apps/robocode-backend",
+      "sourceRoot": "apps/robocode-backend/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/robocode-backend",
+            "main": "apps/robocode-backend/src/main.ts",
+            "tsConfig": "apps/robocode-backend/tsconfig.app.json",
+            "assets": ["apps/robocode-backend/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/robocode-backend/src/environments/environment.ts",
+                  "with": "apps/robocode-backend/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "robocode-backend:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/robocode-backend/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/robocode-backend"],
+          "options": {
+            "jestConfig": "apps/robocode-backend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui": {
+      "projectType": "library",
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
+      "prefix": "robo-code",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui"],
+          "options": {
+            "jestConfig": "libs/ui/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/src/**/*.ts", "libs/ui/src/**/*.html"]
           }
         }
       }
