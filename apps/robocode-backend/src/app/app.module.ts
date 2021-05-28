@@ -3,15 +3,17 @@ import { MulterModule } from '@nestjs/platform-express';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CodeService } from './code/code.service';
 import { UploadController } from './upload/upload.controller';
+
 
 @Module({
   imports: [
     MulterModule.register({
-      dest: '../assets/upload'
+      dest: 'assets/upload'
     })
   ],
   controllers: [AppController, UploadController],
-  providers: [AppService]
+  providers: [AppService, CodeService]
 })
 export class AppModule {}

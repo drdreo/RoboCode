@@ -8,6 +8,6 @@ export class AppController {
 
   @Get()
   getData() {
-    return this.appService.getData();
+    this.appService.fetchFiles();
   }
 }

@@ -1,8 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+
+import { CodeService } from './code/code.service';
 
 @Injectable()
 export class AppService {
-  getData(): { message: string } {
-    return { message: 'Welcome to robocode-backend!' };
+
+  private logger = new Logger('AppService');
+
+  constructor(private codeService: CodeService) {}
+
+  async fetchFiles() {
+    this.logger.log('Fetching files...');
+    // this.codeService.files.forEach(async fileName => {
+    //   this.logger.log('Loading - ' + fileName);
+    //   const source = await fs.promises.readFile('assets/upload/' + fileName, 'utf-8');
+    //   const code = typescript.transpile(source);
+    //   const runable = eval(code);
+    //
+    //   this.codeService.registerCode(new runable());
+    // });
+
+
+    this.codeService.code.forEach(code => {
+      code.run();
+    });
   }
 }

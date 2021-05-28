@@ -1,7 +1,7 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { Subject, of } from 'rxjs';
-import { takeUntil, finalize, catchError } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'ui-upload',
@@ -31,11 +31,12 @@ export class UploadComponent {
         reportProgress: true,
         observe: 'events'
       }).pipe(
-        finalize(() => this.reset()),
+        finalize(() => this.reset())
       );
 
       upload$.pipe(takeUntil(this.unsubscribe$))
              .subscribe(event => {
+               console.log(event);
                if (event.type == HttpEventType.UploadProgress) {
                  if (event.total) {
                    this.uploadProgress = Math.round(100 * (event.loaded / event.total));

@@ -10,7 +10,7 @@
 
 <div class='progress'>
 
-  <progress class='progress-bar' [value]='uploadProgress' *ngIf='uploadProgress'></progress>
+  <progress class='progress-bar' [value]='uploadProgress' [max]='100' *ngIf='uploadProgress'></progress>
 
   <button class='cancel-upload' (click)='cancelUpload()' *ngIf='uploadProgress'>Cancel</button>
 
