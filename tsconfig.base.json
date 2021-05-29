@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@robo-code/ui": ["libs/ui/src/index.ts"]
+      "@robo-code/ui": ["libs/ui/src/index.ts"],
+      "@robo-code/utils": ["libs/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

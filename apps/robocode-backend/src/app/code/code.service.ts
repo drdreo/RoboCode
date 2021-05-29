@@ -11,8 +11,33 @@ export class CodeService implements OnApplicationBootstrap {
   files: string[] = [];
   code: any[] = [];
 
+
+  bots = [
+    { x: 0, y: 0 },
+    { x: 0, y: 100 },
+    { x: 0, y: 200 }
+  ];
+
   private logger = new Logger('CodeService');
 
+
+  constructor() {
+    setInterval(() => {
+      console.log('updating all!');
+      this.bots = this.bots.map(bot => {
+
+
+        if (bot.x <= 300 && bot.y <= 500) {
+          bot.x += 10;
+        } else if (bot.x > 300 && bot.y <= 500) {
+          bot.y += 10;
+        }
+
+        return bot;
+      });
+    }, 16);
+
+  }
 
   onApplicationBootstrap() {
     this.clearAllFiles();
