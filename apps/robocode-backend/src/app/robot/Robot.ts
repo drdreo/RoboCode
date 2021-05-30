@@ -21,6 +21,8 @@ interface IRobotActions {
   turnLeft(degrees: number): void;
 
   turnRight(degrees: number): void;
+
+  tick(): void;
 }
 
 interface IRobotNotifications {
@@ -53,7 +55,7 @@ export abstract class Bot implements IRobotActions {
 
   private velocity = new Vector(0, -2);
   private acceleration = new Vector();
-  private readonly maxspeed = 30;
+  private readonly maxspeed = 10;
   private readonly maxforce = 0.33;
 
   private applyForce(force: AbstractVector) {
@@ -75,20 +77,24 @@ export abstract class Bot implements IRobotActions {
     this.position.add(this.velocity);
   }
 
+  tick(): void {
+
+  }
+
   forward(amount: number): void {
     const position = this.position.clone()
-    const desired = position.add(new Vector(amount, amount));
+    const desired = position.add(new Vector(amount, 0));
     desired.setMagnitude(this.maxspeed);
 
-    const steer = desired.subtract(this.velocity);
-    steer.limit(this.maxforce);
+    // const steer = desired.subtract(this.velocity);
+    // steer.limit(this.maxforce);
 
-    this.applyForce(steer);
+    this.applyForce(desired);
   }
 
   backward(amount: number): void {
     const position = this.position.clone()
-    const desired = position.sub(new Vector(amount, amount));
+    const desired = position.add(new Vector(-amount,  0));
     desired.setMagnitude(this.maxspeed);
 
     const steer = desired.subtract(this.velocity);

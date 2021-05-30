@@ -2,6 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 import * as typescript from 'typescript';
+import { Juker } from '../robot/Juker';
 import { Bot } from '../robot/Robot';
 import { SittingDuck } from '../robot/SittingDuck';
 
@@ -20,12 +21,12 @@ export class CodeService implements OnApplicationBootstrap {
 
     this.bots = [
       new SittingDuck(),
-      new SittingDuck(),
-      new SittingDuck()
+      new Juker(),
     ];
 
     setInterval(() => {
-      this.bots[0].forward(100);
+
+      this.bots.forEach( bot => bot.tick());
     }, 50);
 
   }
