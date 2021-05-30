@@ -2,6 +2,8 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 import * as typescript from 'typescript';
+import { Bot } from '../robot/Robot';
+import { SittingDuck } from '../robot/SittingDuck';
 
 const FILE_FOLDER = 'assets/upload/';
 
@@ -10,32 +12,21 @@ export class CodeService implements OnApplicationBootstrap {
 
   files: string[] = [];
   code: any[] = [];
-
-
-  bots = [
-    { x: 0, y: 0 },
-    { x: 0, y: 100 },
-    { x: 0, y: 200 }
-  ];
+  bots: Bot[] = [];
 
   private logger = new Logger('CodeService');
 
-
   constructor() {
+
+    this.bots = [
+      new SittingDuck(),
+      new SittingDuck(),
+      new SittingDuck()
+    ];
+
     setInterval(() => {
-      console.log('updating all!');
-      this.bots = this.bots.map(bot => {
-
-
-        if (bot.x <= 300 && bot.y <= 500) {
-          bot.x += 10;
-        } else if (bot.x > 300 && bot.y <= 500) {
-          bot.y += 10;
-        }
-
-        return bot;
-      });
-    }, 16);
+      this.bots[0].forward(100);
+    }, 50);
 
   }
 

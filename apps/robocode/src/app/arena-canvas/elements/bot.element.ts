@@ -12,8 +12,8 @@ export class BotElement implements NgCanvasElement {
   public x = 0;
   public y = 0;
 
-  private height = 100;
-  private width = 50;
+  private height = 50;
+  private width = 30;
 
   private logger = new Logger('BotElement');
 
@@ -30,21 +30,40 @@ export class BotElement implements NgCanvasElement {
 
   draw(context: CanvasRenderingContext2D, time: number): void {
     this.logger.debug('draw');
-    context.beginPath();
+
     this.drawWheels(context);
-    context.fillStyle = '#2c2c54';
+    this.drawBody(context);
+    this.drawGun(context);
+  }
+
+  private drawBody(context: CanvasRenderingContext2D) {
+    context.fillStyle = '#5a5a9f';
     context.fillRect(this.x, this.y, this.width, this.height);
   }
 
   private drawWheels(context: CanvasRenderingContext2D) {
-    const radius = this.width / 3;
-
+    const radius = this.width / 6;
+    context.beginPath();
     context.fillStyle = 'black';
-    context.ellipse(this.x, this.y, radius / 2, radius, 0, 0, 2 * Math.PI);
-    context.ellipse(this.x + this.width, this.y, radius / 2, radius, 0, 0, 2 * Math.PI);
-    context.ellipse(this.x, this.y + this.height, radius / 2, radius, 0, 0, 2 * Math.PI);
-    context.ellipse(this.x + this.width, this.y + this.height, radius / 2, radius, 0, 0, 2 * Math.PI);
+    context.arc(this.x, this.y, radius, 0, 2 * Math.PI);
+    context.fillRect(this.x - radius, this.y, radius, this.height);
+    context.arc(this.x + this.width, this.y, radius, 0, 2 * Math.PI);
+    context.arc(this.x, this.y + this.height, radius, 0, 2 * Math.PI);
+    context.fillRect(this.x + this.width, this.y, radius, this.height);
+    context.arc(this.x + this.width, this.y + this.height, radius, 0, 2 * Math.PI);
     context.fill();
   }
 
+  private drawGun(context: CanvasRenderingContext2D) {
+    const radius = this.width / 4;
+    const gunWidth = radius / 2;
+    const gunHeight = this.height - 10;
+
+    context.beginPath();
+    context.fillStyle = '#63a5ef';
+    context.arc(this.x + this.width / 2, this.y + this.height / 2, radius, 0, 2 * Math.PI);
+    context.fillRect(this.x + this.width / 2 - gunWidth / 2, this.y - 10, gunWidth, gunHeight);
+    context.fill();
+
+  }
 }

@@ -10,7 +10,7 @@ export class BotGateway {
     setInterval(() => {
       console.log('sending to all!');
       this.sendToAll('bots:update', this.codeService.bots);
-    }, 16);
+    }, 50);
   }
 
   public sendToAll(event: string, data?: any) {
