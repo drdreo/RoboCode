@@ -11,13 +11,14 @@ export class BotElement implements NgCanvasElement {
 
   public x = 0;
   public y = 0;
+  public rotation = 0;
 
   private height = 50;
   private width = 30;
 
   private logger = new Logger('BotElement');
 
-  setNgProperty(name: string, value: any): void {
+  setNgProperty(name: string, value: unknown): void {
     this.logger.verbose(`BackgroundElement[setNgProperty][${ name }]`);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,9 +32,16 @@ export class BotElement implements NgCanvasElement {
   draw(context: CanvasRenderingContext2D, time: number): void {
     this.logger.debug('draw');
 
+    context.translate(this.x, this.y);
+    context.rotate(this.rotation * Math.PI / 180);
+    context.translate(-this.x, -this.y);
+
     this.drawWheels(context);
     this.drawBody(context);
     this.drawGun(context);
+
+    // Reset transformation matrix to the identity matrix
+    context.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   private drawBody(context: CanvasRenderingContext2D) {

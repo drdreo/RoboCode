@@ -3,5 +3,5 @@
 </canvas>
 
 <canvas id="arena-canvas" >
-  <rc-bot [x]='bot.position._x' [y]='bot.position._y' *ngFor='let bot of botService.bots$ | async'></rc-bot>
+  <rc-bot [x]='bot.position._x' [y]='bot.position._y' [rotation]='bot.orientation' *ngFor='let bot of botService.bots$ | async'></rc-bot>
 </canvas>

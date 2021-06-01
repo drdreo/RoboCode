@@ -11,16 +11,10 @@ import { BotService } from '../bot.service';
 export class ArenaCanvasComponent implements OnInit {
 
 
-  botX = 150;
-  botY = 150;
-
   constructor(public botService: BotService) { }
 
   ngOnInit(): void {
 
-    // setInterval(() => {
-    //   this.botX += 10;
-    // }, 1000);
   }
 
 }

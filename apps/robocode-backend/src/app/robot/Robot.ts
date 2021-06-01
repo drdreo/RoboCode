@@ -1,6 +1,6 @@
 // https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
-import { Vector } from '@robo-code/utils';
-import { AbstractVector } from '../../../../../libs/utils/src/lib/math/AbstractVector';
+import { Logger } from '@nestjs/common';
+import { Vector, AbstractVector } from '@robo-code/utils';
 
 /**
  The basic robot class that you will extend to create your own robots.
@@ -53,12 +53,14 @@ export abstract class Bot implements IRobotActions {
     return this.position.y;
   }
 
-  private velocity = new Vector(0, -2);
+  private velocity = new Vector();
   private acceleration = new Vector();
+  private orientation = -90;
   private readonly maxspeed = 10;
-  private readonly maxforce = 0.33;
+  private readonly maxforce = 1;
 
   private applyForce(force: AbstractVector) {
+    Logger.debug('applyForce: ' + force.toString());
     this.acceleration.add(force);
     this.update();
   }
@@ -67,14 +69,14 @@ export abstract class Bot implements IRobotActions {
     //health decay
     this.health -= 0.005;
 
-    // update speed
-    this.velocity.add(this.acceleration);
-    // limit speed
-    this.velocity.limit(this.maxspeed);
+    // update speed and limit
+    this.velocity.add(this.acceleration).limit(this.maxspeed);
+    // update position
+    this.position.add(this.velocity);
     // reset acceleration
     this.acceleration.zero();
 
-    this.position.add(this.velocity);
+    // TODO: detect collisions and solve constraints
   }
 
   tick(): void {
@@ -82,23 +84,29 @@ export abstract class Bot implements IRobotActions {
   }
 
   forward(amount: number): void {
-    const position = this.position.clone()
-    const desired = position.add(new Vector(amount, 0));
+    this.velocity.zero();
+
+    const position = this.position.clone();
+    const desired = new Vector(0, amount);
     desired.setMagnitude(this.maxspeed);
-
-    // const steer = desired.subtract(this.velocity);
-    // steer.limit(this.maxforce);
-
-    this.applyForce(desired);
-  }
-
-  backward(amount: number): void {
-    const position = this.position.clone()
-    const desired = position.add(new Vector(-amount,  0));
-    desired.setMagnitude(this.maxspeed);
+    desired.rotate(this.orientation);
 
     const steer = desired.subtract(this.velocity);
     steer.limit(this.maxforce);
+
+    this.applyForce(steer);
+  }
+
+  backward(amount: number): void {
+    this.velocity.zero();
+
+    const position = this.position.clone();
+    const desired = new Vector(0, amount);
+    desired.setMagnitude(this.maxspeed);
+    desired.rotate(this.orientation);
+
+    const steer = desired.subtract(this.velocity);
+    steer.limit(this.maxforce).reverse();
 
     this.applyForce(steer);
   }

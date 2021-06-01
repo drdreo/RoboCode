@@ -194,7 +194,7 @@ export abstract class AbstractVector {
   /**
    * Multiply this vector by the provided number
    */
-  multS(n: number) {
+  mult(n: number) {
     return this.multiplyByScalar(n);
   }
 
@@ -218,12 +218,19 @@ export abstract class AbstractVector {
    * Normalise this vector
    */
   normalise() {
-    return this.divideByScalar(this.magnitude());
+    const m = this.magnitude();
+
+    if (m > 0) {
+      this.divS(m);
+    }
+    return this;
   }
 
-
-  setMagnitude(n: number) {
-    return this.normalise().multiplyByScalar(n);
+  /**
+   * Set the magnitude of this vector to the value used for the len parameter.
+   **/
+  setMagnitude(len: number) {
+    return this.normalise().multiplyByScalar(len);
   }
 
   /**
@@ -250,7 +257,7 @@ export abstract class AbstractVector {
   }
 
   /**
-   * Returns the squred length of this vector
+   * Returns the squared length of this vector
    */
   lengthSq() {
     const x = this.x;
@@ -312,9 +319,10 @@ export abstract class AbstractVector {
   }
 
   /**
-   * Rotates the vetor by provided radians
+   * Rotates the vector by provided radians
    */
-  rotate(rads: number) {
+  rotate(degrees: number) {
+    const rads = degrees * Math.PI / 180;
     const cos = Math.cos(rads);
     const sin = Math.sin(rads);
 

@@ -1,4 +1,4 @@
-import { formatTime } from '@robo-code/utils';
+import { formatTime } from '../utils';
 
 export enum LogLevel {
   DEBUG,
@@ -25,7 +25,7 @@ export interface ILogger {
  * inspiration gathered from Nest.js Logging https://docs.nestjs.com/techniques/logger
  */
 export class Logger implements ILogger {
-  private static logLevel: LogLevel = LogLevel.ERROR; // start with the highest log level. Will be set once the app initialized.
+  private static logLevel: LogLevel = LogLevel.DEBUG;
   private static lastTimestamp?: number;
   protected static instance?: typeof Logger | ILogger = Logger;
 
