@@ -32,9 +32,12 @@ export class BotElement implements NgCanvasElement {
   draw(context: CanvasRenderingContext2D, time: number): void {
     this.logger.debug('draw');
 
-    context.translate(this.x, this.y);
-    context.rotate(this.rotation * Math.PI / 180);
-    context.translate(-this.x, -this.y);
+    const originX = this.x + this.width / 2;
+    const originY = this.y + this.height / 2;
+
+    context.translate(originX, originY);
+    context.rotate(-this.rotation * Math.PI / 180);
+    context.translate(-originX, -originY);
 
     this.drawWheels(context);
     this.drawBody(context);

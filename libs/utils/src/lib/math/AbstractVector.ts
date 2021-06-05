@@ -1,3 +1,5 @@
+import { toDegrees } from './utils';
+
 /**
  * These values are used by the `AbstractVector.round` method to increase
  * performance vs. using  Number.toFixed.
@@ -333,6 +335,14 @@ export abstract class AbstractVector {
     this.y = ox * sin + oy * cos;
 
     return this;
+  }
+
+  /**
+   * the 2D heading of a vector expressed as an angle
+   */
+  heading(): number {
+    const h = Math.atan2(this.y, this.x);
+    return toDegrees(h);
   }
 
   /**

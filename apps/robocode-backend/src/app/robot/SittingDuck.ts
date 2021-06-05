@@ -1,8 +1,11 @@
-import { Bot } from './Robot';
 
 
-export class SittingDuck extends Bot {
+export class SittingDuck  {
 
   name = 'SittingDuck';
+
+  tick(){
+
+  }
 
 }

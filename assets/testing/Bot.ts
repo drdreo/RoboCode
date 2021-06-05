@@ -1,6 +1,8 @@
 export class SupBot {
 
-    run() {
+    constructor(public bot:any) {}
+
+    tick() {
         console.log("SupBot");
     }
 }

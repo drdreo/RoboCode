@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { CodeService } from './code/code.service';
-import { BotGateway } from './robot/bot.gateway';
 
 @Injectable()
 export class AppService {
@@ -23,7 +22,7 @@ export class AppService {
 
 
     this.codeService.code.forEach(code => {
-      code.run();
+      code.tick();
     });
   }
 }

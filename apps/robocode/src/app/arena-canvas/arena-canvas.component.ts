@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CanvasComponent } from 'angular-canvas';
 import { BotService } from '../bot.service';
 
@@ -6,7 +6,8 @@ import { BotService } from '../bot.service';
 @Component({
   selector: 'rc-arena-canvas',
   templateUrl: './arena-canvas.component.html',
-  styleUrls: ['./arena-canvas.component.scss']
+  styleUrls: ['./arena-canvas.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArenaCanvasComponent implements OnInit {
 

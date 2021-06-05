@@ -12,8 +12,9 @@ export class BotGateway {
   constructor(private codeService: CodeService) {
     setInterval(() => {
       this.sendBotsUpdate();
-    }, 500);
+    }, 30);
   }
+
 
   public sendToAll(event: string, data?: any) {
     this.server.emit(event, data);
@@ -21,7 +22,7 @@ export class BotGateway {
 
   public sendBotsUpdate() {
     this.logger.debug('bots:update');
-    this.sendToAll('bots:update', this.codeService.bots);
+    this.sendToAll('bots:update', this.codeService.getBotUpdate());
   }
 
   @SubscribeMessage('message')

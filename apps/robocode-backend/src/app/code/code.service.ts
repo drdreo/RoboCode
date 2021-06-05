@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
-import * as typescript from 'typescript';
 import { Juker } from '../robot/Juker';
-import { Bot } from '../robot/Robot';
+import { Robot } from '../robot/Robot';
 import { SittingDuck } from '../robot/SittingDuck';
+import { Compiler } from './compiler';
 
 const FILE_FOLDER = 'assets/upload/';
 
@@ -13,21 +13,26 @@ export class CodeService implements OnApplicationBootstrap {
 
   files: string[] = [];
   code: any[] = [];
-  bots: Bot[] = [];
+  bots: Robot[] = [];
+
+  compiler = new Compiler();
 
   private logger = new Logger('CodeService');
 
   constructor() {
 
-    this.bots = [
-      new SittingDuck(),
-      new Juker(),
-    ];
+    this.bots = [];
+    this.registerBot(new Juker());
+    this.registerBot(new SittingDuck());
 
     setInterval(() => {
-
-      this.bots.forEach( bot => bot.tick());
-    }, 50);
+      try {
+        this.bots.forEach(bot => bot.tick());
+      } catch (e) {
+        console.error(e);
+        throw new Error('Error during Bot tick!');
+      }
+    }, 30);
 
   }
 
@@ -54,25 +59,42 @@ export class CodeService implements OnApplicationBootstrap {
     this.logger.log('Registering code!');
 
     let runable;
+
     try {
-      const base = await fs.promises.readFile('apps/robocode-backend/src/app/robot/Robot.ts', 'utf-8');
-      const code = typescript.transpile(base + source);
-      this.logger.debug(code);
-      runable = eval(code);
+      runable = this.compiler.getCode(source);
     } catch (e) {
       this.logger.error(e);
-      throw new Error('Could not read file!');
+      throw new Error('Could not compile file!');
     }
 
-    if (!runable) {
+    if (!runable || !runable.constructor) {
       throw Error('No runable code found. Did you forget to export your class?');
     }
 
-    this.code.push(new runable());
+    console.log(runable);
+    this.registerBot(new runable());
+  }
+
+  registerBot(bot: any) {
+    const robot = new Robot(bot);
+    robot.actualBot.shoot = () => { return robot.shoot();};
+    robot.actualBot.forward = (amount) => { return robot.forward(amount);};
+    robot.actualBot.backward = (amount) => { return robot.backward(amount);};
+    robot.actualBot.turn = (amount) => { return robot.turn(amount);};
+    robot.actualBot.getX = () => robot.x;
+    robot.actualBot.getY = () => robot.y;
+
+    this.bots.push(robot);
   }
 
   private clearAllFiles() {
     rimraf(FILE_FOLDER + '/*', () => { this.logger.log(`Cleared folder ${ FILE_FOLDER }!`); });
   }
 
+  getBotUpdate() {
+    return this.bots.reduce((prev, bot) => {
+      prev.push(bot.getData());
+      return prev;
+    }, []);
+  }
 }

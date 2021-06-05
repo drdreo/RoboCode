@@ -1,6 +1,9 @@
 // https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
+
+// https://natureofcode.com/book/chapter-2-forces/
+
 import { Logger } from '@nestjs/common';
-import { Vector, AbstractVector } from '@robo-code/utils';
+import { Vector, AbstractVector, randomInteger } from '@robo-code/utils';
 
 /**
  The basic robot class that you will extend to create your own robots.
@@ -18,9 +21,9 @@ interface IRobotActions {
 
   backward(amount: number): void;
 
-  turnLeft(degrees: number): void;
+  turn(degrees: number): void;
 
-  turnRight(degrees: number): void;
+  shoot(): void;
 
   tick(): void;
 }
@@ -35,7 +38,13 @@ interface IRobotNotifications {
   onWin?(event: any): void;
 }
 
-export abstract class Bot implements IRobotActions {
+interface IRobotStats {
+  name?: string;
+}
+
+export class Robot implements IRobotStats, IRobotActions {
+
+  public name;
 
   private health = 100;
 
@@ -43,7 +52,7 @@ export abstract class Bot implements IRobotActions {
     return this.health;
   }
 
-  private position = new Vector(100,150);
+  private position = new Vector(randomInteger(0, 400), randomInteger(0, 400));
 
   get x() {
     return this.position.x;
@@ -53,16 +62,29 @@ export abstract class Bot implements IRobotActions {
     return this.position.y;
   }
 
-  private velocity = new Vector();
+  private velocity = new Vector(0, -1);
+  private orientation = this.velocity.heading();
   private acceleration = new Vector();
-  private orientation = -90;
   private readonly maxspeed = 10;
-  private readonly maxforce = 1;
+  private readonly maxforce = 2;
+
+
+  constructor(public actualBot: any) {
+
+  }
 
   private applyForce(force: AbstractVector) {
     Logger.debug('applyForce: ' + force.toString());
     this.acceleration.add(force);
     this.update();
+  }
+
+  public getData(): any {
+    return {
+      health: this.health,
+      position: this.position,
+      orientation: this.orientation
+    };
   }
 
   private update() {
@@ -73,6 +95,7 @@ export abstract class Bot implements IRobotActions {
     this.velocity.add(this.acceleration).limit(this.maxspeed);
     // update position
     this.position.add(this.velocity);
+    this.position.round(1);
     // reset acceleration
     this.acceleration.zero();
 
@@ -80,17 +103,18 @@ export abstract class Bot implements IRobotActions {
   }
 
   tick(): void {
-
+    this.actualBot.tick();
   }
 
   forward(amount: number): void {
-    this.velocity.zero();
+    console.log('forward - ' + amount + this.toString());
 
-    const position = this.position.clone();
-    const desired = new Vector(0, amount);
-    desired.setMagnitude(this.maxspeed);
-    desired.rotate(this.orientation);
+    const desired = new Vector(1, 0);
+    // scale to maxspeed
+    desired.setMagnitude(amount).limit(this.maxspeed);
+    // desired.rotate(this.velocity.heading());
 
+    // Steering = Desired minus Velocity
     const steer = desired.subtract(this.velocity);
     steer.limit(this.maxforce);
 
@@ -98,31 +122,32 @@ export abstract class Bot implements IRobotActions {
   }
 
   backward(amount: number): void {
-    this.velocity.zero();
+    console.log('backward - ' + amount + this.toString());
 
-    const position = this.position.clone();
-    const desired = new Vector(0, amount);
-    desired.setMagnitude(this.maxspeed);
-    desired.rotate(this.orientation);
+    const desired = new Vector(-1, 0);
+    desired.setMagnitude(amount).limit(this.maxspeed);
+    // desired.rotate(this.orientation);
 
+    // Steering = Desired minus Velocity
     const steer = desired.subtract(this.velocity);
-    steer.limit(this.maxforce).reverse();
+    steer.limit(this.maxforce);
 
     this.applyForce(steer);
   }
 
-  turnLeft(degree: number): void {
-    throw new Error('Not Implemented');
+  turn(degree: number): void {
+    this.orientation += degree;
   }
 
-  turnRight(degree: number): void {
-    throw new Error('Not Implemented');
+  shoot(): void {
+    console.log('pew pew pew');
   }
+
 
   /**
    * Return the bot as a formatted string
    */
   toString() {
-    return `Robot(pos[${ this.position }], speed[${ this.velocity }])`;
+    return `${ this.constructor.name }(pos[${ this.position }], speed[${ this.velocity }])`;
   }
 }

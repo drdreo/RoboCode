@@ -17,7 +17,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: logLevels
   });
+
   Logger.log(`Enabling CORS for ${ whitelist.join(' & ') }`);
+
   app.enableCors({
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1 || !origin) {
