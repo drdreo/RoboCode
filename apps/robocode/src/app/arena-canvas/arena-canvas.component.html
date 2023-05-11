@@ -1,7 +1,3 @@
-<canvas>
-  <rc-background [src]="'assets/images/arena_bg.jpg'"></rc-background>
-</canvas>
+<rc-background></rc-background>
 
-<canvas id="arena-canvas" >
-  <rc-bot [x]='bot.position._x' [y]='bot.position._y' [rotation]='bot.orientation' *ngFor='let bot of botService.bots$ | async'></rc-bot>
-</canvas>
+<canvas id="arena-canvas"> </canvas>

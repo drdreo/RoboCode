@@ -1,39 +1,61 @@
 {
-  "implicitDependencies": {
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "npmScope": "robo-code",
+    "affected": {
+        "defaultBase": "master"
     },
-    ".eslintrc.json": "*"
-  },
-  "affected": {
-    "defaultBase": "master"
-  },
-  "npmScope": "robo-code",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
-      }
+    "cli": {
+        "defaultCollection": "@nrwl/angular"
+    },
+    "defaultProject": "robocode-api",
+    "generators": {
+        "@nrwl/angular": {
+            "application": {
+                "linter": "eslint"
+            },
+            "library": {
+                "linter": "eslint"
+            },
+            "storybook-configuration": {
+                "linter": "eslint"
+            }
+        },
+        "@nrwl/angular:application": {
+            "e2eTestRunner": "cypress",
+            "linter": "eslint",
+            "style": "scss",
+            "unitTestRunner": "jest"
+        },
+        "@nrwl/angular:component": {
+            "style": "scss"
+        },
+        "@nrwl/angular:library": {
+            "linter": "eslint",
+            "strict": false,
+            "unitTestRunner": "jest"
+        }
+    },
+    "implicitDependencies": {
+        ".eslintrc.json": "*",
+        "package.json": {
+            "dependencies": "*",
+            "devDependencies": "*"
+        }
+    },
+    "targetDependencies": {
+        "build": [
+            {
+                "projects": "dependencies",
+                "target": "build"
+            }
+        ]
+    },
+    "tasksRunnerOptions": {
+        "default": {
+            "options": {
+                "cacheableOperations": ["build", "lint", "test", "e2e"]
+            },
+            "runner": "@nrwl/workspace/tasks-runners/default"
+        }
     }
-  },
-  "projects": {
-    "robocode": {
-      "tags": []
-    },
-    "robocode-e2e": {
-      "tags": [],
-      "implicitDependencies": ["robocode"]
-    },
-    "robocode-backend": {
-      "tags": []
-    },
-    "ui": {
-      "tags": []
-    },
-    "utils": {
-      "tags": []
-    }
-  }
 }

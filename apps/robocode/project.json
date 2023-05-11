@@ -1,0 +1,88 @@
+{
+    "name": "robocode",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/robocode/src",
+    "prefix": "robo-code",
+    "targets": {
+        "build": {
+            "executor": "@angular-devkit/build-angular:browser",
+            "options": {
+                "outputPath": "dist/apps/robocode",
+                "index": "apps/robocode/src/index.html",
+                "main": "apps/robocode/src/main.ts",
+                "polyfills": "apps/robocode/src/polyfills.ts",
+                "tsConfig": "apps/robocode/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": ["apps/robocode/src/favicon.ico", "apps/robocode/src/assets"],
+                "styles": ["apps/robocode/src/styles.scss"],
+                "scripts": []
+            },
+            "configurations": {
+                "production": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "1mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "2kb",
+                            "maximumError": "4kb"
+                        }
+                    ],
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/robocode/src/environments/environment.ts",
+                            "with": "apps/robocode/src/environments/environment.prod.ts"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "buildOptimizer": false,
+                    "optimization": false,
+                    "vendorChunk": true,
+                    "extractLicenses": false,
+                    "sourceMap": true,
+                    "namedChunks": true
+                }
+            },
+            "defaultConfiguration": "production"
+        },
+        "serve": {
+            "executor": "@angular-devkit/build-angular:dev-server",
+            "configurations": {
+                "production": {
+                    "browserTarget": "robocode:build:production"
+                },
+                "development": {
+                    "browserTarget": "robocode:build:development",
+                    "proxyConfig": "apps/robocode/src/proxy.config.json"
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+            "executor": "@angular-devkit/build-angular:extract-i18n",
+            "options": {
+                "browserTarget": "robocode:build"
+            }
+        },
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["apps/robocode/src/**/*.ts", "apps/robocode/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["coverage/apps/robocode"],
+            "options": {
+                "jestConfig": "apps/robocode/jest.config.js",
+                "passWithNoTests": true
+            }
+        }
+    }
+}
