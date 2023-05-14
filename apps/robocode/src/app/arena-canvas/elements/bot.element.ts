@@ -1,11 +1,14 @@
-import { BotData } from "@robo-code/shared";
+import { BotData, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH } from "@robo-code/shared";
 import { Logger } from '@robo-code/utils';
+import { DEBUG } from "../../settings";
 import { DrawableElement } from "../canvas.types";
 
 export class BotElement implements DrawableElement {
-    public x = 0;
-    public y = 0;
-    public rotation = 0;
+    private x = 0;
+    private y = 0;
+    private rotation = 0;
+    private health = 100;
+    private energy = 100;
 
     private height = 50;
     private width = 30;
@@ -20,14 +23,23 @@ export class BotElement implements DrawableElement {
         this.x = data.position.x;
         this.y = data.position.y;
         this.rotation = data.rotation;
+        this.health = data.health;
+        this.energy = data.energy;
     }
 
     draw(context: CanvasRenderingContext2D): void {
         this.logger.debug(`Bot[${ this.id }] - draw()`);
 
         context.translate(this.x - this.width / 2, this.y - this.height / 2);
-        this.drawTooltip(context);
+        if (DEBUG.enabled) {
+            this.drawTooltip(context);
+        }
+
         context.rotate((this.rotation * Math.PI) / 180);
+
+        if (DEBUG.enabled) {
+            this.drawHitbox(context);
+        }
 
         this.drawWheels(context);
         this.drawBody(context);
@@ -38,12 +50,18 @@ export class BotElement implements DrawableElement {
     }
 
     private drawTooltip(context: CanvasRenderingContext2D) {
-
-        const text = `${ this.id } [${ Math.floor(this.x) },${ Math.floor(this.y) }] (${ Math.floor(this.rotation) })`;
+        const text = `${ this.id } ${ Math.floor(this.health) }/${ this.energy } - [${ Math.floor(this.x) },${ Math.floor(this.y) }] (${ Math.floor(this.rotation) })`;
         context.font = "20px serif";
         context.fillStyle = "#000000";
         context.fillText(text, -20, -20);
     }
+
+    private drawHitbox(context: CanvasRenderingContext2D) {
+        context.font = "20px serif";
+        context.fillStyle = "rgba(218,165,32,0.48)";
+        context.fillRect(0, 0, ROBOT_HITBOX_WIDTH, ROBOT_HITBOX_HEIGHT);
+    }
+
 
     private drawBody(context: CanvasRenderingContext2D) {
         context.fillStyle = '#5a5a9f';

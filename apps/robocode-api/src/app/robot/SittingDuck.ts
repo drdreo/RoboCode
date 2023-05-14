@@ -5,13 +5,21 @@ export class SittingDuck {
 
     lastShot = Date.now();
     shootInterval = 3000;
+
     tick() {
 
-        if(this.lastShot + this.shootInterval < Date.now()){
+        if (this.lastShot + this.shootInterval < Date.now()) {
             this.shoot();
             this.lastShot = Date.now();
         }
 
-        this.backward(1);
+    }
+
+    onHit() {
+        console.warn('OUUUUUUUUCH I GOT HIT');
+    }
+
+    onDeath() {
+        console.error('I DIED');
     }
 }

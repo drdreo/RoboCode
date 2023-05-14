@@ -25,7 +25,7 @@ export class BotGateway {
     }
 
     public sendBotsUpdate() {
-        this.sendToAll(SocketEvents.BotsUpdate, this.codeService.getBotUpdate());
+        this.sendToAll(SocketEvents.BotsUpdate, this.simulationService.getBotUpdate());
     }
 
     public sendBulletsUpdate() {

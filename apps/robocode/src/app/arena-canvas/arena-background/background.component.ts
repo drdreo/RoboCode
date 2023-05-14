@@ -10,7 +10,13 @@ import { Logger } from '@robo-code/utils';
 		left: 0;
 		width: 100%;
 		height: 100%;
-	}` ],
+	}
+
+	img {
+		width: 100%;
+		height: 100%;
+	}`
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackgroundComponent {

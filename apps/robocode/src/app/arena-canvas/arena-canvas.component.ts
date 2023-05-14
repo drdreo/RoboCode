@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestro
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
 import { Subject, takeUntil, withLatestFrom } from "rxjs";
 import { BotService } from '../bot.service';
+import { DEBUG } from "../settings";
 import { CanvasService } from './canvas.service';
 
 
@@ -15,15 +16,8 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild('arenaCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
     @ViewChild('debugCanvas') debugCanvasRef!: ElementRef<HTMLCanvasElement>;
-    DEBUG = {
-        enabled: true,
-        gridInit: false,
-        mousePosition: {
-            x: 0,
-            y: 0
-        }
-    };
 
+    protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
     private unsubscribe$ = new Subject<void>();
 
@@ -47,11 +41,11 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     onCanvasMouse(evt: MouseEvent, canvas: HTMLCanvasElement) {
-        if (!this.DEBUG.enabled) {
+        if (!DEBUG.enabled) {
             return;
         }
         const rect = canvas.getBoundingClientRect();
-        this.DEBUG.mousePosition = {
+        DEBUG.mousePosition = {
             x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
             y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
         };
@@ -61,9 +55,9 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
         const ctx = this.getCanvasContext();
         this.clearCanvas(ctx);
 
-        if (this.DEBUG.enabled) {
+        if (DEBUG.enabled) {
             this.renderDebugCanvas();
-            this.renderPosition(ctx);
+            this.renderMousePosition(ctx);
         }
 
         this.canvasService.updateBots(bots, ctx);
@@ -71,9 +65,9 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     private renderDebugCanvas(): void {
-        if (this.DEBUG.enabled) {
+        if (DEBUG.enabled) {
             const debugCtx = this.getDebugCanvasContext();
-            if (this.DEBUG.gridInit) {
+            if (DEBUG.gridInit) {
                 return;
             }
             this.renderGrid(debugCtx);
@@ -115,7 +109,7 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 
         ctx.stroke();
         ctx.closePath();
-        this.DEBUG.gridInit = true;
+        DEBUG.gridInit = true;
     }
 
     private clearCanvas(ctx: CanvasRenderingContext2D, preserveTransform = false) {
@@ -134,8 +128,8 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    private renderPosition(ctx: CanvasRenderingContext2D) {
-        const mousePos = this.DEBUG.mousePosition;
+    private renderMousePosition(ctx: CanvasRenderingContext2D) {
+        const mousePos = DEBUG.mousePosition;
         const mousePosText = `x: ${ Math.floor(mousePos.x) }, y: ${ Math.floor(mousePos.y) }`;
         const tooltipOffest = 25;
         ctx.font = "15px serif";

@@ -10,6 +10,7 @@ export type BotsUpdate = BotData[];
 export type BotData = {
     name: string,
     health: number,
+    energy: number,
     position: Position,
     rotation: number,
 }

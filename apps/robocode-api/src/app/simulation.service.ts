@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BulletData, ARENA_SIZE } from "@robo-code/shared";
+import { ARENA_SIZE, BotsUpdate, BulletData, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 import { timer } from "rxjs";
 import { Robot } from "./robot/Robot";
@@ -7,6 +7,9 @@ import { Robot } from "./robot/Robot";
 const TICK_RATE = 20;
 const BULLET_SPEED = 15;
 
+
+const NOOP = function () {
+};
 
 class Bullet {
     position = new Vector();
@@ -25,11 +28,14 @@ class Bullet {
 
 const isActive = (bullet: { isActive: boolean }) => bullet.isActive;
 
+const hasEnergyToShoot = (energy: number) => energy > 20;
+
 @Injectable()
 export class SimulationService {
 
     tick$ = timer(0, TICK_RATE);
 
+    private bots: Robot[] = [];
     private bullets: Bullet[] = new Array<Bullet>(50);
     private logger = new Logger('SimulationService');
 
@@ -38,10 +44,42 @@ export class SimulationService {
 
         this.tick$.subscribe(() => {
             this.logger.debug(`${ this.bullets.filter(isActive).length } active bullets`)
+
+            try {
+                this.bots.forEach((bot) => bot.tick());
+            } catch (e) {
+                console.error(e);
+                throw new Error('Error during Bot tick!');
+            }
+
             this.bullets.forEach(bullet => this.updateBullet(bullet));
         });
     }
 
+    registerBot(bot: any) {
+        const robot = new Robot(bot);
+        robot.actualBot.shoot = () => hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP;
+        robot.actualBot.forward = (amount) => robot.forward(amount);
+        robot.actualBot.backward = (amount) => robot.backward(amount);
+        robot.actualBot.turn = (amount) => robot.turn(amount);
+        robot.actualBot.getX = () => robot.x;
+        robot.actualBot.getY = () => robot.y;
+
+        // event handlers
+        robot.actualBot.onCrash = robot.actualBot.onCrash ?? NOOP;
+        robot.actualBot.onHit = robot.actualBot.onHit ?? NOOP;
+        robot.actualBot.onDeath = robot.actualBot.onDeath ?? NOOP;
+        robot.actualBot.onWin = robot.actualBot.onWin ?? NOOP;
+
+        this.bots.push(robot);
+    }
+
+    getBotUpdate(): BotsUpdate {
+        return this.bots.reduce((prev, bot) => {
+            prev.push(bot.getData());
+            return prev;
+        }, []);
+    }
 
     shootBullet(robot: Robot) {
         this.logger.verbose(robot + ' shooting bullet!');
@@ -56,6 +94,7 @@ export class SimulationService {
         const bullet = this.bullets[availableBulletIndex];
         bullet.isActive = true;
         bullet.init(robot.x, robot.y, robot.rotation);
+        robot.consumeShootingEnergy();
     }
 
     getActiveBullets(): BulletData[] {
@@ -80,13 +119,35 @@ export class SimulationService {
         }
 
         this.logger.debug('bullet: ' + Math.floor(bullet.position.x) + ', ' + Math.floor(bullet.position.y));
-        // check bullet constraints: hits, out of bounds, etc
         if (bullet.position.x < 0 || bullet.position.x > ARENA_SIZE || bullet.position.y < 0 || bullet.position.y > ARENA_SIZE) {
             this.removeBullet(bullet);
             return;
         }
 
         bullet.position.add(bullet.velocity);
+
+        this.checkCollision(bullet);
+    }
+
+    private checkCollision(bullet: Bullet) {
+        // (bx, by) is within the bounding box of the bot if px <= bx <= px + w and py <= by <= py + h.
+
+
+        for (const bot of this.bots) {
+            // check collision with bot hitbox
+            if (bullet.position.x >= bot.x && bullet.position.x <= bot.x + ROBOT_HITBOX_WIDTH && bullet.position.y >= bot.y && bullet.position.y <= bot.y + ROBOT_HITBOX_HEIGHT) {
+                bot.bulletHit();
+                const botHealth = bot.getHealth();
+                if (botHealth <= 0) {
+                    bot.actualBot.onDeath();
+                    this.bots = this.bots.filter(b => b !== bot);
+                } else {
+                    bot.actualBot.onHit(botHealth);
+                }
+
+                this.removeBullet(bullet);
+                return;
+            }
+        }
     }
 }
-

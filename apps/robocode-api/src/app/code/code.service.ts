@@ -1,10 +1,8 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { BotsUpdate } from "@robo-code/shared";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 
 import { Juker } from '../robot/Juker';
-import { Robot } from '../robot/Robot';
 import { SittingDuck } from '../robot/SittingDuck';
 import { Spinner } from "../robot/Spinner";
 import { SimulationService } from '../simulation.service';
@@ -17,26 +15,16 @@ const FILE_FOLDER = 'assets/upload/';
 export class CodeService implements OnApplicationBootstrap {
     files: string[] = [];
     code: any[] = [];
-    bots: Robot[] = [];
 
     compiler = new Compiler();
 
     private logger = new Logger('CodeService');
 
     constructor(private simulationService: SimulationService) {
-        this.bots = [];
-        this.registerBot(new SittingDuck());
-        this.registerBot(new Spinner());
-        this.registerBot(new Juker());
-
-        this.simulationService.tick$.subscribe(() => {
-            try {
-                this.bots.forEach((bot) => bot.tick());
-            } catch (e) {
-                console.error(e);
-                throw new Error('Error during Bot tick!');
-            }
-        });
+        // for debaggeri
+        this.simulationService.registerBot(new SittingDuck());
+        this.simulationService.registerBot(new Spinner());
+        // this.simulationService.registerBot(new Juker());
     }
 
     onApplicationBootstrap() {
@@ -76,31 +64,12 @@ export class CodeService implements OnApplicationBootstrap {
 
 
         console.log(runable);
-        this.registerBot(new runable());
-    }
-
-    registerBot(bot: any) {
-        const robot = new Robot(bot);
-        robot.actualBot.shoot = () => this.simulationService.shootBullet(robot);
-        robot.actualBot.forward = (amount) => robot.forward(amount);
-        robot.actualBot.backward = (amount) => robot.backward(amount);
-        robot.actualBot.turn = (amount) => robot.turn(amount);
-        robot.actualBot.getX = () => robot.x;
-        robot.actualBot.getY = () => robot.y;
-
-        this.bots.push(robot);
+        this.simulationService.registerBot(new runable());
     }
 
     private clearAllFiles() {
         rimraf.default(FILE_FOLDER + '/*', () => {
             this.logger.log(`Cleared folder ${FILE_FOLDER}!`);
         });
-    }
-
-    getBotUpdate(): BotsUpdate {
-        return this.bots.reduce((prev, bot) => {
-            prev.push(bot.getData());
-            return prev;
-        }, []);
     }
 }

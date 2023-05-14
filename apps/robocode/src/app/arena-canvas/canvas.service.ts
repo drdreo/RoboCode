@@ -7,6 +7,8 @@ import { BulletElement } from "./elements/bullet.element";
 @Injectable()
 export class CanvasService {
 
+    private drawableBullet = new BulletElement(); // re-use the same bullet object
+
     private robots: BotElement[] = [];
 
     private initialized = false;
@@ -21,7 +23,7 @@ export class CanvasService {
         // init bots on first update
         if (!this.initialized) {
             this.logger.verbose('Initializing bots');
-            bots.forEach((bot, key) => this.addBot(bot.name));
+            bots.forEach((bot) => this.addBot(bot.name));
             this.initialized = true;
             return;
         }
@@ -35,10 +37,9 @@ export class CanvasService {
     }
 
     updateBullets(bullets: BulletData[], context: CanvasRenderingContext2D) {
-        const drawableBullet = new BulletElement();
         for (const bullet of bullets) {
-            drawableBullet.update(bullet);
-            drawableBullet.draw(context);
+            this.drawableBullet.update(bullet);
+            this.drawableBullet.draw(context);
         }
     }
 

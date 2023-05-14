@@ -2,16 +2,16 @@
 
 <div class='file-upload'>
 
-  {{fileName || "No file uploaded yet."}}
+    {{fileName || "No file uploaded yet."}}
 
-  <button class='upload-btn' (click)='fileUpload.click()'>Upload</button>
+    <button class='upload-btn' (click)='fileUpload.click()'>Upload</button>
 
 </div>
 
 <div class='progress'>
 
-  <progress class='progress-bar' [value]='uploadProgress' [max]='100' *ngIf='uploadProgress'></progress>
+    <progress class='progress-bar' [value]='uploadProgress' [max]='100' *ngIf='uploadProgress'></progress>
 
-  <button class='cancel-upload' (click)='cancelUpload()' *ngIf='uploadProgress'>Cancel</button>
+    <button class='cancel-upload' (click)='cancelUpload()' *ngIf='uploadProgress'>Cancel</button>
 
 </div>

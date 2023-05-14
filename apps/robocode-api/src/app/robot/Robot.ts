@@ -3,7 +3,13 @@
 // https://natureofcode.com/book/chapter-2-forces/
 
 import { Logger } from '@nestjs/common';
-import { BotData } from "@robo-code/shared";
+import {
+    BotData,
+    BULLET_DAMAGE,
+    ROBOT_ENERGY_GAIN,
+    ROBOT_HEALTH_DECAY,
+    ROBOT_SHOOTING_ENERGY_COST
+} from "@robo-code/shared";
 import { AbstractVector, randomInteger, Vector } from '@robo-code/utils';
 
 /**
@@ -48,11 +54,17 @@ export class Robot implements IRobotStats, IRobotActions {
 
     private health = 100;
 
+    private energy = 100;
+
     getHealth(): number {
         return this.health;
     }
 
-    private position = new Vector(randomInteger(200, 500), randomInteger(200, 500));
+    private position = new Vector(randomInteger(100, 900), randomInteger(100, 900));
+
+    getEnergy(): number {
+        return this.energy;
+    }
 
     get x() {
         return this.position.x;
@@ -60,6 +72,16 @@ export class Robot implements IRobotStats, IRobotActions {
 
     get y() {
         return this.position.y;
+    }
+
+    public getData(): BotData {
+        return {
+            name: this.actualBot.name || 'Robot', // TODO: this should be done once
+            health: this.health,
+            energy: this.energy,
+            position: this.position.toObject(),
+            rotation: this.rotation,
+        };
     }
 
     private velocity = new Vector(1, 0);
@@ -77,42 +99,25 @@ export class Robot implements IRobotStats, IRobotActions {
         return this._rotation;
     }
 
+
     get heading(): number {
         return this._rotation;
     }
 
-    private applyForce(force: AbstractVector) {
-        Logger.debug('applyForce: ' + force.toString());
-        this.acceleration.add(force);
-        this.update();
+    bulletHit(): void {
+        this.health -= BULLET_DAMAGE;
+        this.checkDeath();
     }
 
-    public getData(): BotData {
-        return {
-            name: this.actualBot.name || 'Robot', // TODO: this should be done once
-            health: this.health,
-            position: this.position.toObject(),
-            rotation: this.rotation,
-        };
-    }
-
-    private update() {
-        //health decay
-        this.health -= 0.005;
-
-        // update speed and limit
-        this.velocity.add(this.acceleration).limit(this.maxspeed);
-        // update position
-        this.position.add(this.velocity);
-        this.position.round(1);
-        // reset acceleration
-        this.acceleration.zero();
-
-        // TODO: detect collisions and solve constraints
+    decayHealth(): void {
+        this.health -= ROBOT_HEALTH_DECAY;
+        this.checkDeath();
     }
 
     tick(): void {
-        console.log(this.toString());
+        // console.log(this.toString());
+        this.decayHealth();
+        this.gainEnergy();
         this.actualBot.tick();
     }
 
@@ -177,5 +182,43 @@ export class Robot implements IRobotStats, IRobotActions {
      */
     toString() {
         return `${ this.constructor.name }[pos${ this.position }, speed${ this.velocity }, rot(${ this.rotation })]`;
+    }
+
+    gainEnergy() {
+        if (this.energy < 100) {
+            this.energy = Math.min(ROBOT_ENERGY_GAIN + this.energy, 100);
+        }
+    }
+
+    consumeShootingEnergy() {
+        this.energy -= ROBOT_SHOOTING_ENERGY_COST;
+    }
+
+    private applyForce(force: AbstractVector) {
+        Logger.debug('applyForce: ' + force.toString());
+        this.acceleration.add(force);
+        this.update();
+    }
+
+    private update() {
+        // update speed and limit
+        this.velocity.add(this.acceleration).limit(this.maxspeed);
+        // update position
+        this.position.add(this.velocity);
+        this.position.round(1);
+        // reset acceleration
+        this.acceleration.zero();
+
+        this.consumeMovementEnergy();
+    }
+
+    private checkDeath(): void {
+        if (this.health <= 0) {
+            this.actualBot.onDeath();
+        }
+    }
+
+    private consumeMovementEnergy() {
+        this.energy -= this.velocity.magnitude() * 0.01;
     }
 }
