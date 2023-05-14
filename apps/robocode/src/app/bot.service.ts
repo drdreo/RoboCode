@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
+import { BotsUpdate, BulletsUpdate, SocketEvents } from "@robo-code/shared";
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class BotService {
-    bots$: Observable<any>;
+    bots$: Observable<BotsUpdate>;
+    bullets$: Observable<BulletsUpdate>;
 
     constructor(private socket: Socket) {
-        this.bots$ = this.botsUpdate$();
-
-        // <rc-bot [x]='bot.position._x' [y]='bot.position._y' [rotation]='bot.orientation'
-        // *ngFor='let bot of botService.bots$ | async'></rc-bot>
+        this.bots$ = this.onBotsUpdate();
+        this.bullets$ = this.onBulletsUpdate();
     }
 
-    botsUpdate$() {
-        return this.socket.fromEvent<any>('bots:update');
+    private onBotsUpdate() {
+        return this.socket.fromEvent<BotsUpdate>(SocketEvents.BotsUpdate);
+    }
+
+    private onBulletsUpdate() {
+        return this.socket.fromEvent<BulletsUpdate>(SocketEvents.BulletsUpdate);
     }
 }

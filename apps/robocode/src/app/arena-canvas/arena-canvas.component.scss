@@ -1,6 +1,15 @@
 :host {
-  width: 500px;
-  height: 500px;
-  display: block;
-  margin-left: 25vw;
+	display: block;
+	margin-left: 25vw;
+	position: relative;
+}
+
+#arena-canvas,
+#debug-canvas {
+	position: relative;
+	z-index: 1;
+}
+
+#debug-canvas {
+	position: absolute;
 }

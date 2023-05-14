@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CodeService } from './code/code.service';
 import { BotGateway } from './robot/bot.gateway';
+import { SimulationService } from "./simulation.service";
 import { UploadController } from './upload/upload.controller';
 
 @Module({
@@ -14,6 +15,6 @@ import { UploadController } from './upload/upload.controller';
         }),
     ],
     controllers: [AppController, UploadController],
-    providers: [AppService, CodeService, BotGateway],
+    providers: [AppService, CodeService, SimulationService, BotGateway],
 })
 export class AppModule {}

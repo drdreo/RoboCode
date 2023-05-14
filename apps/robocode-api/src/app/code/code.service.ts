@@ -1,13 +1,17 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { BotsUpdate } from "@robo-code/shared";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 
 import { Juker } from '../robot/Juker';
 import { Robot } from '../robot/Robot';
 import { SittingDuck } from '../robot/SittingDuck';
+import { Spinner } from "../robot/Spinner";
+import { SimulationService } from '../simulation.service';
 import { Compiler } from './compiler';
 
 const FILE_FOLDER = 'assets/upload/';
+
 
 @Injectable()
 export class CodeService implements OnApplicationBootstrap {
@@ -19,19 +23,20 @@ export class CodeService implements OnApplicationBootstrap {
 
     private logger = new Logger('CodeService');
 
-    constructor() {
+    constructor(private simulationService: SimulationService) {
         this.bots = [];
-        this.registerBot(new Juker());
         this.registerBot(new SittingDuck());
+        this.registerBot(new Spinner());
+        this.registerBot(new Juker());
 
-        setInterval(() => {
+        this.simulationService.tick$.subscribe(() => {
             try {
                 this.bots.forEach((bot) => bot.tick());
             } catch (e) {
                 console.error(e);
                 throw new Error('Error during Bot tick!');
             }
-        }, 300);
+        });
     }
 
     onApplicationBootstrap() {
@@ -69,13 +74,14 @@ export class CodeService implements OnApplicationBootstrap {
             throw Error('No runable code found. Did you forget to export your class?');
         }
 
+
         console.log(runable);
         this.registerBot(new runable());
     }
 
     registerBot(bot: any) {
         const robot = new Robot(bot);
-        robot.actualBot.shoot = () => robot.shoot();
+        robot.actualBot.shoot = () => this.simulationService.shootBullet(robot);
         robot.actualBot.forward = (amount) => robot.forward(amount);
         robot.actualBot.backward = (amount) => robot.backward(amount);
         robot.actualBot.turn = (amount) => robot.turn(amount);
@@ -91,7 +97,7 @@ export class CodeService implements OnApplicationBootstrap {
         });
     }
 
-    getBotUpdate() {
+    getBotUpdate(): BotsUpdate {
         return this.bots.reduce((prev, bot) => {
             prev.push(bot.getData());
             return prev;

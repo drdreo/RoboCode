@@ -1,7 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { SocketEvents } from "@robo-code/shared";
 import { Server } from 'socket.io';
 import { CodeService } from '../code/code.service';
+import { SimulationService } from "../simulation.service";
+
 
 @WebSocketGateway()
 export class BotGateway {
@@ -9,19 +12,24 @@ export class BotGateway {
 
     private logger = new Logger('BotGateway');
 
-    constructor(private codeService: CodeService) {
-        setInterval(() => {
+    constructor(private codeService: CodeService, private simulationService: SimulationService) {
+        this.simulationService.tick$.subscribe(() => {
             this.sendBotsUpdate();
-        }, 30);
+            this.sendBulletsUpdate();
+        });
     }
 
     public sendToAll(event: string, data?: any) {
+        this.logger.debug(event);
         this.server.emit(event, data);
     }
 
     public sendBotsUpdate() {
-        this.logger.debug('bots:update');
-        this.sendToAll('bots:update', this.codeService.getBotUpdate());
+        this.sendToAll(SocketEvents.BotsUpdate, this.codeService.getBotUpdate());
+    }
+
+    public sendBulletsUpdate() {
+        this.sendToAll(SocketEvents.BulletsUpdate, this.simulationService.getActiveBullets());
     }
 
     @SubscribeMessage('message')

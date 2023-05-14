@@ -15,6 +15,7 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
+            "@robo-code/shared": ["libs/shared/src/index.ts"],
             "@robo-code/ui": ["libs/ui/src/index.ts"],
             "@robo-code/utils": ["libs/utils/src/index.ts"]
         }

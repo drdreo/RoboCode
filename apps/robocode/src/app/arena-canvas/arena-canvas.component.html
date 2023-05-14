@@ -1,3 +1,6 @@
 <rc-background></rc-background>
 
-<canvas id="arena-canvas"> </canvas>
+<canvas *ngIf="DEBUG.enabled" id="debug-canvas" #debugCanvas [height]="ARENA_SIZE" [width]="ARENA_SIZE"
+        style="border:1px solid white;"></canvas>
+<canvas id="arena-canvas" #arenaCanvas (mousemove)="onCanvasMouse($event, arenaCanvas)" [height]="ARENA_SIZE" [width]="ARENA_SIZE"
+        style="border:1px solid white;"></canvas>

@@ -4,8 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { SocketAdapter } from './app/socket-adapter';
 
+const prodLogs = true;
 const logLevels: LogLevel[] =
-    process.env.NODE_ENV === 'dev' ? ['log', 'error', 'warn', 'debug', 'verbose'] : ['error', 'warn', 'log'];
+    prodLogs ? [ 'error', 'warn', 'log' ] : [ 'log', 'error', 'warn', 'verbose', 'debug', ];
 
 const whitelist = ['http://localhost:4200', 'https://admin.socket.io'];
 

@@ -1,0 +1,1 @@
+export const ARENA_SIZE = 1000;
