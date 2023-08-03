@@ -47,6 +47,8 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
             return;
         }
         const rect = canvas.getBoundingClientRect();
+
+        // translate to 2D Cartesian coordinate system
         DEBUG.mousePosition = {
             x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
             y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
@@ -132,7 +134,11 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 
     private renderMousePosition(ctx: CanvasRenderingContext2D) {
         const mousePos = DEBUG.mousePosition;
-        const mousePosText = `x: ${ Math.floor(mousePos.x) }, y: ${ Math.floor(mousePos.y) }`;
+
+        // translate to 2D Cartesian coordinate system
+        const x = Math.floor(mousePos.x);
+        const y = Math.floor(ctx.canvas.height - mousePos.y);
+        const mousePosText = `x: ${ x }, y: ${ y }`;
         const tooltipOffest = 25;
         ctx.font = "15px serif";
         ctx.fillStyle = "#000000";

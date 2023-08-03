@@ -24,7 +24,7 @@ export class BulletElement implements DrawableElement {
         context.fillStyle = '#352918';
         const offset = this.size / 2;
         const posX = this.x + offset;
-        const posY = this.y + offset;
+        const posY = context.canvas.height - this.y + offset;
         context.arc(posX, posY, this.size, 0, 2 * Math.PI, false);
         context.fill();
 

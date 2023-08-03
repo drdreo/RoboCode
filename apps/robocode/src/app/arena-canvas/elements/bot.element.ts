@@ -30,12 +30,15 @@ export class BotElement implements DrawableElement {
     draw(context: CanvasRenderingContext2D): void {
         this.logger.debug(`Bot[${ this.id }] - draw()`);
 
-        context.translate(this.x - this.width / 2, this.y - this.height / 2);
+        // use canvas height to match the 2D Cartesian system
+        context.translate(this.x - this.width / 2, context.canvas.height - (this.y - this.height / 2));
         if (DEBUG.enabled) {
             this.drawTooltip(context);
         }
 
-        context.rotate((this.rotation * Math.PI) / 180);
+        this.drawOrigin(context);
+
+        context.rotate(this.rotation * (Math.PI / 180));
 
         if (DEBUG.enabled) {
             this.drawHitbox(context);
@@ -65,6 +68,14 @@ export class BotElement implements DrawableElement {
     private drawBody(context: CanvasRenderingContext2D) {
         context.fillStyle = '#5a5a9f';
         context.fillRect(0, 0, this.width, this.height);
+    }
+
+    private drawOrigin(context: CanvasRenderingContext2D) {
+        context.beginPath();
+        context.fillStyle = 'red';
+        context.fillStyle = 'red';
+        context.arc(0, 0, 7, 0, 2 * Math.PI);
+        context.fill();
     }
 
     private drawWheels(context: CanvasRenderingContext2D) {

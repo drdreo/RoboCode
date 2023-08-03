@@ -22,8 +22,9 @@ export class CodeService implements OnApplicationBootstrap {
     private logger = new Logger('CodeService');
 
     constructor(private simulationService: SimulationService) {
-        this.simulationService.registerBot(new Spinner());
+        // this.simulationService.registerBot(new Spinner());
         // this.simulationService.registerBot(new Walker());
+        this.simulationService.registerBot(new SittingDuck());
         this.registerDebugBot();
     }
 

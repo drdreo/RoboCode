@@ -173,8 +173,8 @@ export class SimulationService {
 
     private spawnBulletAtRobot(bullet: Bullet, robot: Robot) {
         bullet.isActive = true;
-        const { x, y, rotation, velocity } = robot
-        bullet.init(x, y, rotation, velocity);
+        const { x, y, rotation } = robot
+        bullet.init(x, y, rotation);
         this.engine.addEntity(bullet);
     }
 
@@ -212,13 +212,13 @@ export class SimulationService {
     private detectAndResolveCollisions() {
         const activeBullets = this.bullets.filter(isActive);
 
-        for (const bot of this.bots) {
-            const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
-            for (const bullet of bulletHits) {
-                this.resolveBotCollision(bot);
-                this.resolveBulletCollision(bullet);
-            }
-        }
+        // for (const bot of this.bots) {
+        //     const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
+        //     for (const bullet of bulletHits) {
+        //         this.resolveBotCollision(bot);
+        //         this.resolveBulletCollision(bullet);
+        //     }
+        // }
 
         // check if bullet is out of bounds and remove it
         for (const bullet of activeBullets) {

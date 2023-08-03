@@ -5,6 +5,14 @@ import { Vector } from "@robo-code/utils";
 
 //https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
 
+
+// Coordinate System Explanation - https://robowiki.net/w/images/3/36/RobocodeCoordinates.gif
+// The coordinate system used in Robocode is a little different from the one you may be used to.
+// The origin (0,0) is at the bottom left corner of the battlefield.
+// The positive x-axis points right, and the positive y-axis points up.
+// Angles are measured clockwise from the positive x-axis.
+
+
 export class PhysicsEntity {
     // Position (x, y) - the current position of the entity.
     // Velocity (vx, vy) - the current velocity of the entity.

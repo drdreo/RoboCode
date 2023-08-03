@@ -5,7 +5,9 @@ export class UpAndDown {
     origPos;
     forwards = true;
 
+
     tick() {
+
         if (!this.origPos) {
             this.origPos = this.getY();
         }
@@ -13,10 +15,10 @@ export class UpAndDown {
         const currentPos = this.getY();
 
         if (currentPos < this.origPos - 200) {
-            this.forwards = false;
+            this.forwards = true;
             // this.shoot();
         } else if (currentPos > this.origPos) {
-            this.forwards = true;
+            this.forwards = false;
             this.shoot();
         }
 

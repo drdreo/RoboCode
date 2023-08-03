@@ -113,15 +113,11 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         // console.log('forward - ' + amount + this.toString());
 
         // Assuming this.rotation represents the current rotation angle of the entity
-        const angleInRadians = (this.rotation - 90) * (Math.PI / 180);
+        const angleInRadians = (-this.rotation + 90) * (Math.PI / 180);
         const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians))
             .setMagnitude(forwardForce)
         // scale to maxspeed
 
-
-        // Steering = Desired minus Velocity
-        // const steer = forwardVec.subtract(this.velocity);
-        // forwardVec.limit(this.maxforce);
 
         this.applyForce(forwardVec);
 
@@ -158,19 +154,20 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     smoothTurn(deg: number) {
-        const degree = Math.min(deg, 10);
+        // Clamp the input degree to the maximum turning speed
+        const degree = Math.min(deg, MAX_TURNING_SPEED);
+        const targetRotation = this._rotation + degree;
 
-        const desired = this.velocity.clone().rotate(degree);
-        const dot = this.velocity.dot(desired);
-        // Calculate the angle between the current velocity and the desired velocity
-        let angle = Math.acos(dot / (this.velocity.magnitude() * desired.magnitude()));
-        // Determine the direction of the rotation
-        const cross = this.velocity.cross(desired);
-        if (cross < 0) {
-            angle = -angle;
+        // Perform interpolation to achieve fluid rotation
+        const rotationSpeed = 0.1; // Adjust this value for the smoothness of rotation
+        this._rotation += (targetRotation - this._rotation) * rotationSpeed;
+
+        // Ensure rotation stays within the range [0, 360)
+        if (this._rotation >= 360) {
+            this._rotation -= 360;
+        } else if (this._rotation < 0) {
+            this._rotation += 360;
         }
-        // Apply the rotation to the robot
-        this.turn(angle * (180 / Math.PI));
     }
 
     /*
@@ -206,7 +203,6 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     private applyForce(force: AbstractVector) {
-        Logger.debug('applyForce: ' + force.toString());
         this.acceleration.add(force);
         this.update();
     }
