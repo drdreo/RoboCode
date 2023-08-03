@@ -1,11 +1,12 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
-
-import { Juker } from '../robot/Juker';
+import { SimulationService } from '../engine/simulation.service';
+import { Juker } from "../robot/Juker";
 import { SittingDuck } from '../robot/SittingDuck';
-import { Spinner } from "../robot/Spinner";
-import { SimulationService } from '../simulation.service';
+import { Spinner } from '../robot/Spinner';
+import { UpAndDown } from "../robot/UpAndDown";
+import { Walker } from "../robot/Walker";
 import { Compiler } from './compiler';
 
 const FILE_FOLDER = 'assets/upload/';
@@ -22,9 +23,9 @@ export class CodeService implements OnApplicationBootstrap {
 
     constructor(private simulationService: SimulationService) {
         // for debaggeri
-        this.simulationService.registerBot(new SittingDuck());
-        this.simulationService.registerBot(new Spinner());
-        // this.simulationService.registerBot(new Juker());
+        this.simulationService.registerBot(new Juker());
+        this.simulationService.registerBot(new UpAndDown());
+        // this.simulationService.registerBot(new Walker());
     }
 
     onApplicationBootstrap() {

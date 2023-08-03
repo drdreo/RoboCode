@@ -19,6 +19,8 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
+
+    bots$ = this.botService.bots$;
     private unsubscribe$ = new Subject<void>();
 
     constructor(public botService: BotService, private canvasService: CanvasService) {
@@ -26,7 +28,7 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.botService.bots$
+        this.bots$
             .pipe(
                 withLatestFrom(this.botService.bullets$),
                 takeUntil(this.unsubscribe$))
@@ -99,12 +101,12 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
         ctx.strokeStyle = "#FFF";
 
         ctx.beginPath();
-        for (let x = 0; x < width; x += GRID_WIDTH) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
+        for (let step = 0; step < width; step += GRID_WIDTH) {
+            ctx.moveTo(step, 0);
+            ctx.lineTo(step, height);
 
-            ctx.moveTo(0, x);
-            ctx.lineTo(height, x);
+            ctx.moveTo(0, step);
+            ctx.lineTo(height, step);
         }
 
         ctx.stroke();

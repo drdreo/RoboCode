@@ -3,7 +3,7 @@ import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/web
 import { SocketEvents } from "@robo-code/shared";
 import { Server } from 'socket.io';
 import { CodeService } from '../code/code.service';
-import { SimulationService } from "../simulation.service";
+import { SimulationService } from "../engine/simulation.service";
 
 
 @WebSocketGateway()

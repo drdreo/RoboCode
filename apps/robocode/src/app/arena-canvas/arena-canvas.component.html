@@ -2,5 +2,18 @@
 
 <canvas *ngIf="DEBUG.enabled" id="debug-canvas" #debugCanvas [height]="ARENA_SIZE" [width]="ARENA_SIZE"
         style="border:1px solid white;"></canvas>
-<canvas id="arena-canvas" #arenaCanvas (mousemove)="onCanvasMouse($event, arenaCanvas)" [height]="ARENA_SIZE" [width]="ARENA_SIZE"
+<canvas id="arena-canvas" #arenaCanvas (mousemove)="onCanvasMouse($event, arenaCanvas)" [height]="ARENA_SIZE"
+        [width]="ARENA_SIZE"
         style="border:1px solid white;"></canvas>
+
+
+<ng-container *ngIf="DEBUG.enabled">
+
+    <div class="debug-info" *ngIf="bots$ | async as bots">
+        <div class="debug-info__robot" *ngFor="let bot of bots">
+            Pos: {{bot.position.x}} / {{bot.position.y}}<br>
+            Rot: {{bot.rotation}}<br>
+            Vel: {{bot.velocity.x}} / {{bot.velocity.y}}<br>
+        </div>
+    </div>
+</ng-container>

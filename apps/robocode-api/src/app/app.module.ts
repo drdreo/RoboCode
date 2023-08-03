@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CodeService } from './code/code.service';
 import { BotGateway } from './robot/bot.gateway';
-import { SimulationService } from "./simulation.service";
+import { SimulationService } from "./engine/simulation.service";
 import { UploadController } from './upload/upload.controller';
 
 @Module({

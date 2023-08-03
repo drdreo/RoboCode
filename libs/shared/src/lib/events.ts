@@ -13,6 +13,7 @@ export type BotData = {
     energy: number,
     position: Position,
     rotation: number,
+    velocity: Position,
 }
 
 export type BulletsUpdate = BulletData[];

@@ -8,97 +8,74 @@ import {
     BULLET_DAMAGE,
     ROBOT_ENERGY_GAIN,
     ROBOT_HEALTH_DECAY,
+    ROBOT_HITBOX_HEIGHT,
+    ROBOT_HITBOX_WIDTH,
+    ROBOT_MAX_SPEED,
     ROBOT_SHOOTING_ENERGY_COST
 } from "@robo-code/shared";
 import { AbstractVector, randomInteger, Vector } from '@robo-code/utils';
+import { PhysicsEntity } from "../engine/physics-engine";
+import { IRobotActions, IRobotStats } from "./robot.types";
+
 
 /**
  The basic robot class that you will extend to create your own robots.
  Please note the following standards will be used:
  heading - absolute angle in degrees with 0 facing up the screen, positive clockwise. 0 <= heading < 360.
- bearing - relative angle to some object from your robot's heading, positive clockwise. -180 < bearing <= 180
+ // bearing - relative angle to some object from your robot's heading, positive clockwise. -180 < bearing <= 180
  All coordinates are expressed as (x,y).
  All coordinates are positive.
- The origin (0,0) is at the bottom left of the screen.
+ The origin (0,0) is at the top left of the screen.
  Positive x is right.
- Positive y is up.
+ Positive y is down.
  */
-interface IRobotActions {
-    forward(amount: number): void;
 
-    backward(amount: number): void;
+    // Player controls
 
-    turn(degrees: number): void;
+// const MAX_MOVEMENT_SPEED = 0.01;
+const MAX_TURNING_SPEED = 0.075;
 
-    shoot(): void;
+export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
+    name;
 
-    tick(): void;
-}
+    width = ROBOT_HITBOX_WIDTH;
+    height = ROBOT_HITBOX_HEIGHT;
 
-interface IRobotNotifications {
-    onCrash?(event: any): void;
-
-    onHit?(event: any): void;
-
-    onDeath?(event: any): void;
-
-    onWin?(event: any): void;
-}
-
-interface IRobotStats {
-    name?: string;
-}
-
-export class Robot implements IRobotStats, IRobotActions {
-    public name;
+    MAX_SPEED = ROBOT_MAX_SPEED;
 
     private health = 100;
-
     private energy = 100;
+    private _rotation = 0;
+    private readonly maxforce = 0.0001;
+    private dt: number;
 
     getHealth(): number {
         return this.health;
     }
 
-    private position = new Vector(randomInteger(100, 900), randomInteger(100, 900));
-
     getEnergy(): number {
         return this.energy;
     }
 
-    get x() {
-        return this.position.x;
-    }
-
-    get y() {
-        return this.position.y;
+    constructor(id: string, public actualBot: any, position?: Vector) {
+        super(id);
+        this.position = position || new Vector(randomInteger(100, 900), randomInteger(100, 900));
     }
 
     public getData(): BotData {
         return {
-            name: this.actualBot.name || 'Robot', // TODO: this should be done once
+            name: this.actualBot.name || 'Robot', // TODO: this data should be sent once
             health: this.health,
-            energy: this.energy,
+            energy: +this.energy.toFixed(3),
             position: this.position.toObject(),
             rotation: this.rotation,
+            velocity: this.velocity.round(2).toObject(),
         };
     }
-
-    private velocity = new Vector(1, 0);
-    private readonly maxspeed = 4;
-
-    constructor(public actualBot: any) {
-    }
-
-    private acceleration = new Vector();
-
-    private _rotation = this.velocity.heading();
-    private readonly maxforce = 2;
 
     get rotation(): number {
         return this._rotation;
     }
-
 
     get heading(): number {
         return this._rotation;
@@ -114,38 +91,61 @@ export class Robot implements IRobotStats, IRobotActions {
         this.checkDeath();
     }
 
-    tick(): void {
+    tick(dt: number): void {
+        this.dt = dt;
         // console.log(this.toString());
+        // this.acceleration.zero();
+
         this.decayHealth();
         this.gainEnergy();
         this.actualBot.tick();
     }
 
     forward(amount: number): void {
+        // TODO: validate input
+        let forwardForce = amount;
+
+        // forwardForce = Math.max(forwardForce, 0);
         // console.log('forward - ' + amount + this.toString());
 
-        const forwardVec = new Vector(0, -1).rotate(this.rotation);
+        // Assuming this.rotation represents the current rotation angle of the entity
+        const angleInRadians = (this.rotation - 90) * (Math.PI / 180);
+        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians))
+            .setMagnitude(forwardForce)
         // scale to maxspeed
-        forwardVec.setMagnitude(amount).limit(this.maxspeed);
-        // desired.rotate(this.velocity.heading());
+
 
         // Steering = Desired minus Velocity
-        const steer = forwardVec.subtract(this.velocity);
-        steer.limit(this.maxforce);
+        // const steer = forwardVec.subtract(this.velocity);
+        // forwardVec.limit(this.maxforce);
 
-        this.applyForce(steer);
+        this.applyForce(forwardVec);
+
+        // Apply forward acceleration in the direction the player is facing
+        // const angleInRadians = (this.rotation - 90) * (Math.PI / 180);
+        // const accelerationX = Math.cos(angleInRadians) * forwardForce;
+        // const accelerationY = Math.sin(angleInRadians) * forwardForce;
+        //
+        // this.acceleration.setX(accelerationX);
+        // this.acceleration.setY(accelerationY);
+        // this.acceleration.limit(this.maxforce);
+
+
+        // this.update()
     }
 
     backward(amount: number): void {
+        let force = amount;
+
         // console.log('backward - ' + amount + this.toString());
-        this.forward(-amount);
+        this.forward(-force);
     }
 
     turn(deg: number): void {
-        let degree = Math.min(deg, 10);
-        degree = Math.max(degree, -10);
+        let degree = Math.min(deg, MAX_TURNING_SPEED);
+        degree = Math.max(degree, -MAX_TURNING_SPEED);
 
-        this._rotation += degree;
+        this._rotation += degree * this.dt;
         if (this.heading > 360) {
             this._rotation -= 360;
         } else if (this.heading < 0) {
@@ -201,14 +201,6 @@ export class Robot implements IRobotStats, IRobotActions {
     }
 
     private update() {
-        // update speed and limit
-        this.velocity.add(this.acceleration).limit(this.maxspeed);
-        // update position
-        this.position.add(this.velocity);
-        this.position.round(1);
-        // reset acceleration
-        this.acceleration.zero();
-
         this.consumeMovementEnergy();
     }
 

@@ -62,7 +62,6 @@ export class BotElement implements DrawableElement {
         context.fillRect(0, 0, ROBOT_HITBOX_WIDTH, ROBOT_HITBOX_HEIGHT);
     }
 
-
     private drawBody(context: CanvasRenderingContext2D) {
         context.fillStyle = '#5a5a9f';
         context.fillRect(0, 0, this.width, this.height);

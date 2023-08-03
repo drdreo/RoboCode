@@ -12,3 +12,17 @@
 #debug-canvas {
 	position: absolute;
 }
+
+.debug-info{
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	left: 0;
+
+	padding: 5px;
+	width: 300px;
+	pointer-events: none;
+
+	background-color: rgba(0, 0, 0, 0.63);
+	border: 1px lime solid;
+}

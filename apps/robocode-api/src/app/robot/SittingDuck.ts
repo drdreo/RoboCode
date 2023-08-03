@@ -13,6 +13,8 @@ export class SittingDuck {
             this.lastShot = Date.now();
         }
 
+        this.turn(0.11);
+
     }
 
     onHit() {
