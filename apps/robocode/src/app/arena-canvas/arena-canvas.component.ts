@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
-import { Subject, takeUntil, withLatestFrom } from "rxjs";
+import { Observable, Subject, takeUntil, withLatestFrom } from "rxjs";
 import { BotService } from '../bot.service';
 import { DEBUG } from "../settings";
 import { CanvasService } from './canvas.service';
@@ -20,11 +20,11 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
 
-    bots$ = this.botService.bots$;
+    bots$: Observable<BotsUpdate>;
     private unsubscribe$ = new Subject<void>();
 
-    constructor(public botService: BotService, private canvasService: CanvasService) {
-
+    constructor(private botService: BotService, private canvasService: CanvasService) {
+        this.bots$ = this.botService.bots$
     }
 
     ngAfterViewInit(): void {

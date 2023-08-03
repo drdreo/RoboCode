@@ -11,10 +11,10 @@ export class Juker {
         }
 
         if (this.origPos + 10 < this.getX()) {
-            this.forwards = false;
+            this.forwards = true;
             this.shoot();
         } else if (this.origPos - 10 > this.getX()) {
-            this.forwards = true;
+            this.forwards = false;
             this.shoot();
         }
         if (this.forwards) {

@@ -147,7 +147,7 @@ export class SimulationService {
     private tickBots(dt: number) {
         try {
             this.bots.forEach((bot) => {
-                bot.decayHealth();
+                // bot.decayHealth();
                 const died = this.checkBotHealth(bot);
                 if (!died) {
                     bot.tick(dt);
@@ -196,6 +196,7 @@ export class SimulationService {
         // check if robot died
         const died = botHealth <= 0;
         if (died) {
+            this.logger.verbose(robot + ' died!')
             // bot.actualBot.onDeath(); ?? needed? bot calls that
             this.bots = this.bots.filter(b => b !== robot);
         }

@@ -64,7 +64,7 @@ export class Engine {
     private frameToSecondFactor = 0;
 
     step(dt = 1) {
-        this.frameToSecondFactor = TICKS_PER_SECOND / dt;
+        // this.frameToSecondFactor = TICKS_PER_SECOND / dt;
         this.frameToSecondFactor = 1;
 
         // console.log(this.frameToSecondFactor);

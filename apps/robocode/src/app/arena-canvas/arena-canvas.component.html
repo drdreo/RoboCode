@@ -11,9 +11,12 @@
 
     <div class="debug-info" *ngIf="bots$ | async as bots">
         <div class="debug-info__robot" *ngFor="let bot of bots">
+            <b>{{bot.name}}</b><br>
+            HP: {{bot.health}}<br>
             Pos: {{bot.position.x}} / {{bot.position.y}}<br>
             Rot: {{bot.rotation}}<br>
-            Vel: {{bot.velocity.x}} / {{bot.velocity.y}}<br>
+            Vel: {{bot.velocity.x}} / {{bot.velocity.y}}
+            <hr>
         </div>
     </div>
 </ng-container>

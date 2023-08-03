@@ -33,7 +33,7 @@ import { IRobotActions, IRobotStats } from "./robot.types";
     // Player controls
 
 // const MAX_MOVEMENT_SPEED = 0.01;
-const MAX_TURNING_SPEED = 0.075;
+const MAX_TURNING_SPEED = 0.1;
 
 export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     name;

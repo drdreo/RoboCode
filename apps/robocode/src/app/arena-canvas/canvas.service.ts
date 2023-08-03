@@ -20,17 +20,19 @@ export class CanvasService {
     }
 
     updateBots(bots: BotData[], context: CanvasRenderingContext2D) {
-        // init bots on first update
-        if (!this.initialized) {
-            this.logger.verbose('Initializing bots');
-            bots.forEach((bot) => this.addBot(bot.name));
-            this.initialized = true;
-            return;
-        }
 
-        for (let i = 0; i < bots.length; i++) {
-            const robot = this.getBot(i);
-            robot.update(bots[i]);
+        for (const bot of bots) {
+            const botId = bot.name; // TODO: change name id to real ID
+            if (!this.hasBot(botId)) {
+                // if we got new bots, initialize them
+                this.addBot(botId)
+            }
+            const robot = this.getBot(botId);
+            if (!robot) {
+                this.logger.error(`Bot[${ botId }] not found`);
+                continue;
+            }
+            robot.update(bot);
             robot.draw(context);
         }
 
@@ -47,7 +49,11 @@ export class CanvasService {
         this.robots.push(new BotElement(id));
     }
 
-    private getBot(id: number): BotElement {
-        return this.robots[id];
+    private getBot(id: string): BotElement | undefined {
+        return this.robots.find((bot) => bot.id === id);
+    }
+
+    private hasBot(id: string): boolean {
+        return this.robots.some((bot) => bot.id === id);
     }
 }

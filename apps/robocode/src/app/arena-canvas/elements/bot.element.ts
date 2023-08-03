@@ -15,7 +15,7 @@ export class BotElement implements DrawableElement {
 
     private logger = new Logger('BotElement');
 
-    constructor(private id: string) {
+    constructor(public id: string) {
         this.logger.verbose(`Created BotElement[${ id }]`);
     }
 

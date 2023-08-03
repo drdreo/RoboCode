@@ -5,11 +5,25 @@
         "defaultBase": "master"
     },
     "cli": {
-        "defaultCollection": "@nrwl/angular"
+        "defaultCollection": "@nx/angular"
     },
     "defaultProject": "robocode-api",
     "generators": {
-        "@nrwl/angular": {
+        "@nx/angular:application": {
+            "e2eTestRunner": "cypress",
+            "linter": "eslint",
+            "style": "scss",
+            "unitTestRunner": "jest"
+        },
+        "@nx/angular:component": {
+            "style": "scss"
+        },
+        "@nx/angular:library": {
+            "linter": "eslint",
+            "strict": false,
+            "unitTestRunner": "jest"
+        },
+        "@nx/angular": {
             "application": {
                 "linter": "eslint"
             },
@@ -19,20 +33,6 @@
             "storybook-configuration": {
                 "linter": "eslint"
             }
-        },
-        "@nrwl/angular:application": {
-            "e2eTestRunner": "cypress",
-            "linter": "eslint",
-            "style": "scss",
-            "unitTestRunner": "jest"
-        },
-        "@nrwl/angular:component": {
-            "style": "scss"
-        },
-        "@nrwl/angular:library": {
-            "linter": "eslint",
-            "strict": false,
-            "unitTestRunner": "jest"
         }
     },
     "implicitDependencies": {
@@ -55,7 +55,7 @@
             "options": {
                 "cacheableOperations": ["build", "lint", "test", "e2e"]
             },
-            "runner": "@nrwl/workspace/tasks-runners/default"
+            "runner": "@nx/workspace/tasks-runners/default"
         }
     }
 }
