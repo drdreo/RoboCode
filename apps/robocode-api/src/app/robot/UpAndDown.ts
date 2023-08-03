@@ -17,7 +17,7 @@ export class UpAndDown {
             // this.shoot();
         } else if (currentPos > this.origPos) {
             this.forwards = true;
-            // this.shoot();
+            this.shoot();
         }
 
 

@@ -14,6 +14,7 @@ import {
     ROBOT_SHOOTING_ENERGY_COST
 } from "@robo-code/shared";
 import { AbstractVector, randomInteger, Vector } from '@robo-code/utils';
+import { environment } from "../../environments/environment";
 import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
 
@@ -33,7 +34,7 @@ import { IRobotActions, IRobotStats } from "./robot.types";
     // Player controls
 
 // const MAX_MOVEMENT_SPEED = 0.01;
-const MAX_TURNING_SPEED = 0.1;
+const MAX_TURNING_SPEED = 0.075;
 
 export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     name;
@@ -83,12 +84,14 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
 
     bulletHit(): void {
         this.health -= BULLET_DAMAGE;
-        this.checkDeath();
     }
 
     decayHealth(): void {
+        if (!environment.config.decayHealth) {
+            return;
+        }
+
         this.health -= ROBOT_HEALTH_DECAY;
-        this.checkDeath();
     }
 
     tick(dt: number): void {
@@ -96,8 +99,9 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         // console.log(this.toString());
         // this.acceleration.zero();
 
-        this.decayHealth();
-        this.gainEnergy();
+        // trying to do it in the sim instead
+        // this.decayHealth();
+        // this.gainEnergy();
         this.actualBot.tick();
     }
 
@@ -185,12 +189,19 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     gainEnergy() {
+        if (!environment.config.gainEnergy) {
+            return;
+        }
+
         if (this.energy < 100) {
             this.energy = Math.min(ROBOT_ENERGY_GAIN + this.energy, 100);
         }
     }
 
     consumeShootingEnergy() {
+        if (!environment.config.shootingCostsEnergy) {
+            return;
+        }
         this.energy -= ROBOT_SHOOTING_ENERGY_COST;
     }
 
@@ -204,10 +215,11 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         this.consumeMovementEnergy();
     }
 
-    private checkDeath(): void {
+    isDead(): boolean {
         if (this.health <= 0) {
-            this.actualBot.onDeath();
+            return true;
         }
+        return false;
     }
 
     private consumeMovementEnergy() {

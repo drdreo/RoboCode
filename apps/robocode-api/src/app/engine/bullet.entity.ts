@@ -1,4 +1,5 @@
-import { BULLET_SIZE, BULLET_SPEED } from "@robo-code/shared";
+import { BULLET_OFFSET, BULLET_SIZE, BULLET_SPEED } from "@robo-code/shared";
+import { Vector } from "@robo-code/utils";
 import { PhysicsEntity } from "./physics-engine";
 
 export class Bullet extends PhysicsEntity {
@@ -10,12 +11,16 @@ export class Bullet extends PhysicsEntity {
 
     MAX_SPEED = BULLET_SPEED;
 
-    init(x: number, y: number, heading: number): void {
-        this.position.setAxes(x, y);
-        // Convert the heading of the robot to a vector for the velocity of the bullet
-        // const velocityX = BULLET_SPEED * Math.cos(heading * (Math.PI / 180));
-        // const velocityY = BULLET_SPEED * Math.sin(heading * (Math.PI / 180));
+    init(x: number, y: number, heading: number, velocity: Vector): void {
+        // calculate offset based on the object's heading (rotation)
+        const offset = new Vector(0, -BULLET_OFFSET);
+        offset.rotate(heading);
+        this.position.setAxes(x + offset.x, y + offset.y);
+        const headingInRadians = heading * (Math.PI / 180) - Math.PI / 2; // Rotate 90 degrees anticlockwise
 
-        this.velocity.setAxes(0, -1).rotate(heading).mult(BULLET_SPEED);
+        const speedX  = this.MAX_SPEED * Math.cos(headingInRadians);
+        const speedY  = this.MAX_SPEED * Math.sin(headingInRadians);
+
+        this.velocity.setAxes(speedX, speedY);
     }
 }

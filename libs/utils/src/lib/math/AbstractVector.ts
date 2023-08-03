@@ -134,6 +134,16 @@ export abstract class AbstractVector implements Position {
     }
 
     /**
+     * Add both x and y axis value
+     */
+    addAxis(dx: number, dy: number) {
+        this.x += dx;
+        this.y += dy;
+
+        return this;
+    }
+
+    /**
      * Subtract the provided vector from this one
      */
     subtract(vec: AbstractVector) {
@@ -325,7 +335,7 @@ export abstract class AbstractVector implements Position {
     }
 
     /**
-     * Rotates the vector by provided radians
+     * Rotates the vector by provided degrees
      */
     rotate(degrees: number) {
         const rads = degrees * Math.PI / 180;

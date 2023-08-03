@@ -12,7 +12,7 @@ export class Spinner {
             this.shoot();
             this.lastShot = Date.now();
         }
-        this.forward(0.01);
-        this.turn(1);
+        this.forward(1);
+        this.turn(0.1);
     }
 }

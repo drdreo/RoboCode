@@ -6,7 +6,7 @@ import { SocketAdapter } from './app/socket-adapter';
 
 const prodLogs = false;
 const logLevels: LogLevel[] =
-    prodLogs ? [ 'error', 'warn', 'log' ] : [ 'log', 'error', 'warn', 'verbose' ];
+    prodLogs ? [ 'error', 'warn', 'log' ] : [ 'log', 'error', 'warn', 'verbose', 'debug' ];
 
 const whitelist = ['http://localhost:4200', 'https://admin.socket.io'];
 

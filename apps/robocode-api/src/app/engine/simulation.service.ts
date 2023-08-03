@@ -54,7 +54,7 @@ export class SimulationService {
         });
     }
 
-    registerBot(bot: any) {
+    registerBot(bot: any): Robot {
         const robot = new Robot('robot_' + ENTITY_COUNTER++, bot, new Vector(500, 700));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
@@ -81,6 +81,7 @@ export class SimulationService {
 
         this.bots.push(robot);
         this.engine.addEntity(robot);
+        return robot;
     }
 
     scan(robot: Robot) {
@@ -144,15 +145,25 @@ export class SimulationService {
         }
     }
 
+    private killBot(robot: Robot) {
+        this.logger.verbose(robot + ' died!')
+        robot.actualBot.onDeath();
+        this.bots = this.bots.filter(b => b !== robot);
+    }
+
+
     private tickBots(dt: number) {
         try {
             this.bots.forEach((bot) => {
-                // bot.decayHealth();
-                const died = this.checkBotHealth(bot);
-                if (!died) {
-                    bot.tick(dt);
+                bot.gainEnergy();
+                bot.decayHealth();
+                const died = bot.isDead();
+                if (died) {
+                    this.killBot(bot);
+                    return;
                 }
 
+                bot.tick(dt);
             });
         } catch (e) {
             console.error(e);
@@ -162,8 +173,8 @@ export class SimulationService {
 
     private spawnBulletAtRobot(bullet: Bullet, robot: Robot) {
         bullet.isActive = true;
-        const { x, y, rotation } = robot
-        bullet.init(x, y, rotation);
+        const { x, y, rotation, velocity } = robot
+        bullet.init(x, y, rotation, velocity);
         this.engine.addEntity(bullet);
     }
 
@@ -182,25 +193,16 @@ export class SimulationService {
 
     private resolveBotCollision(robot: Robot) {
         robot.bulletHit();
-        const died = this.checkBotHealth(robot);
-        if (!died) {
-            const hitData: IRobotHitEvent = {
-                health: robot.getHealth(),
-            }
-            robot.actualBot.onHit(hitData);
-        }
-    }
-
-    private checkBotHealth(robot: Robot): boolean {
-        const botHealth = robot.getHealth();
-        // check if robot died
-        const died = botHealth <= 0;
+        const died = robot.isDead();
         if (died) {
-            this.logger.verbose(robot + ' died!')
-            // bot.actualBot.onDeath(); ?? needed? bot calls that
-            this.bots = this.bots.filter(b => b !== robot);
+            this.killBot(robot);
+            return;
         }
-        return died;
+
+        const hitData: IRobotHitEvent = {
+                health: robot.getHealth(),
+        };
+        robot.actualBot.onHit(hitData);
     }
 
     private resolveBulletCollision(bullet: Bullet) {
@@ -218,12 +220,14 @@ export class SimulationService {
             }
         }
 
-        // todo: check if bot is out of bounds
-        // todo: refactor to make it generic for all entities
+        // check if bullet is out of bounds and remove it
         for (const bullet of activeBullets) {
             if (bullet.x < 0 || bullet.x > ARENA_SIZE || bullet.y < 0 || bullet.y > ARENA_SIZE) {
-                this.resolveBulletCollision(bullet);
+                this.removeBullet(bullet);
             }
         }
+
+        // todo: check if bot is out of bounds
+        // todo: refactor to make it generic for all entities
     }
 }

@@ -20,7 +20,7 @@ export class BotGateway {
     }
 
     public sendToAll(event: string, data?: any) {
-        this.logger.debug(event);
+        // this.logger.debug(event);
         this.server.emit(event, data);
     }
 
