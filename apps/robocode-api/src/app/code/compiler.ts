@@ -1,6 +1,6 @@
-import * as typescript from "typescript";
+import typescript from "typescript";
 
-const webpack = require("webpack");
+import webpack from "webpack";
 
 export class Compiler {
     getCode(source: string) {

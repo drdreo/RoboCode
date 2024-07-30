@@ -58,7 +58,8 @@
             "cache": true,
             "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
             "options": {
-                "passWithNoTests": true
+                "passWithNoTests": true,
+                "jestConfig": "{projectRoot}/jest.config.ts"
             },
             "configurations": {
                 "ci": {
@@ -78,5 +79,34 @@
         }
     },
     "useInferencePlugins": false,
-    "defaultBase": "master"
+    "defaultBase": "master",
+    "plugins": [
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
+        },
+        {
+            "plugin": "@nx/jest/plugin",
+            "options": {
+                "targetName": "test",
+                "passWithNoTests": true
+            },
+            "include": [
+                "apps/robocode/**/*",
+                "apps/robocode-api/**/*",
+                "libs/shared/**/*",
+                "libs/ui/**/*",
+                "libs/utils/**/*"
+            ]
+        },
+        {
+            "plugin": "@nx/jest/plugin",
+            "options": {
+                "targetName": "e2e"
+            },
+            "include": ["apps/robocode-api-e2e/**/*"]
+        }
+    ]
 }

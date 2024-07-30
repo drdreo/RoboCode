@@ -16,7 +16,6 @@
                 "main": "apps/robocode-api/src/main.ts",
                 "tsConfig": "apps/robocode-api/tsconfig.app.json",
                 "assets": ["apps/robocode-api/src/assets"],
-                "isolatedConfig": true,
                 "webpackConfig": "apps/robocode-api/webpack.config.js"
             },
             "configurations": {
@@ -44,16 +43,6 @@
                 "production": {
                     "buildTarget": "robocode-api:build:production"
                 }
-            }
-        },
-        "lint": {
-            "executor": "@nx/eslint:lint"
-        },
-        "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-            "options": {
-                "jestConfig": "apps/robocode-api/jest.config.ts"
             }
         }
     }

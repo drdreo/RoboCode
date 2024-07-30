@@ -63,22 +63,6 @@
                 }
             },
             "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-            "executor": "@angular-devkit/build-angular:extract-i18n",
-            "options": {
-                "buildTarget": "robocode:build"
-            }
-        },
-        "lint": {
-            "executor": "@nx/eslint:lint"
-        },
-        "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/apps/robocode"],
-            "options": {
-                "jestConfig": "apps/robocode/jest.config.js"
-            }
         }
     }
 }

@@ -54,7 +54,8 @@ export class SimulationService {
     }
 
     registerBot(bot: any): Robot {
-        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(500, 700));
+        const randomY = Math.floor(Math.random() * 700);
+        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(500, randomY));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
         robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);

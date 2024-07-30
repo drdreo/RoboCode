@@ -23,11 +23,11 @@ export class CodeService implements OnApplicationBootstrap {
     constructor(private simulationService: SimulationService) {
         // this.simulationService.registerBot(new Spinner());
         // this.simulationService.registerBot(new Walker());
-        this.simulationService.registerBot(new SittingDuck());
         this.registerDebugBot();
     }
 
     private registerDebugBot(): void {
+        this.simulationService.registerBot(new SittingDuck());
         const debugBot = this.simulationService.registerBot(new UpAndDown());
 
         debugBot.actualBot.onDeath = () => {
@@ -75,7 +75,7 @@ export class CodeService implements OnApplicationBootstrap {
     }
 
     private async clearAllFiles() {
-        await rimraf(FILE_FOLDER + "/*");
+        await rimraf(FILE_FOLDER);
         this.logger.log(`Cleared folder ${FILE_FOLDER}!`);
     }
 }
