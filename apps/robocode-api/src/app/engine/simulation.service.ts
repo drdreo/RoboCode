@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from "@nestjs/common";
 import { ARENA_SIZE, BotsUpdate, BulletData, TICKS_PER_SECOND } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 import { timer } from "rxjs";
 import { Robot } from "../robot/Robot";
 import { IRobotHitEvent, IRobotScanEven } from "../robot/robot.types";
 import { Bullet } from "./bullet.entity";
-import { CollisionDetector } from './collision-detector';
+import { CollisionDetector } from "./collision-detector";
 import { Engine } from "./physics-engine";
 import { hasEnergyToShoot, isActive, isInactive, NOOP } from "./sim.utils";
 
@@ -13,7 +13,6 @@ let ENTITY_COUNTER = 0;
 
 @Injectable()
 export class SimulationService {
-
     tick$ = timer(0, TICKS_PER_SECOND);
 
     private bots: Robot[] = [];
@@ -25,7 +24,7 @@ export class SimulationService {
     private lastStepTime = performance.now();
     private measureTime;
 
-    private logger = new Logger('SimulationService');
+    private logger = new Logger("SimulationService");
 
     constructor() {
         this.initBulletsPool();
@@ -55,10 +54,10 @@ export class SimulationService {
     }
 
     registerBot(bot: any): Robot {
-        const robot = new Robot('robot_' + ENTITY_COUNTER++, bot, new Vector(500, 700));
+        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(500, 700));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
-        robot.actualBot.shoot = () => hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP;
+        robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
         robot.actualBot.forward = (amount) => robot.forward(amount);
         robot.actualBot.backward = (amount) => robot.backward(amount);
         robot.actualBot.turn = (amount) => robot.turn(amount);
@@ -85,9 +84,9 @@ export class SimulationService {
     }
 
     scan(robot: Robot) {
-        this.logger.verbose(robot + ' scanning!');
+        this.logger.verbose(robot + " scanning!");
 
-        const otherBot = this.bots.find(b => b !== robot);
+        const otherBot = this.bots.find((b) => b !== robot);
         let scanData: IRobotScanEven | undefined;
         if (otherBot) {
             scanData = {
@@ -101,12 +100,12 @@ export class SimulationService {
     }
 
     shootBullet(robot: Robot) {
-        this.logger.verbose(robot + ' shooting bullet!');
+        this.logger.verbose(robot + " shooting bullet!");
 
         const availableBullet = this.bullets.find(isInactive);
         if (!availableBullet) {
             // No available bullet slots
-            this.logger.warn('No available bullet slots');
+            this.logger.warn("No available bullet slots");
             return;
         }
 
@@ -122,7 +121,7 @@ export class SimulationService {
     }
 
     getActiveBullets(): BulletData[] {
-        return this.bullets.filter(isActive).map(b => ({ position: b.position.toObject() }));
+        return this.bullets.filter(isActive).map((b) => ({ position: b.position.toObject() }));
     }
 
     private measureBotDistanceAccuracy(timestamp: number) {
@@ -140,17 +139,16 @@ export class SimulationService {
             //6 40395
             //7 29181.
 
-            this.logger.error(`Bot made it after ${ timestamp - this.measureTime }!`)
-            this.measureTime = -1
+            this.logger.error(`Bot made it after ${timestamp - this.measureTime}!`);
+            this.measureTime = -1;
         }
     }
 
     private killBot(robot: Robot) {
-        this.logger.verbose(robot + ' died!')
+        this.logger.verbose(robot + " died!");
         robot.actualBot.onDeath();
-        this.bots = this.bots.filter(b => b !== robot);
+        this.bots = this.bots.filter((b) => b !== robot);
     }
-
 
     private tickBots(dt: number) {
         try {
@@ -167,13 +165,13 @@ export class SimulationService {
             });
         } catch (e) {
             console.error(e);
-            throw new Error('Error during Bot tick!');
+            throw new Error("Error during Bot tick!");
         }
     }
 
     private spawnBulletAtRobot(bullet: Bullet, robot: Robot) {
         bullet.isActive = true;
-        const { x, y, rotation } = robot
+        const { x, y, rotation } = robot;
         bullet.init(x, y, rotation);
         this.engine.addEntity(bullet);
     }
@@ -184,10 +182,10 @@ export class SimulationService {
     }
 
     private initBulletsPool(): void {
-        this.logger.verbose('Initializing bullets pool');
+        this.logger.verbose("Initializing bullets pool");
 
         for (let i = 0; i < this.bullets.length; i++) {
-            this.bullets[i] = new Bullet('bullet_' + ENTITY_COUNTER++);
+            this.bullets[i] = new Bullet("bullet_" + ENTITY_COUNTER++);
         }
     }
 
@@ -200,7 +198,7 @@ export class SimulationService {
         }
 
         const hitData: IRobotHitEvent = {
-                health: robot.getHealth(),
+            health: robot.getHealth(),
         };
         robot.actualBot.onHit(hitData);
     }

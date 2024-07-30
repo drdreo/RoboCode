@@ -1,26 +1,14 @@
 import { Position } from "@robo-code/shared";
-import { toDegrees } from './utils';
+import { toDegrees } from "./utils";
 
 /**
  * These values are used by the `AbstractVector.round` method to increase
  * performance vs. using  Number.toFixed.
  */
-const precision = [
-    1,
-    10,
-    100,
-    1000,
-    10000,
-    100000,
-    1000000,
-    10000000,
-    100000000,
-    1000000000,
-    10000000000
-];
+const precision = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 10000000000];
 
 export interface VectorConstructable<T> {
-    new(x: number, y: number): T
+    new (x: number, y: number): T;
 }
 
 /**
@@ -42,16 +30,15 @@ export interface VectorConstructable<T> {
  * ```
  */
 export abstract class AbstractVector implements Position {
-    constructor(protected ctor: VectorConstructable<AbstractVector>) {
-    }
+    constructor(protected ctor: VectorConstructable<AbstractVector>) {}
 
-    abstract get x(): number
+    abstract get x(): number;
 
-    abstract set x(x: number)
+    abstract set x(x: number);
 
-    abstract get y(): number
+    abstract get y(): number;
 
-    abstract set y(y: number)
+    abstract set y(y: number);
 
     /**
      * Set both x and y axis value
@@ -101,9 +88,9 @@ export abstract class AbstractVector implements Position {
      */
     toString(round = false) {
         if (round) {
-            return `(${ Math.round(this.x) }, ${ Math.round(this.y) })`;
+            return `(${Math.round(this.x)}, ${Math.round(this.y)})`;
         }
-        return `(${ this.x }, ${ this.y })`;
+        return `(${this.x}, ${this.y})`;
     }
 
     /**
@@ -119,7 +106,7 @@ export abstract class AbstractVector implements Position {
     toObject() {
         return {
             x: this.x,
-            y: this.y
+            y: this.y,
         };
     }
 
@@ -338,7 +325,7 @@ export abstract class AbstractVector implements Position {
      * Rotates the vector by provided degrees
      */
     rotate(degrees: number) {
-        const rads = degrees * Math.PI / 180;
+        const rads = (degrees * Math.PI) / 180;
         const cos = Math.cos(rads);
         const sin = Math.sin(rads);
 
@@ -372,7 +359,6 @@ export abstract class AbstractVector implements Position {
 
         return this;
     }
-
 
     limit(max: number) {
         const mSq = this.magnitude();

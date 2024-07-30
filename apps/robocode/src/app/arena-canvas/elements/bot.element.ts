@@ -1,5 +1,5 @@
 import { BotData, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH } from "@robo-code/shared";
-import { Logger } from '@robo-code/utils';
+import { Logger } from "@robo-code/utils";
 import { DEBUG } from "../../settings";
 import { DrawableElement } from "../canvas.types";
 
@@ -13,10 +13,10 @@ export class BotElement implements DrawableElement {
     private height = 50;
     private width = 30;
 
-    private logger = new Logger('BotElement');
+    private logger = new Logger("BotElement");
 
     constructor(public id: string) {
-        this.logger.verbose(`Created BotElement[${ id }]`);
+        this.logger.verbose(`Created BotElement[${id}]`);
     }
 
     update(data: BotData) {
@@ -28,7 +28,7 @@ export class BotElement implements DrawableElement {
     }
 
     draw(context: CanvasRenderingContext2D): void {
-        this.logger.debug(`Bot[${ this.id }] - draw()`);
+        this.logger.debug(`Bot[${this.id}] - draw()`);
 
         // use canvas height to match the 2D Cartesian system
         context.translate(this.x - this.width / 2, context.canvas.height - (this.y - this.height / 2));
@@ -53,7 +53,7 @@ export class BotElement implements DrawableElement {
     }
 
     private drawTooltip(context: CanvasRenderingContext2D) {
-        const text = `${ this.id } ${ Math.floor(this.health) }/${ this.energy } - [${ Math.floor(this.x) },${ Math.floor(this.y) }] (${ Math.floor(this.rotation) })`;
+        const text = `${this.id} ${Math.floor(this.health)}/${this.energy} - [${Math.floor(this.x)},${Math.floor(this.y)}] (${Math.floor(this.rotation)})`;
         context.font = "20px serif";
         context.fillStyle = "#000000";
         context.fillText(text, -20, -20);
@@ -66,14 +66,14 @@ export class BotElement implements DrawableElement {
     }
 
     private drawBody(context: CanvasRenderingContext2D) {
-        context.fillStyle = '#5a5a9f';
+        context.fillStyle = "#5a5a9f";
         context.fillRect(0, 0, this.width, this.height);
     }
 
     private drawOrigin(context: CanvasRenderingContext2D) {
         context.beginPath();
-        context.fillStyle = 'red';
-        context.fillStyle = 'red';
+        context.fillStyle = "red";
+        context.fillStyle = "red";
         context.arc(0, 0, 7, 0, 2 * Math.PI);
         context.fill();
     }
@@ -81,7 +81,7 @@ export class BotElement implements DrawableElement {
     private drawWheels(context: CanvasRenderingContext2D) {
         const radius = this.width / 6;
         context.beginPath();
-        context.fillStyle = 'black';
+        context.fillStyle = "black";
         // top-left
         context.arc(0, 0, radius, 0, 2 * Math.PI);
         // left-area
@@ -105,7 +105,7 @@ export class BotElement implements DrawableElement {
         const gunHeight = this.height - 10;
 
         context.beginPath();
-        context.fillStyle = '#63a5ef';
+        context.fillStyle = "#63a5ef";
         context.arc(this.width / 2, this.height / 2, radius, 0, 2 * Math.PI);
         context.rect(this.width / 2 - gunWidth / 2, -10, gunWidth, gunHeight);
         context.fill();

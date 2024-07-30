@@ -1,5 +1,4 @@
 export class TestBot {
-
     constructor() {
         console.log("TestBot");
     }
@@ -9,4 +8,3 @@ export class TestBot {
         this.forward(10);
     }
 }
-

@@ -1,6 +1,6 @@
 // @ts-nocheck
 export class Juker {
-    name = 'Juker';
+    name = "Juker";
 
     origPos;
     forwards = true;

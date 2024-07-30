@@ -1,6 +1,6 @@
-import * as typescript from 'typescript';
+import * as typescript from "typescript";
 
-const webpack = require('webpack');
+const webpack = require("webpack");
 
 export class Compiler {
     getCode(source: string) {
@@ -10,23 +10,23 @@ export class Compiler {
     }
 
     compile(fileName: string) {
-        console.log('compile');
+        console.log("compile");
         return new Promise((resolve, reject) => {
             webpack(
                 {
                     entry: fileName,
-                    mode: 'production',
-                    output: { filename: fileName + '_compiled' },
+                    mode: "production",
+                    output: { filename: fileName + "_compiled" },
                     module: {
                         rules: [
                             {
                                 test: /\.(ts|tsx)?$/,
-                                loader: 'ts-loader',
+                                loader: "ts-loader",
                             },
                         ],
                     },
                     resolve: {
-                        extensions: ['.ts', '.js'],
+                        extensions: [".ts", ".js"],
                     },
                 },
                 (err, stats) => {
@@ -39,10 +39,10 @@ export class Compiler {
                         stats.toString({
                             chunks: false, // Makes the build much quieter
                             colors: true, // Shows colors in the console
-                        })
+                        }),
                     );
                     resolve(0);
-                }
+                },
             );
         });
     }

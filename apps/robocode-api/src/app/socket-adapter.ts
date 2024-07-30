@@ -1,18 +1,21 @@
-import { INestApplicationContext } from '@nestjs/common';
-import { MessageMappingProperties, AbstractWsAdapter } from '@nestjs/websockets';
-import { DISCONNECT_EVENT } from '@nestjs/websockets/constants';
-import { fromEvent, Observable } from 'rxjs';
-import { filter, mergeMap, share, map, takeUntil, first } from 'rxjs/operators';
-import { Server, ServerOptions, Socket } from 'socket.io';
+import { INestApplicationContext } from "@nestjs/common";
+import { MessageMappingProperties, AbstractWsAdapter } from "@nestjs/websockets";
+import { DISCONNECT_EVENT } from "@nestjs/websockets/constants";
+import { fromEvent, Observable } from "rxjs";
+import { filter, mergeMap, share, map, takeUntil, first } from "rxjs/operators";
+import { Server, ServerOptions, Socket } from "socket.io";
 
-export const isUndefined = (obj: any): obj is undefined => typeof obj === 'undefined';
-export const isFunction = (fn: any): boolean => typeof fn === 'function';
+export const isUndefined = (obj: any): obj is undefined => typeof obj === "undefined";
+export const isFunction = (fn: any): boolean => typeof fn === "function";
 export const isNil = (obj: any): obj is null | undefined => isUndefined(obj) || obj === null;
 
 // TODO: Using this until socket.io v3 is part of Nest.js, see: https://github.com/nestjs/nest/issues/5676
 
 export class SocketAdapter extends AbstractWsAdapter {
-    constructor(app?: INestApplicationContext, private originWhitelist?: string[]) {
+    constructor(
+        app?: INestApplicationContext,
+        private originWhitelist?: string[],
+    ) {
         super(app);
     }
 
@@ -24,8 +27,8 @@ export class SocketAdapter extends AbstractWsAdapter {
         return server && isFunction(server.of)
             ? server.of(namespace)
             : namespace
-            ? this.createIOServer(port, opt).of(namespace)
-            : this.createIOServer(port, opt);
+              ? this.createIOServer(port, opt).of(namespace)
+              : this.createIOServer(port, opt);
     }
 
     public createIOServer(port: number, options?: any): any {
@@ -41,8 +44,8 @@ export class SocketAdapter extends AbstractWsAdapter {
                         }
                     },
                     allowedHeaders:
-                        'X-Requested-With,X-HTTP-Method-Override,Content-Type,OPTIONS,Accept,Observe,sentry-trace',
-                    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
+                        "X-Requested-With,X-HTTP-Method-Override,Content-Type,OPTIONS,Accept,Observe,sentry-trace",
+                    methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
                     credentials: true,
                 },
                 allowEIO3: true,
@@ -57,7 +60,7 @@ export class SocketAdapter extends AbstractWsAdapter {
     public bindMessageHandlers(
         socket: Socket,
         handlers: MessageMappingProperties[],
-        transform: (data: any) => Observable<any>
+        transform: (data: any) => Observable<any>,
     ) {
         const disconnect$ = fromEvent(socket, DISCONNECT_EVENT).pipe(share(), first());
 
@@ -67,10 +70,10 @@ export class SocketAdapter extends AbstractWsAdapter {
                     const { data, ack } = this.mapPayload(payload);
                     return transform(callback(data, ack)).pipe(
                         filter((response: any) => !isNil(response)),
-                        map((response: any) => [response, ack])
+                        map((response: any) => [response, ack]),
                     );
                 }),
-                takeUntil(disconnect$)
+                takeUntil(disconnect$),
             );
             source$.subscribe(([response, ack]) => {
                 if (response.event) {

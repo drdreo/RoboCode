@@ -4,5 +4,5 @@ export const environment = {
         decayHealth: false,
         gainEnergy: true,
         shootingCostsEnergy: false,
-    }
+    },
 };

@@ -1,12 +1,12 @@
 import { PhysicsEntity } from "./physics-engine";
 
-export type Collision = [ PhysicsEntity, PhysicsEntity ];
+export type Collision = [PhysicsEntity, PhysicsEntity];
 export class CollisionDetector {
     collideRect(collider: PhysicsEntity, collidee: PhysicsEntity) {
         // Store the collider and collidee edges
         const l1 = collider.left;
         const t1 = collider.top;
-        const r1 = collider.right
+        const r1 = collider.right;
         const b1 = collider.bottom;
 
         const l2 = collidee.left;
@@ -33,5 +33,4 @@ export class CollisionDetector {
         }
         return collisions;
     }
-
 }

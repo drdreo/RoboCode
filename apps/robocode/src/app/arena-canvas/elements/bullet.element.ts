@@ -21,7 +21,7 @@ export class BulletElement implements DrawableElement {
 
     private drawBody(context: CanvasRenderingContext2D) {
         context.beginPath();
-        context.fillStyle = '#352918';
+        context.fillStyle = "#352918";
         const offset = this.size / 2;
         const posX = this.x + offset;
         const posY = context.canvas.height - this.y + offset;
@@ -30,5 +30,4 @@ export class BulletElement implements DrawableElement {
 
         context.closePath();
     }
-
 }

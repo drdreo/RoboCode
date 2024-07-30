@@ -1,13 +1,11 @@
 // @ts-nocheck
 export class UpAndDown {
-    name = 'UpAndDown';
+    name = "UpAndDown";
 
     origPos;
     forwards = true;
 
-
     tick() {
-
         if (!this.origPos) {
             this.origPos = this.getY();
         }
@@ -21,7 +19,6 @@ export class UpAndDown {
             this.forwards = false;
             this.shoot();
         }
-
 
         if (this.forwards) {
             this.forward(10);

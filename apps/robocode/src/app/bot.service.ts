@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { BotsUpdate, BulletsUpdate, SocketEvents } from "@robo-code/shared";
-import { Socket } from 'ngx-socket-io';
-import { Observable } from 'rxjs';
+import { Socket } from "ngx-socket-io";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class BotService {

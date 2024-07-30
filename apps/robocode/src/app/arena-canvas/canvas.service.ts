@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { BotData, BulletData } from "@robo-code/shared";
 import { Logger } from "@robo-code/utils";
 import { BotElement } from "./elements/bot.element";
@@ -6,36 +6,31 @@ import { BulletElement } from "./elements/bullet.element";
 
 @Injectable()
 export class CanvasService {
-
     private drawableBullet = new BulletElement(); // re-use the same bullet object
 
     private robots: BotElement[] = [];
 
     private initialized = false;
 
-    private logger = new Logger('CanvasService');
+    private logger = new Logger("CanvasService");
 
-    constructor() {
-
-    }
+    constructor() {}
 
     updateBots(bots: BotData[], context: CanvasRenderingContext2D) {
-
         for (const bot of bots) {
             const botId = bot.name; // TODO: change name id to real ID
             if (!this.hasBot(botId)) {
                 // if we got new bots, initialize them
-                this.addBot(botId)
+                this.addBot(botId);
             }
             const robot = this.getBot(botId);
             if (!robot) {
-                this.logger.error(`Bot[${ botId }] not found`);
+                this.logger.error(`Bot[${botId}] not found`);
                 continue;
             }
             robot.update(bot);
             robot.draw(context);
         }
-
     }
 
     updateBullets(bullets: BulletData[], context: CanvasRenderingContext2D) {

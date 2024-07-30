@@ -1,11 +1,11 @@
 /* eslint-disable */
 export default {
-    displayName: 'robocode-api',
-    preset: '../../jest.preset.js',
-    testEnvironment: 'node',
+    displayName: "robocode-api",
+    preset: "../../jest.preset.js",
+    testEnvironment: "node",
     transform: {
-        '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+        "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }],
     },
-    moduleFileExtensions: ['ts', 'js', 'html'],
-    coverageDirectory: '../../coverage/apps/robocode-api',
+    moduleFileExtensions: ["ts", "js", "html"],
+    coverageDirectory: "../../coverage/apps/robocode-api",
 };

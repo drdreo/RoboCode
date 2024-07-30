@@ -1,6 +1,5 @@
 export class TestBot extends Bot {
-
     run() {
-        console.log('extender');
+        console.log("extender");
     }
 }

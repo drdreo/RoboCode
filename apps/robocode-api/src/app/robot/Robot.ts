@@ -2,7 +2,7 @@
 
 // https://natureofcode.com/book/chapter-2-forces/
 
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 import {
     BotData,
     BULLET_DAMAGE,
@@ -11,13 +11,12 @@ import {
     ROBOT_HITBOX_HEIGHT,
     ROBOT_HITBOX_WIDTH,
     ROBOT_MAX_SPEED,
-    ROBOT_SHOOTING_ENERGY_COST
+    ROBOT_SHOOTING_ENERGY_COST,
 } from "@robo-code/shared";
-import { AbstractVector, randomInteger, Vector } from '@robo-code/utils';
+import { AbstractVector, randomInteger, Vector } from "@robo-code/utils";
 import { environment } from "../../environments/environment";
 import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
-
 
 /**
  The basic robot class that you will extend to create your own robots.
@@ -31,7 +30,7 @@ import { IRobotActions, IRobotStats } from "./robot.types";
  Positive y is down.
  */
 
-    // Player controls
+// Player controls
 
 // const MAX_MOVEMENT_SPEED = 0.01;
 const MAX_TURNING_SPEED = 0.075;
@@ -58,14 +57,18 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         return this.energy;
     }
 
-    constructor(id: string, public actualBot: any, position?: Vector) {
+    constructor(
+        id: string,
+        public actualBot: any,
+        position?: Vector,
+    ) {
         super(id);
         this.position = position || new Vector(randomInteger(100, 900), randomInteger(100, 900));
     }
 
     public getData(): BotData {
         return {
-            name: this.actualBot.name || 'Robot', // TODO: this data should be sent once
+            name: this.actualBot.name || "Robot", // TODO: this data should be sent once
             health: this.health,
             energy: +this.energy.toFixed(3),
             position: this.position.toObject(),
@@ -114,10 +117,8 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
 
         // Assuming this.rotation represents the current rotation angle of the entity
         const angleInRadians = (-this.rotation + 90) * (Math.PI / 180);
-        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians))
-            .setMagnitude(forwardForce)
+        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians)).setMagnitude(forwardForce);
         // scale to maxspeed
-
 
         this.applyForce(forwardVec);
 
@@ -129,7 +130,6 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         // this.acceleration.setX(accelerationX);
         // this.acceleration.setY(accelerationY);
         // this.acceleration.limit(this.maxforce);
-
 
         // this.update()
     }
@@ -175,14 +175,14 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
      * @deprecated, should not be needed any longer due to simulation service
      */
     shoot(): void {
-        console.log('pew pew pew');
+        console.log("pew pew pew");
     }
 
     /**
      * Return the bot as a formatted string
      */
     toString() {
-        return `${ this.constructor.name }[pos${ this.position }, speed${ this.velocity }, rot(${ this.rotation })]`;
+        return `${this.constructor.name}[pos${this.position}, speed${this.velocity}, rot(${this.rotation})]`;
     }
 
     gainEnergy() {

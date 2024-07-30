@@ -1,21 +1,20 @@
-import { Logger, LogLevel } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { Logger, LogLevel } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
 
-import { AppModule } from './app/app.module';
-import { SocketAdapter } from './app/socket-adapter';
+import { AppModule } from "./app/app.module";
+import { SocketAdapter } from "./app/socket-adapter";
 
 const prodLogs = false;
-const logLevels: LogLevel[] =
-    prodLogs ? [ 'error', 'warn', 'log' ] : [ 'log', 'error', 'warn', 'verbose' ];
+const logLevels: LogLevel[] = prodLogs ? ["error", "warn", "log"] : ["log", "error", "warn", "verbose"];
 
-const whitelist = ['http://localhost:4200', 'https://admin.socket.io'];
+const whitelist = ["http://localhost:4200", "https://admin.socket.io"];
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         logger: logLevels,
     });
 
-    Logger.log(`Enabling CORS for ${whitelist.join(' & ')}`);
+    Logger.log(`Enabling CORS for ${whitelist.join(" & ")}`);
 
     app.enableCors({
         origin: function (origin, callback) {
@@ -25,12 +24,12 @@ async function bootstrap() {
                 callback(new Error(`Origin[${origin}] Not allowed by CORS`));
             }
         },
-        allowedHeaders: 'X-Requested-With,X-HTTP-Method-Override,Content-Type,OPTIONS,Accept,Observe,sentry-trace',
-        methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
+        allowedHeaders: "X-Requested-With,X-HTTP-Method-Override,Content-Type,OPTIONS,Accept,Observe,sentry-trace",
+        methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
         credentials: true,
     });
 
-    const globalPrefix = 'api';
+    const globalPrefix = "api";
     app.setGlobalPrefix(globalPrefix);
 
     app.useWebSocketAdapter(new SocketAdapter(app, whitelist));

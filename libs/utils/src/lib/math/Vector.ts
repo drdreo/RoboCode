@@ -1,4 +1,4 @@
-import { AbstractVector } from "./AbstractVector"
+import { AbstractVector } from "./AbstractVector";
 
 /**
  * A vector representation that stores the axes as part of the instance itself
@@ -9,29 +9,29 @@ import { AbstractVector } from "./AbstractVector"
  */
 export class Vector extends AbstractVector {
     constructor(x = 0, y = 0) {
-        super(Vector)
-        this._x = x
-        this._y = y
+        super(Vector);
+        this._x = x;
+        this._y = y;
     }
 
-    protected _x: number
+    protected _x: number;
 
     get x(): number {
-        return this._x
+        return this._x;
     }
 
     set x(x: number) {
-        this._x = x
+        this._x = x;
     }
 
-    protected _y: number
+    protected _y: number;
 
     get y(): number {
-        return this._y
+        return this._y;
     }
 
     set y(y: number) {
-        this._y = y
+        this._y = y;
     }
 
     clone(): Vector {
