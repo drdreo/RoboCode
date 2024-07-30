@@ -4,3 +4,5 @@
 /coverage
 .angular
 .vscode
+/.nx/cache
+/.nx/workspace-data

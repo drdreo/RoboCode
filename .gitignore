@@ -8,6 +8,8 @@
 # dependencies
 /node_modules
 /.angular
+/.nx/cache
+/.nx/workspace-data
 
 # IDEs and editors
 /.idea

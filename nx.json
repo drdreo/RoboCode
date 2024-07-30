@@ -1,12 +1,5 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
-    "npmScope": "robo-code",
-    "affected": {
-        "defaultBase": "master"
-    },
-    "cli": {
-        "defaultCollection": "@nx/angular"
-    },
     "defaultProject": "robocode-api",
     "generators": {
         "@nx/angular:application": {
@@ -52,10 +45,33 @@
     },
     "tasksRunnerOptions": {
         "default": {
-            "options": {
-                "cacheableOperations": ["build", "lint", "test", "e2e"]
-            },
+            "options": {},
             "runner": "@nx/workspace/tasks-runners/default"
         }
-    }
+    },
+    "nxCloudAccessToken": "YWQwMDAzOTgtZjk0MS00Zjg1LTlhZDctOTU3YWQ3YzJhNjc5fHJlYWQtd3JpdGU=",
+    "targetDefaults": {
+        "build": {
+            "cache": true
+        },
+        "@nx/jest:jest": {
+            "cache": true,
+            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "options": {
+                "passWithNoTests": true
+            },
+            "configurations": {
+                "ci": {
+                    "ci": true,
+                    "codeCoverage": true
+                }
+            }
+        },
+        "@nx/eslint:lint": {
+            "cache": true,
+            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/tools/eslint-rules/**/*"]
+        }
+    },
+    "useInferencePlugins": false,
+    "defaultBase": "master"
 }

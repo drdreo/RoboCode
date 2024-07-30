@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { UploadComponent } from './upload/upload.component';
 
-@NgModule({
-  imports: [CommonModule, HttpClientModule],
-  declarations: [
-    UploadComponent
-  ],
-  exports: [UploadComponent]
-})
+@NgModule({ declarations: [
+        UploadComponent
+    ],
+    exports: [UploadComponent], imports: [CommonModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class UiModule {}
