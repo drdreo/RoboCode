@@ -1,7 +1,7 @@
 import { HttpClient, HttpEventType } from "@angular/common/http";
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, signal } from "@angular/core";
 import { Subject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
+import { finalize, takeUntil } from "rxjs/operators";
 
 @Component({
     selector: "ui-upload",
@@ -9,22 +9,22 @@ import { takeUntil, finalize } from "rxjs/operators";
     styleUrls: ["./upload.component.scss"],
     standalone: true,
     imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadComponent {
     @Input() requiredFileType?: string;
 
-    fileName = "";
-    uploadProgress?: number;
+    fileName = signal("");
+    uploadProgress = signal<number | undefined>(undefined);
 
     private unsubscribe$ = new Subject<void>();
 
     constructor(private http: HttpClient) {}
 
     onFileSelected(event: any) {
-        const file: File = event.target.files[0];
-
+        const file: File = event.target?.files[0];
         if (file) {
-            this.fileName = file.name;
+            this.fileName.set(file.name);
             const formData = new FormData();
             formData.append("code", file);
 
@@ -39,7 +39,7 @@ export class UploadComponent {
                 console.log(event);
                 if (event.type == HttpEventType.UploadProgress) {
                     if (event.total) {
-                        this.uploadProgress = Math.round(100 * (event.loaded / event.total));
+                        this.uploadProgress.set(Math.round(100 * (event.loaded / event.total)));
                     } else {
                         console.warn("No total size");
                     }
@@ -55,6 +55,6 @@ export class UploadComponent {
     }
 
     reset() {
-        this.uploadProgress = undefined;
+        this.uploadProgress.set(undefined);
     }
 }
