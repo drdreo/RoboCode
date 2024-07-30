@@ -4,7 +4,7 @@ import { Logger } from '@robo-code/utils';
 @Component({
     selector: 'rc-background',
     templateUrl: './background.component.html',
-    styles: [ `:host {
+    styles: [`:host {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -18,6 +18,7 @@ import { Logger } from '@robo-code/utils';
 	}`
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
 })
 export class BackgroundComponent {
     private logger = new Logger('BackgroundElement');

@@ -2,11 +2,14 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'ui-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
+    standalone: true,
+    imports: [NgIf],
 })
 export class UploadComponent {
     @Input() requiredFileType?: string;

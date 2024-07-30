@@ -4,13 +4,22 @@ import { Observable, Subject, takeUntil, withLatestFrom } from "rxjs";
 import { BotService } from '../bot.service';
 import { DEBUG } from "../settings";
 import { CanvasService } from './canvas.service';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { BackgroundComponent } from './arena-background/background.component';
 
 
 @Component({
     selector: 'rc-arena-canvas',
     templateUrl: './arena-canvas.component.html',
-    styleUrls: [ './arena-canvas.component.scss' ],
+    styleUrls: ['./arena-canvas.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        BackgroundComponent,
+        NgIf,
+        NgFor,
+        AsyncPipe,
+    ],
 })
 export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 

@@ -13,10 +13,10 @@ import { BotService } from './bot.service';
 const config: SocketIoConfig = { url: 'http://localhost:3333', options: {} };
 
 @NgModule({
-    declarations: [ AppComponent, ArenaCanvasComponent, BackgroundComponent ],
-    imports: [ BrowserModule, SocketIoModule.forRoot(config), UiModule ],
-    providers: [ BotService, CanvasService ],
-    bootstrap: [ AppComponent ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+    declarations: [AppComponent],
+    imports: [BrowserModule, SocketIoModule.forRoot(config), UiModule, ArenaCanvasComponent, BackgroundComponent],
+    providers: [BotService, CanvasService],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}
