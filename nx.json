@@ -69,7 +69,12 @@
         },
         "@nx/eslint:lint": {
             "cache": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/tools/eslint-rules/**/*"]
+            "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                "{workspaceRoot}/eslint.config.js"
+            ]
         }
     },
     "useInferencePlugins": false,
