@@ -1,30 +1,23 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
 import { Observable, Subject, takeUntil, withLatestFrom } from "rxjs";
-import { BotService } from '../bot.service';
+import { BotService } from "../bot.service";
 import { DEBUG } from "../settings";
-import { CanvasService } from './canvas.service';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { BackgroundComponent } from './arena-background/background.component';
-
+import { CanvasService } from "./canvas.service";
+import { AsyncPipe } from "@angular/common";
+import { BackgroundComponent } from "./arena-background/background.component";
 
 @Component({
-    selector: 'rc-arena-canvas',
-    templateUrl: './arena-canvas.component.html',
-    styleUrls: ['./arena-canvas.component.scss'],
+    selector: "rc-arena-canvas",
+    templateUrl: "./arena-canvas.component.html",
+    styleUrls: ["./arena-canvas.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [
-        BackgroundComponent,
-        NgIf,
-        NgFor,
-        AsyncPipe,
-    ],
+    imports: [BackgroundComponent, AsyncPipe],
 })
 export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
-
-    @ViewChild('arenaCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('debugCanvas') debugCanvasRef!: ElementRef<HTMLCanvasElement>;
+    @ViewChild("arenaCanvas") canvasRef!: ElementRef<HTMLCanvasElement>;
+    @ViewChild("debugCanvas") debugCanvasRef!: ElementRef<HTMLCanvasElement>;
 
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
@@ -32,16 +25,17 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     bots$: Observable<BotsUpdate>;
     private unsubscribe$ = new Subject<void>();
 
-    constructor(private botService: BotService, private canvasService: CanvasService) {
-        this.bots$ = this.botService.bots$
+    constructor(
+        private botService: BotService,
+        private canvasService: CanvasService,
+    ) {
+        this.bots$ = this.botService.bots$;
     }
 
     ngAfterViewInit(): void {
         this.bots$
-            .pipe(
-                withLatestFrom(this.botService.bullets$),
-                takeUntil(this.unsubscribe$))
-            .subscribe(([ bots, bullets ]) => {
+            .pipe(withLatestFrom(this.botService.bullets$), takeUntil(this.unsubscribe$))
+            .subscribe(([bots, bullets]) => {
                 this.renderCanvas(bots, bullets);
             });
     }
@@ -59,8 +53,8 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
 
         // translate to 2D Cartesian coordinate system
         DEBUG.mousePosition = {
-            x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
-            y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+            x: ((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
+            y: ((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
         };
     }
 
@@ -88,19 +82,19 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     private getCanvasContext(): CanvasRenderingContext2D {
-        const ctx = this.canvasRef.nativeElement.getContext('2d');
+        const ctx = this.canvasRef.nativeElement.getContext("2d");
         if (ctx) {
             return ctx;
         }
-        throw new Error('Could not get canvas context')
+        throw new Error("Could not get canvas context");
     }
 
     private getDebugCanvasContext(): CanvasRenderingContext2D {
-        const ctx = this.debugCanvasRef.nativeElement.getContext('2d');
+        const ctx = this.debugCanvasRef.nativeElement.getContext("2d");
         if (ctx) {
             return ctx;
         }
-        throw new Error('Could not get debug canvas context')
+        throw new Error("Could not get debug canvas context");
     }
 
     private renderGrid(ctx: CanvasRenderingContext2D) {
@@ -147,11 +141,10 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
         // translate to 2D Cartesian coordinate system
         const x = Math.floor(mousePos.x);
         const y = Math.floor(ctx.canvas.height - mousePos.y);
-        const mousePosText = `x: ${ x }, y: ${ y }`;
+        const mousePosText = `x: ${x}, y: ${y}`;
         const tooltipOffest = 25;
         ctx.font = "15px serif";
         ctx.fillStyle = "#000000";
         ctx.fillText(mousePosText, mousePos.x, mousePos.y - tooltipOffest);
     }
-
 }

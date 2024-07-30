@@ -1,22 +1,37 @@
 <rc-background></rc-background>
 
-<canvas *ngIf="DEBUG.enabled" id="debug-canvas" #debugCanvas [height]="ARENA_SIZE" [width]="ARENA_SIZE"
-        style="border:1px solid white;"></canvas>
-<canvas id="arena-canvas" #arenaCanvas (mousemove)="onCanvasMouse($event, arenaCanvas)" [height]="ARENA_SIZE"
+@if (DEBUG.enabled) {
+    <canvas
+        id="debug-canvas"
+        #debugCanvas
+        [height]="ARENA_SIZE"
         [width]="ARENA_SIZE"
-        style="border:1px solid white;"></canvas>
+        style="border: 1px solid white"
+    ></canvas>
+}
+<canvas
+    id="arena-canvas"
+    #arenaCanvas
+    (mousemove)="onCanvasMouse($event, arenaCanvas)"
+    [height]="ARENA_SIZE"
+    [width]="ARENA_SIZE"
+    style="border: 1px solid white"
+></canvas>
 
-
-<ng-container *ngIf="DEBUG.enabled">
-
-    <div class="debug-info" *ngIf="bots$ | async as bots">
-        <div class="debug-info__robot" *ngFor="let bot of bots">
-            <b>{{bot.name}}</b><br>
-            HP: {{bot.health}}<br>
-            Pos: {{bot.position.x}} / {{bot.position.y}}<br>
-            Rot: {{bot.rotation}}<br>
-            Vel: {{bot.velocity.x}} / {{bot.velocity.y}}
-            <hr>
+@if (DEBUG.enabled) {
+    @if (bots$ | async; as bots) {
+        <div class="debug-info">
+            @for (bot of bots; track bot) {
+                <div class="debug-info__robot">
+                    <b>{{ bot.name }}</b
+                    ><br />
+                    HP: {{ bot.health }}<br />
+                    Pos: {{ bot.position.x }} / {{ bot.position.y }}<br />
+                    Rot: {{ bot.rotation }}<br />
+                    Vel: {{ bot.velocity.x }} / {{ bot.velocity.y }}
+                    <hr />
+                </div>
+            }
         </div>
-    </div>
-</ng-container>
+    }
+}

@@ -1,20 +1,19 @@
-import { HttpClient, HttpEventType } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { NgIf } from '@angular/common';
+import { HttpClient, HttpEventType } from "@angular/common/http";
+import { Component, Input } from "@angular/core";
+import { Subject } from "rxjs";
+import { takeUntil, finalize } from "rxjs/operators";
 
 @Component({
-    selector: 'ui-upload',
-    templateUrl: './upload.component.html',
-    styleUrls: ['./upload.component.scss'],
+    selector: "ui-upload",
+    templateUrl: "./upload.component.html",
+    styleUrls: ["./upload.component.scss"],
     standalone: true,
-    imports: [NgIf],
+    imports: [],
 })
 export class UploadComponent {
     @Input() requiredFileType?: string;
 
-    fileName = '';
+    fileName = "";
     uploadProgress?: number;
 
     private unsubscribe$ = new Subject<void>();
@@ -27,12 +26,12 @@ export class UploadComponent {
         if (file) {
             this.fileName = file.name;
             const formData = new FormData();
-            formData.append('code', file);
+            formData.append("code", file);
 
             const upload$ = this.http
-                .post('/api/upload/code', formData, {
+                .post("/api/upload/code", formData, {
                     reportProgress: true,
-                    observe: 'events',
+                    observe: "events",
                 })
                 .pipe(finalize(() => this.reset()));
 
@@ -42,7 +41,7 @@ export class UploadComponent {
                     if (event.total) {
                         this.uploadProgress = Math.round(100 * (event.loaded / event.total));
                     } else {
-                        console.warn('No total size');
+                        console.warn("No total size");
                     }
                 }
             });
