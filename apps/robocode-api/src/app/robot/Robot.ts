@@ -10,6 +10,7 @@ import {
     ROBOT_HEALTH_DECAY,
     ROBOT_HITBOX_HEIGHT,
     ROBOT_HITBOX_WIDTH,
+    ROBOT_MAX_TURNING_SPEED,
     ROBOT_MAX_SPEED,
     ROBOT_SHOOTING_ENERGY_COST,
 } from "@robo-code/shared";
@@ -18,6 +19,7 @@ import { environment } from "../../environments/environment";
 import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
 
+const ROBOT_ROTATION_DECAY = 0.9; // in percentage.. 0.9=10%
 /**
  The basic robot class that you will extend to create your own robots.
  Please note the following standards will be used:
@@ -25,28 +27,25 @@ import { IRobotActions, IRobotStats } from "./robot.types";
  // bearing - relative angle to some object from your robot's heading, positive clockwise. -180 < bearing <= 180
  All coordinates are expressed as (x,y).
  All coordinates are positive.
- The origin (0,0) is at the top left of the screen.
+ The origin (0,0) is at the bottom left of the screen.
  Positive x is right.
- Positive y is down.
+ Positive y is up.
  */
 
-// Player controls
-
-// const MAX_MOVEMENT_SPEED = 0.01;
-const MAX_TURNING_SPEED = 0.075;
-
 export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
-    name;
+    get name(): string {
+        return this.actualBot.name;
+    }
 
     width = ROBOT_HITBOX_WIDTH;
     height = ROBOT_HITBOX_HEIGHT;
 
     MAX_SPEED = ROBOT_MAX_SPEED;
+    MAX_ROTATION = ROBOT_MAX_TURNING_SPEED;
 
     private health = 100;
     private energy = 100;
     private _rotation = 0;
-    private readonly maxforce = 0.0001;
     private dt: number;
 
     getHealth(): number {
@@ -85,6 +84,10 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         return this._rotation;
     }
 
+    isDead(): boolean {
+        return this.health <= 0;
+    }
+
     bulletHit(): void {
         this.health -= BULLET_DAMAGE;
     }
@@ -105,20 +108,21 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         // trying to do it in the sim instead
         // this.decayHealth();
         // this.gainEnergy();
+        // this.applyRotationDecay();
         this.actualBot.tick();
     }
 
     forward(amount: number): void {
         // TODO: validate input
-        let forwardForce = amount;
+        const forwardForce = amount;
 
         // forwardForce = Math.max(forwardForce, 0);
         // console.log('forward - ' + amount + this.toString());
 
-        // Assuming this.rotation represents the current rotation angle of the entity
+        // Calculate the angle in radians based on the current rotation
         const angleInRadians = (-this.rotation + 90) * (Math.PI / 180);
+        // Calculate the forward vector based on the angle
         const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians)).setMagnitude(forwardForce);
-        // scale to maxspeed
 
         this.applyForce(forwardVec);
 
@@ -135,54 +139,26 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     backward(amount: number): void {
-        let force = amount;
+        const force = amount;
 
         // console.log('backward - ' + amount + this.toString());
         this.forward(-force);
     }
 
-    turn(deg: number): void {
-        let degree = Math.min(deg, MAX_TURNING_SPEED);
-        degree = Math.max(degree, -MAX_TURNING_SPEED);
+    turn(angle: number): void {
+        const degree = Math.max(-ROBOT_MAX_TURNING_SPEED, Math.min(angle, ROBOT_MAX_TURNING_SPEED));
 
-        this._rotation += degree * this.dt;
-        if (this.heading > 360) {
-            this._rotation -= 360;
-        } else if (this.heading < 0) {
+        this._rotation = (this._rotation + degree * this.dt) % 360;
+        if (this._rotation < 0) {
             this._rotation += 360;
         }
-    }
-
-    smoothTurn(deg: number) {
-        // Clamp the input degree to the maximum turning speed
-        const degree = Math.min(deg, MAX_TURNING_SPEED);
-        const targetRotation = this._rotation + degree;
-
-        // Perform interpolation to achieve fluid rotation
-        const rotationSpeed = 0.1; // Adjust this value for the smoothness of rotation
-        this._rotation += (targetRotation - this._rotation) * rotationSpeed;
-
-        // Ensure rotation stays within the range [0, 360)
-        if (this._rotation >= 360) {
-            this._rotation -= 360;
-        } else if (this._rotation < 0) {
-            this._rotation += 360;
-        }
-    }
-
-    /*
-     * Fire a bullet from the robot
-     * @deprecated, should not be needed any longer due to simulation service
-     */
-    shoot(): void {
-        console.log("pew pew pew");
     }
 
     /**
      * Return the bot as a formatted string
      */
     toString() {
-        return `${this.constructor.name}[pos${this.position}, speed${this.velocity}, rot(${this.rotation})]`;
+        return `${this.name}[pos${this.position}, speed${this.velocity}, rot(${Math.round(this.rotation)})]`;
     }
 
     gainEnergy() {
@@ -204,18 +180,18 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
 
     private applyForce(force: AbstractVector) {
         this.acceleration.add(force);
-        this.update();
+        this.updateCosts();
     }
 
-    private update() {
+    private updateCosts() {
         this.consumeMovementEnergy();
     }
 
-    isDead(): boolean {
-        if (this.health <= 0) {
-            return true;
+    private applyRotationDecay(): void {
+        this._rotation *= ROBOT_ROTATION_DECAY;
+        if (Math.abs(this._rotation) < 0.01) {
+            this._rotation = 0;
         }
-        return false;
     }
 
     private consumeMovementEnergy() {

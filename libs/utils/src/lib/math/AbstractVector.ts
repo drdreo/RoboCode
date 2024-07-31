@@ -86,7 +86,7 @@ export abstract class AbstractVector implements Position {
     /**
      * Return the vector as a formatted string, e.g "(0, 4)"
      */
-    toString(round = false) {
+    toString(round = true) {
         if (round) {
             return `(${Math.round(this.x)}, ${Math.round(this.y)})`;
         }

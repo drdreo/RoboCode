@@ -3,7 +3,7 @@ import { BotsUpdate, BulletsUpdate, SocketEvents } from "@robo-code/shared";
 import { Socket } from "ngx-socket-io";
 import { Observable } from "rxjs";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class BotService {
     bots$: Observable<BotsUpdate>;
     bullets$: Observable<BulletsUpdate>;

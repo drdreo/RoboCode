@@ -7,7 +7,7 @@ export interface IRobotActions {
 
     turn(degrees: number): void;
 
-    shoot(): void;
+    // shoot(): void;
 
     tick(dt?: number): void;
 }

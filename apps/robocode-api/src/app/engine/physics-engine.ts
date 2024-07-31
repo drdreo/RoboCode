@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { TICKS_PER_SECOND } from "@robo-code/shared";
+import { ROBOT_MAX_TURNING_SPEED, TICKS_PER_SECOND } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 
 //https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
@@ -22,6 +22,7 @@ export class PhysicsEntity {
     width: number;
     height: number;
     MAX_SPEED: number;
+    MAX_ROTATION: number;
 
     constructor(public id: string) {}
 
@@ -75,9 +76,9 @@ export class Engine {
             entity.velocity.add(entity.acceleration.mult(this.frameToSecondFactor)).limit(entity.MAX_SPEED);
 
             // update position
-            entity.position.add(entity.velocity.clone().mult(this.frameToSecondFactor)).round(1);
+            entity.position.add(entity.velocity.clone().mult(this.frameToSecondFactor));
             // reset steering force
-            entity.acceleration.zero();
+            // entity.acceleration.zero();
 
             this.logger.debug(`${entity.id}: ` + entity.position);
         }

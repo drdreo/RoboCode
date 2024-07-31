@@ -4,7 +4,7 @@ import { Logger } from "@robo-code/utils";
 import { BotElement } from "./elements/bot.element";
 import { BulletElement } from "./elements/bullet.element";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class CanvasService {
     private drawableBullet = new BulletElement(); // re-use the same bullet object
 

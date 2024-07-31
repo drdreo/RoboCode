@@ -6,12 +6,12 @@
     "prefix": "robo-code",
     "targets": {
         "build": {
-            "executor": "@angular-devkit/build-angular:browser",
+            "executor": "@angular-devkit/build-angular:application",
             "options": {
                 "outputPath": "dist/apps/robocode",
                 "index": "apps/robocode/src/index.html",
-                "main": "apps/robocode/src/main.ts",
-                "polyfills": "apps/robocode/src/polyfills.ts",
+                "browser": "apps/robocode/src/main.ts",
+                "polyfills": [],
                 "tsConfig": "apps/robocode/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "assets": ["apps/robocode/src/favicon.ico", "apps/robocode/src/assets"],
@@ -41,9 +41,7 @@
                     "outputHashing": "all"
                 },
                 "development": {
-                    "buildOptimizer": false,
                     "optimization": false,
-                    "vendorChunk": true,
                     "extractLicenses": false,
                     "sourceMap": true,
                     "namedChunks": true

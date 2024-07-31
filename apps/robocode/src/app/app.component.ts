@@ -1,13 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { ArenaCanvasComponent } from "./arena-canvas/arena-canvas.component";
-import { UploadComponent } from "../../../../libs/ui/src/lib/upload/upload.component";
+import { UiModule } from "@robo-code/ui";
 
 @Component({
     selector: "rc-root",
     templateUrl: "./app.component.html",
     standalone: true,
-    imports: [UploadComponent, ArenaCanvasComponent],
+    imports: [UiModule, ArenaCanvasComponent],
 })
 export class AppComponent {
     constructor(private http: HttpClient) {}

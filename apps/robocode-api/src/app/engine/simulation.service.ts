@@ -67,6 +67,7 @@ export class SimulationService {
         robot.actualBot.getX = () => robot.x;
         robot.actualBot.getY = () => robot.y;
         robot.actualBot.getHeading = () => robot.heading;
+        robot.actualBot.getRotation = () => robot.rotation;
 
         // arena info
         robot.actualBot.getArenaWidth = () => ARENA_SIZE;
@@ -166,7 +167,7 @@ export class SimulationService {
             });
         } catch (e) {
             console.error(e);
-            throw new Error("Error during Bot tick!");
+            throw new Error("Error during Bot tick: " + e);
         }
     }
 

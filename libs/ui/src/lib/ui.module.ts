@@ -4,8 +4,8 @@ import { NgModule } from "@angular/core";
 import { UploadComponent } from "./upload/upload.component";
 
 @NgModule({
-    exports: [UploadComponent],
     imports: [CommonModule, UploadComponent],
     providers: [provideHttpClient(withInterceptorsFromDi())],
+    exports: [UploadComponent],
 })
 export class UiModule {}
