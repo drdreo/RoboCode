@@ -1,11 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
-import { Observable, Subject, takeUntil, withLatestFrom } from "rxjs";
+import { Observable, withLatestFrom } from "rxjs";
 import { BotService } from "../bot.service";
 import { DEBUG } from "../settings";
 import { CanvasService } from "./canvas.service";
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, DecimalPipe } from "@angular/common";
 import { BackgroundComponent } from "./arena-background/background.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: "rc-arena-canvas",
@@ -13,9 +14,9 @@ import { BackgroundComponent } from "./arena-background/background.component";
     styleUrls: ["./arena-canvas.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [BackgroundComponent, AsyncPipe],
+    imports: [BackgroundComponent, AsyncPipe, DecimalPipe],
 })
-export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
+export class ArenaCanvasComponent implements AfterViewInit {
     @ViewChild("arenaCanvas") canvasRef!: ElementRef<HTMLCanvasElement>;
     @ViewChild("debugCanvas") debugCanvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -23,7 +24,6 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     protected readonly ARENA_SIZE = ARENA_SIZE;
 
     bots$: Observable<BotsUpdate>;
-    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private botService: BotService,
@@ -33,16 +33,9 @@ export class ArenaCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.bots$
-            .pipe(withLatestFrom(this.botService.bullets$), takeUntil(this.unsubscribe$))
-            .subscribe(([bots, bullets]) => {
-                this.renderCanvas(bots, bullets);
-            });
-    }
-
-    ngOnDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
+        this.bots$.pipe(withLatestFrom(this.botService.bullets$), takeUntilDestroyed()).subscribe(([bots, bullets]) => {
+            this.renderCanvas(bots, bullets);
+        });
     }
 
     onCanvasMouse(evt: MouseEvent, canvas: HTMLCanvasElement) {

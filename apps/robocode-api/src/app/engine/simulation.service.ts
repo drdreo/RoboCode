@@ -9,7 +9,6 @@ import { CollisionDetector } from "./collision-detector";
 import { Engine } from "./physics-engine";
 import { hasEnergyToShoot, isActive, isInactive, NOOP } from "./sim.utils";
 import { CollisionResolver } from "./collision-resolver";
-import assert from "node:assert";
 
 let ENTITY_COUNTER = 0;
 let BULLET_COUNTER = 0;

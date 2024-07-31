@@ -26,9 +26,9 @@
                     <b>{{ bot.name }}</b
                     ><br />
                     HP: {{ bot.health }}<br />
-                    Pos: {{ bot.position.x }} / {{ bot.position.y }}<br />
-                    Rot: {{ bot.rotation }}<br />
-                    Vel: {{ bot.velocity.x }} / {{ bot.velocity.y }}
+                    Pos: {{ bot.position.x | number : '1.0-0' }} / {{ bot.position.y | number }}<br />
+                    Rot: {{ bot.rotation | number }}<br />
+                    Vel: {{ bot.velocity.x | number }} / {{ bot.velocity.y | number }}
                     <hr />
                 </div>
             }
