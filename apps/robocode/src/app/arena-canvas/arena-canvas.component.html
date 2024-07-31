@@ -23,12 +23,15 @@
         <div class="debug-info">
             @for (bot of bots; track bot) {
                 <div class="debug-info__robot">
-                    <b>{{ bot.name }}</b
-                    ><br />
-                    HP: {{ bot.health }}<br />
-                    Pos: {{ bot.position.x | number : '1.0-0' }} / {{ bot.position.y | number }}<br />
-                    Rot: {{ bot.rotation | number }}<br />
-                    Vel: {{ bot.velocity.x | number }} / {{ bot.velocity.y | number }}
+                    <b>{{ bot.name }}</b>
+                    <br />
+                    HP: {{ bot.health }}
+                    <br />
+                    Pos: {{ bot.position.x | number: "1.0-1" }} / {{ bot.position.y | number: "1.0-1" }}
+                    <br />
+                    Rot: {{ bot.rotation | number: "1.0-1" }}
+                    <br />
+                    Vel: {{ bot.velocity.x | number: "1.0-1" }} / {{ bot.velocity.y | number: "1.0-1" }}
                     <hr />
                 </div>
             }

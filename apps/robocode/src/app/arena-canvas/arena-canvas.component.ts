@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
 import { Observable, withLatestFrom } from "rxjs";
 import { BotService } from "../bot.service";
@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     standalone: true,
     imports: [BackgroundComponent, AsyncPipe, DecimalPipe],
 })
-export class ArenaCanvasComponent implements AfterViewInit {
+export class ArenaCanvasComponent {
     @ViewChild("arenaCanvas") canvasRef!: ElementRef<HTMLCanvasElement>;
     @ViewChild("debugCanvas") debugCanvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -30,9 +30,6 @@ export class ArenaCanvasComponent implements AfterViewInit {
         private canvasService: CanvasService,
     ) {
         this.bots$ = this.botService.bots$;
-    }
-
-    ngAfterViewInit(): void {
         this.bots$.pipe(withLatestFrom(this.botService.bullets$), takeUntilDestroyed()).subscribe(([bots, bullets]) => {
             this.renderCanvas(bots, bullets);
         });
