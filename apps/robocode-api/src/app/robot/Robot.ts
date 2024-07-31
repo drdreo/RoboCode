@@ -18,6 +18,7 @@ import { AbstractVector, randomInteger, Vector } from "@robo-code/utils";
 import { environment } from "../../environments/environment";
 import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
+import { CollisionType } from "../engine/collision-detector";
 
 const ROBOT_ROTATION_DECAY = 0.9; // in percentage.. 0.9=10%
 /**
@@ -42,6 +43,13 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
 
     MAX_SPEED = ROBOT_MAX_SPEED;
     MAX_ROTATION = ROBOT_MAX_TURNING_SPEED;
+
+    type = CollisionType.DYNAMIC;
+    // Collision represents the type of collision another object will receive upon colliding
+    collision = CollisionType.DYNAMIC;
+    // 0: Perfectly inelastic collision (no bounce, the entities stick together).
+    // 1: Perfectly elastic collision (no energy loss, entities bounce back with the same speed).
+    restitution = 0.7;
 
     private health = 100;
     private energy = 100;

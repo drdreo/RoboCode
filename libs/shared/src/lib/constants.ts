@@ -4,6 +4,8 @@ export const ARENA_SIZE = 1000;
  * ROBOT CONSTANTS
  */
 export const ROBOT_HEALTH_DECAY = 0.01;
+export const ROBOT_WIDTH = 35;
+export const ROBOT_HEIGHT = 55;
 export const ROBOT_HITBOX_WIDTH = 50;
 export const ROBOT_HITBOX_HEIGHT = 70;
 export const ROBOT_ENERGY_GAIN = 0.5;

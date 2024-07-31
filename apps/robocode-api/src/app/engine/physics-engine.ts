@@ -1,6 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { ROBOT_MAX_TURNING_SPEED, TICKS_PER_SECOND } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
+import { CollisionType } from "./collision-detector";
 
 //https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
 
@@ -10,7 +11,7 @@ import { Vector } from "@robo-code/utils";
 // The positive x-axis points right, and the positive y-axis points up.
 // Angles are measured clockwise from the positive x-axis.
 
-export class PhysicsEntity {
+export abstract class PhysicsEntity {
     // Position (x, y) - the current position of the entity.
     // Velocity (vx, vy) - the current velocity of the entity.
     // Acceleration (ax, ay) - the acceleration vector provided by the external control.
@@ -19,10 +20,16 @@ export class PhysicsEntity {
     velocity = new Vector();
     acceleration = new Vector();
 
-    width: number;
-    height: number;
-    MAX_SPEED: number;
-    MAX_ROTATION: number;
+    abstract width: number;
+    abstract height: number;
+    abstract MAX_SPEED: number;
+    abstract MAX_ROTATION: number;
+
+    abstract type: CollisionType;
+    // collision represents the type of collision another object will receive upon colliding
+    abstract collision: CollisionType;
+    // elastic collision bounciness is called restitution
+    abstract restitution: number;
 
     constructor(public id: string) {}
 
@@ -35,7 +42,7 @@ export class PhysicsEntity {
     }
 
     get top() {
-        return this.y;
+        return this.y + this.height;
     }
 
     get left() {
@@ -47,7 +54,23 @@ export class PhysicsEntity {
     }
 
     get bottom() {
-        return this.y + this.height;
+        return this.y;
+    }
+
+    get halfWidth() {
+        return this.width * 0.5;
+    }
+
+    get halfHeight() {
+        return this.height * 0.5;
+    }
+
+    getMidX() {
+        return this.halfWidth + this.x;
+    }
+
+    getMidY() {
+        return this.halfHeight + this.x;
     }
 }
 
@@ -78,7 +101,7 @@ export class Engine {
             // update position
             entity.position.add(entity.velocity.clone().mult(this.frameToSecondFactor));
             // reset steering force
-            // entity.acceleration.zero();
+            entity.acceleration.zero();
 
             this.logger.debug(`${entity.id}: ` + entity.position);
         }

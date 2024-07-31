@@ -1,4 +1,4 @@
-import { BotData, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH } from "@robo-code/shared";
+import { BotData, ROBOT_HEIGHT, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH, ROBOT_WIDTH } from "@robo-code/shared";
 import { Logger } from "@robo-code/utils";
 import { DEBUG } from "../../settings";
 import { DrawableElement } from "../canvas.types";
@@ -10,8 +10,8 @@ export class BotElement implements DrawableElement {
     private health = 100;
     private energy = 100;
 
-    private height = 50;
-    private width = 30;
+    private height = ROBOT_HEIGHT;
+    private width = ROBOT_WIDTH;
 
     private logger = new Logger("BotElement");
 

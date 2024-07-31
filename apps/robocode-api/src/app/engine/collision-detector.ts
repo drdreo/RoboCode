@@ -1,6 +1,15 @@
 import { PhysicsEntity } from "./physics-engine";
+export enum CollisionType {
+    // KINEMATIC entities are not affected by gravity, and will not allow the solver to solve these elements. Basically static entities.
+    KINEMATIC,
+    // DYNAMIC entities will be completely changing and are ffected by all aspects of the physics system
+    DYNAMIC,
+    // DISPLACE resolution will only move an entity outside of the space of the other and zero the velocity in that direction
+    DISPLACE,
+    // The elastic resolution will displace and also bounce the colliding entity off by reducing the velocity by its restituion coefficient
+    ELASTIC,
+}
 
-export type Collision = [PhysicsEntity, PhysicsEntity];
 export class CollisionDetector {
     collideRect(collider: PhysicsEntity, collidee: PhysicsEntity) {
         // Store the collider and collidee edges
@@ -16,7 +25,7 @@ export class CollisionDetector {
 
         // If any of the edges are beyond any of the others,
         // then we know that the box cannot be colliding
-        if (b1 < t2 || t1 > b2 || r1 < l2 || l1 > r2) {
+        if (t1 < b2 || b1 > t2 || r1 < l2 || l1 > r2) {
             return false;
         }
 

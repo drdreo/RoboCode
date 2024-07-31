@@ -8,8 +8,11 @@ import { Bullet } from "./bullet.entity";
 import { CollisionDetector } from "./collision-detector";
 import { Engine } from "./physics-engine";
 import { hasEnergyToShoot, isActive, isInactive, NOOP } from "./sim.utils";
+import { CollisionResolver } from "./collision-resolver";
+import assert from "node:assert";
 
 let ENTITY_COUNTER = 0;
+let BULLET_COUNTER = 0;
 
 @Injectable()
 export class SimulationService {
@@ -20,6 +23,7 @@ export class SimulationService {
 
     private engine = new Engine();
     private collisionDetector = new CollisionDetector();
+    private collisionResolver = new CollisionResolver();
 
     private lastStepTime = performance.now();
     private measureTime;
@@ -102,7 +106,7 @@ export class SimulationService {
     }
 
     shootBullet(robot: Robot) {
-        this.logger.verbose(robot + " shooting bullet!");
+        this.logger.debug(robot + " shooting bullet!");
 
         const availableBullet = this.bullets.find(isInactive);
         if (!availableBullet) {
@@ -187,7 +191,7 @@ export class SimulationService {
         this.logger.verbose("Initializing bullets pool");
 
         for (let i = 0; i < this.bullets.length; i++) {
-            this.bullets[i] = new Bullet("bullet_" + ENTITY_COUNTER++);
+            this.bullets[i] = new Bullet("bullet_" + BULLET_COUNTER++);
         }
     }
 
@@ -212,6 +216,8 @@ export class SimulationService {
     private detectAndResolveCollisions() {
         const activeBullets = this.bullets.filter(isActive);
 
+        // TODO: collisions should probably done while iterating through all entities instead of again here
+
         // for (const bot of this.bots) {
         //     const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
         //     for (const bullet of bulletHits) {
@@ -219,6 +225,16 @@ export class SimulationService {
         //         this.resolveBulletCollision(bullet);
         //     }
         // }
+
+        // DANGER: Bots should not check against itself
+        for (const bot of this.bots) {
+            const botCandiates = this.bots.filter((b) => b.id !== bot.id);
+            const botCollisions = this.collisionDetector.detectCollisions(bot, botCandiates);
+            for (const botCollision of botCollisions) {
+                this.logger.verbose(`Collision between ${bot} and ${botCollision}`);
+                // this.collisionResolver.resolveElastic(bot, botCollision);
+            }
+        }
 
         // check if bullet is out of bounds and remove it
         for (const bullet of activeBullets) {

@@ -1,6 +1,7 @@
 import { BULLET_OFFSET_X, BULLET_OFFSET_Y, BULLET_ROTATION, BULLET_SIZE, BULLET_SPEED } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 import { PhysicsEntity } from "./physics-engine";
+import { CollisionType } from "./collision-detector";
 
 export class Bullet extends PhysicsEntity {
     isActive = false;
@@ -10,6 +11,10 @@ export class Bullet extends PhysicsEntity {
 
     MAX_SPEED = BULLET_SPEED;
     MAX_ROTATION = BULLET_ROTATION;
+
+    type = CollisionType.KINEMATIC;
+    collision = CollisionType.DISPLACE;
+    restitution = 0.2;
 
     init(x: number, y: number, heading: number): void {
         // calculate offset based on the object's heading (rotation)
