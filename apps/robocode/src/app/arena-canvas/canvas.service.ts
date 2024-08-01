@@ -27,7 +27,7 @@ export class CanvasService {
         for (const bot of bots) {
             if (!this.hasBot(bot.id)) {
                 // if we got new bots, initialize them
-                this.addBot(bot.id);
+                this.addBot(bot.id, bot.name);
             }
             const robot = this.getBot(bot.id);
             if (!robot) {
@@ -95,8 +95,8 @@ export class CanvasService {
         // ctx.setTransform(this.viewport.zoom, 0, 0, this.viewport.zoom, this.viewport.pan.x, this.viewport.pan.y);
     }
 
-    private addBot(id: string) {
-        this.robots.push(new BotElement(id));
+    private addBot(id: string, name: string) {
+        this.robots.push(new BotElement(id, name));
     }
 
     private getBot(id: string): BotElement | undefined {

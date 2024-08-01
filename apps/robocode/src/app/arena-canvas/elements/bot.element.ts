@@ -15,7 +15,10 @@ export class BotElement implements DrawableElement {
 
     private logger = new Logger("BotElement");
 
-    constructor(public id: string) {
+    constructor(
+        public id: string,
+        public name: string,
+    ) {
         this.logger.verbose(`Created BotElement[${id}]`);
     }
 
@@ -51,7 +54,7 @@ export class BotElement implements DrawableElement {
     }
 
     private drawTooltip(ctx: CanvasRenderingContext2D) {
-        const text = `${this.id} ${Math.floor(this.health)}/${this.energy} - [${Math.floor(this.x)},${Math.floor(this.y)}] (${Math.floor(this.rotation)})`;
+        const text = `${this.name} ${Math.floor(this.health)}/${this.energy} - [${Math.floor(this.x)},${Math.floor(this.y)}] (${Math.floor(this.rotation)})`;
         ctx.font = `15px ${CANVAS_FONT}`;
         ctx.fillStyle = "#000000";
         ctx.fillText(text, -20, -20);

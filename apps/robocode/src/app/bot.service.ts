@@ -19,7 +19,7 @@ const debugBots: BotsUpdate = [
         name: "SittingDuck",
         health: 100,
         energy: 100,
-        position: { x: 500, y: 211 },
+        position: { x: 300, y: 900 },
         rotation: 45.39884800046683,
         velocity: { x: 0, y: 0 },
     },
