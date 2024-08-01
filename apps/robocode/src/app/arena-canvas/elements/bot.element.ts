@@ -28,8 +28,6 @@ export class BotElement implements DrawableElement {
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
-        this.logger.debug(`Bot[${this.id}] - draw()`);
-
         // use canvas height to match the 2D Cartesian system
         ctx.translate(this.x - this.width / 2, ctx.canvas.height - (this.y - this.height / 2));
         if (DEBUG.enabled) {

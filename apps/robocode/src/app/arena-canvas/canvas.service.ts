@@ -3,7 +3,6 @@ import { BotData, BulletData, Position } from "@robo-code/shared";
 import { Logger } from "@robo-code/utils";
 import { BotElement } from "./elements/bot.element";
 import { BulletElement } from "./elements/bullet.element";
-import { DEBUG } from "../settings";
 import { DebugMouseElement } from "./elements/debug/mouse.element";
 import { DebugGridElement } from "./elements/debug/grid.element";
 
@@ -13,6 +12,10 @@ export class CanvasService {
     private mouseElement = new DebugMouseElement();
     private gridElement = new DebugGridElement();
     private robots: BotElement[] = [];
+
+    private panX = 0;
+    private panY = 0;
+    private zoom = 1;
 
     private logger = new Logger("CanvasService");
 
@@ -40,21 +43,36 @@ export class CanvasService {
     }
 
     renderMousePosition(ctx: CanvasRenderingContext2D, mousePos: Position) {
-        this.mouseElement.update(mousePos);
-        this.mouseElement.draw(ctx);
+        // Apply the inverse of the current pan and zoom transformations to the mouse position
+        const transformedX = (mousePos.x - this.panX) / this.zoom;
+        const transformedY = (mousePos.y - this.panY) / this.zoom;
+
+        this.mouseElement.update({ x: transformedX, y: transformedY });
+        ctx.save();
+        ctx.setTransform(this.zoom, 0, 0, this.zoom, this.panX, this.panY);
+        this.mouseElement.draw(ctx, this.zoom);
+        ctx.restore();
     }
 
     drawBackground(ctx: CanvasRenderingContext2D, image?: HTMLImageElement) {
+        ctx.save();
+        ctx.setTransform(this.zoom, 0, 0, this.zoom, this.panX, this.panY);
+
         if (!image) {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            return;
+        } else {
+            ctx.drawImage(image, 0, 0);
         }
-        ctx.drawImage(image, 0, 0);
+
+        ctx.restore();
     }
 
     drawGrid(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.setTransform(this.zoom, 0, 0, this.zoom, this.panX, this.panY);
         this.gridElement.draw(ctx);
+        ctx.restore();
     }
 
     drawDebugCanvas(ctx: CanvasRenderingContext2D) {
@@ -72,7 +90,6 @@ export class CanvasService {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         if (preserveTransform) {
-            // Restore the transform
             ctx.restore();
         }
     }
@@ -87,5 +104,32 @@ export class CanvasService {
 
     private hasBot(id: string): boolean {
         return this.robots.some((bot) => bot.id === id);
+    }
+
+    panCanvas(ctx: CanvasRenderingContext2D, position: Position) {
+        const { x, y } = position;
+        const canvas = ctx.canvas;
+        const panSpeed = 10;
+        const panMargin = 50;
+
+        if (x < panMargin) {
+            this.panX += panSpeed;
+        }
+        if (x > canvas.width - panMargin) {
+            this.panX -= panSpeed;
+        }
+        if (y < panMargin) {
+            this.panY += panSpeed;
+        }
+        if (y > canvas.height - panMargin) {
+            this.panY -= panSpeed;
+        }
+    }
+
+    zoomCanvas(delta: number) {
+        this.zoom = delta;
+        if (this.zoom < 0.1) {
+            this.zoom = 0.1;
+        }
     }
 }

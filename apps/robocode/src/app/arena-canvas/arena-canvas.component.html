@@ -24,16 +24,29 @@
         <div class="debug-info">
             @for (bot of  bots(); track bot.id) {
                 <div class="debug-info__robot">
-                    <b>{{ bot.name }}</b>
-                    <br />
-                    HP: {{ bot.health }}
-                    <br />
-                    Pos: {{ bot.position.x | number: "1.0-1" }} / {{ bot.position.y | number: "1.0-1" }}
-                    <br />
-                    Rot: {{ bot.rotation | number: "1.0-1" }}
-                    <br />
-                    Vel: {{ bot.velocity.x | number: "1.0-1" }} / {{ bot.velocity.y | number: "1.0-1" }}
+                    <table border="1">
+                        <tr>
+                            <th colspan="2">{{ bot.name }}</th>
+                        </tr>
+                        <tr>
+                            <th>HP</th>
+                            <td>{{ bot.health }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pos</th>
+                            <td>{{ bot.position.x | number: "1.0-1" }} / {{ bot.position.y | number: "1.0-1" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Rot</th>
+                            <td>{{ bot.rotation | number: "1.0-1" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Vel</th>
+                            <td>{{ bot.velocity.x | number: "1.0-1" }} / {{ bot.velocity.y | number: "1.0-1" }}</td>
+                        </tr>
+                    </table>
                     <hr />
+
                 </div>
             }
         </div>

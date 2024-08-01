@@ -16,9 +16,10 @@ export class DebugMouseElement implements DrawableElement {
         this.y = y;
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    draw(ctx: CanvasRenderingContext2D, zoom: number): void {
         const mousePosText = `x: ${this.x}, y: ${this.y}`;
-        ctx.font = `15px ${CANVAS_FONT}`;
+        const fontSize = 15 / zoom;
+        ctx.font = `${fontSize}px ${CANVAS_FONT}`;
         ctx.fillStyle = "#000000";
         ctx.fillText(mousePosText, this.x, this.y - tooltipOffset);
     }

@@ -1,12 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, effect, model } from "@angular/core";
 import { ArenaCanvasComponent } from "./arena-canvas/arena-canvas.component";
 import { CodeUploadComponent } from "./code-upload/code-upload.component";
+import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: "rc-root",
     templateUrl: "./app.component.html",
     standalone: true,
-    imports: [CodeUploadComponent, ArenaCanvasComponent],
+    imports: [CodeUploadComponent, ArenaCanvasComponent, FormsModule],
     styles: [
         `
             :host {
@@ -19,6 +20,7 @@ import { CodeUploadComponent } from "./code-upload/code-upload.component";
             .title {
                 grid-area: title;
             }
+
             rc-arena-canvas {
                 grid-area: arena;
             }
@@ -29,4 +31,6 @@ import { CodeUploadComponent } from "./code-upload/code-upload.component";
         `,
     ],
 })
-export class AppComponent {}
+export class AppComponent {
+    zoom = model<number>(1);
+}

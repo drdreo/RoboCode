@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, effect, ElementRef, Signal, signal, viewChild } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    effect,
+    ElementRef,
+    input,
+    Signal,
+    signal,
+    viewChild,
+} from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate, Position } from "@robo-code/shared";
 import { BotService } from "../bot.service";
 import { DEBUG } from "../settings";
@@ -22,6 +31,7 @@ export class ArenaCanvasComponent {
     bots: Signal<BotsUpdate>;
     bullets: Signal<BulletsUpdate>;
 
+    zoom = input(1);
     mousePosition = signal<Position>({ x: 0, y: 0 });
 
     protected readonly DEBUG = DEBUG;
@@ -35,6 +45,8 @@ export class ArenaCanvasComponent {
         this.bullets = toSignal(this.botService.bullets$, { initialValue: [] });
 
         effect(() => {
+            this.canvasService.zoomCanvas(this.zoom());
+
             this.renderCanvas(this.bots(), this.bullets(), this.mousePosition());
         });
     }
@@ -50,11 +62,16 @@ export class ArenaCanvasComponent {
             x: ((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
             y: ((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
         });
+
+        // buttons:1 --> left mouse button
+        if (evt.buttons === 1) {
+            this.canvasService.panCanvas(this.getCanvasContext(), this.mousePosition());
+        }
     }
 
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {
         const ctx = this.getCanvasContext();
-        this.canvasService.clearCanvas(ctx);
+        this.canvasService.clearCanvas(ctx, true);
         this.canvasService.drawBackground(ctx, this.backgroundImageRef()?.nativeElement);
 
         if (DEBUG.enabled) {
