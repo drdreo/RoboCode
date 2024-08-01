@@ -78,6 +78,11 @@ export class ArenaCanvasComponent {
         this.previousMousePosition = currentPosition;
     }
 
+    onCanvasScroll(evt: any, canvas: HTMLCanvasElement) {
+        // TODO: do scroll on mouse
+        console.log(evt);
+    }
+
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {
         const ctx = this.getCanvasContext();
         this.canvasService.clearCanvas(ctx);

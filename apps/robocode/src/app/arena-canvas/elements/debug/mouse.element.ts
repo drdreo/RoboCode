@@ -11,9 +11,9 @@ export class DebugMouseElement implements DrawableElement {
 
     constructor(private viewport: Viewport) {}
 
-    update(position: Position, height: number) {
-        this.viewportPosition.x = (position.x - this.viewport.pan.x * this.viewport.zoom) / this.viewport.zoom;
-        this.viewportPosition.y = (position.y - this.viewport.pan.y * this.viewport.zoom) / this.viewport.zoom;
+    update(mousePos: Position, height: number) {
+        this.viewportPosition.x = (mousePos.x - this.viewport.pan.x * this.viewport.zoom) / this.viewport.zoom;
+        this.viewportPosition.y = (mousePos.y - this.viewport.pan.y * this.viewport.zoom) / this.viewport.zoom;
         this.renderPosition = this.convertToCartesian(this.viewportPosition, height);
     }
 
