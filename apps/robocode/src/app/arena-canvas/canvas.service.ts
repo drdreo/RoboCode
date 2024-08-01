@@ -85,24 +85,12 @@ export class CanvasService {
         return this.robots.some((bot) => bot.id === id);
     }
 
-    panCanvas(ctx: CanvasRenderingContext2D, position: Position) {
-        const { x, y } = position;
-        const canvas = ctx.canvas;
-        const panSpeed = 10;
-        const panMargin = 50;
+    panCanvas(delta: Position) {
+        const { x, y } = delta;
+        const panSpeed = (1 * 1) / this.viewport.zoom;
 
-        if (x < panMargin) {
-            this.viewport.pan.x += panSpeed;
-        }
-        if (x > canvas.width - panMargin) {
-            this.viewport.pan.x -= panSpeed;
-        }
-        if (y < panMargin) {
-            this.viewport.pan.y += panSpeed;
-        }
-        if (y > canvas.height - panMargin) {
-            this.viewport.pan.y -= panSpeed;
-        }
+        this.viewport.pan.x += x * panSpeed;
+        this.viewport.pan.y += y * panSpeed;
     }
 
     zoomCanvas(delta: number) {

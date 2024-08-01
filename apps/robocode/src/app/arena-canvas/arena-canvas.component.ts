@@ -1,6 +1,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    computed,
     effect,
     ElementRef,
     input,
@@ -33,6 +34,7 @@ export class ArenaCanvasComponent {
 
     zoom = input(1);
     mousePosition = signal<Position>({ x: 0, y: 0 });
+    private previousMousePosition: Position | undefined;
 
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
@@ -62,11 +64,18 @@ export class ArenaCanvasComponent {
             x: ((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
             y: ((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
         });
+        const currentPosition = this.mousePosition();
 
         // buttons:1 --> left mouse button
-        if (evt.buttons === 1) {
-            this.canvasService.panCanvas(this.getCanvasContext(), this.mousePosition());
+        if (evt.buttons === 1 && this.previousMousePosition) {
+            const delta = {
+                x: currentPosition.x - this.previousMousePosition.x,
+                y: currentPosition.y - this.previousMousePosition.y,
+            };
+            this.canvasService.panCanvas(delta);
         }
+
+        this.previousMousePosition = currentPosition;
     }
 
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {
