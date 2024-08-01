@@ -19,9 +19,9 @@
 ></canvas>
 
 @if (DEBUG.enabled) {
-    @if (bots$ | async; as bots) {
+    @if ( bots().length > 0) {
         <div class="debug-info">
-            @for (bot of bots; track bot) {
+            @for (bot of  bots(); track bot.id) {
                 <div class="debug-info__robot">
                     <b>{{ bot.name }}</b>
                     <br />

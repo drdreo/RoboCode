@@ -8,6 +8,7 @@ export enum SocketEvents {
 export type BotsUpdate = BotData[];
 
 export type BotData = {
+    id: string;
     name: string;
     health: number;
     energy: number;

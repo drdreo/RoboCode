@@ -3,6 +3,6 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "libs/utils/src",
     "projectType": "library",
-    "targets": {
-    }
+    "// targets": "to see all targets run: nx show project utils --web",
+    "targets": {}
 }

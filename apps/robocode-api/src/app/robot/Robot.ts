@@ -75,6 +75,7 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
 
     public getData(): BotData {
         return {
+            id: this.id,
             name: this.actualBot.name || "Robot", // TODO: this data should be sent once
             health: this.health,
             energy: +this.energy.toFixed(3),

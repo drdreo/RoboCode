@@ -5,4 +5,5 @@ export const DEBUG = {
         x: 0,
         y: 0,
     },
+    fakeBots: true,
 };

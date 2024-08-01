@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    effect,
+    ElementRef,
+    Signal,
+    signal,
+    viewChild,
+    ViewChild,
+    WritableSignal,
+} from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate } from "@robo-code/shared";
 import { Observable, withLatestFrom } from "rxjs";
 import { BotService } from "../bot.service";
@@ -6,7 +16,7 @@ import { DEBUG } from "../settings";
 import { CanvasService } from "./canvas.service";
 import { AsyncPipe, DecimalPipe } from "@angular/common";
 import { BackgroundComponent } from "./arena-background/background.component";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: "rc-arena-canvas",
@@ -17,21 +27,24 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     imports: [BackgroundComponent, AsyncPipe, DecimalPipe],
 })
 export class ArenaCanvasComponent {
-    @ViewChild("arenaCanvas") canvasRef!: ElementRef<HTMLCanvasElement>;
-    @ViewChild("debugCanvas") debugCanvasRef!: ElementRef<HTMLCanvasElement>;
+    canvasRef = viewChild<ElementRef<HTMLCanvasElement>>("arenaCanvas");
+    debugCanvasRef = viewChild<ElementRef<HTMLCanvasElement>>("debugCanvas");
 
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
 
-    bots$: Observable<BotsUpdate>;
+    bots: Signal<BotsUpdate>;
+    bullets: Signal<BulletsUpdate>;
 
     constructor(
         private botService: BotService,
         private canvasService: CanvasService,
     ) {
-        this.bots$ = this.botService.bots$;
-        this.bots$.pipe(withLatestFrom(this.botService.bullets$), takeUntilDestroyed()).subscribe(([bots, bullets]) => {
-            this.renderCanvas(bots, bullets);
+        this.bots = toSignal(this.botService.bots$, { initialValue: [] });
+        this.bullets = toSignal(this.botService.bullets$, { initialValue: [] });
+
+        effect(() => {
+            this.renderCanvas(this.bots(), this.bullets());
         });
     }
 
@@ -72,7 +85,7 @@ export class ArenaCanvasComponent {
     }
 
     private getCanvasContext(): CanvasRenderingContext2D {
-        const ctx = this.canvasRef.nativeElement.getContext("2d");
+        const ctx = this.canvasRef()?.nativeElement.getContext("2d");
         if (ctx) {
             return ctx;
         }
@@ -80,7 +93,7 @@ export class ArenaCanvasComponent {
     }
 
     private getDebugCanvasContext(): CanvasRenderingContext2D {
-        const ctx = this.debugCanvasRef.nativeElement.getContext("2d");
+        const ctx = this.debugCanvasRef()?.nativeElement.getContext("2d");
         if (ctx) {
             return ctx;
         }
