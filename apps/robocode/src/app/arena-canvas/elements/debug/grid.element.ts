@@ -1,6 +1,9 @@
 import { DrawableElement } from "../../canvas.types";
+import { Viewport } from "@robo-code/shared";
 
 export class DebugGridElement implements DrawableElement {
+    constructor(private viewport: Viewport) {}
+
     draw(ctx: CanvasRenderingContext2D) {
         const GRID_WIDTH = 25;
         const { width, height } = ctx.canvas;

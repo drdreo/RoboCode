@@ -71,7 +71,8 @@ export class ArenaCanvasComponent {
 
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {
         const ctx = this.getCanvasContext();
-        this.canvasService.clearCanvas(ctx, true);
+        this.canvasService.clearCanvas(ctx);
+        this.canvasService.applyViewportTransformation(ctx);
         this.canvasService.drawBackground(ctx, this.backgroundImageRef()?.nativeElement);
 
         if (DEBUG.enabled) {
@@ -81,6 +82,8 @@ export class ArenaCanvasComponent {
 
         this.canvasService.renderBots(ctx, bots);
         this.canvasService.renderBullets(ctx, bullets);
+
+        ctx.restore();
     }
 
     private getCanvasContext(): CanvasRenderingContext2D {

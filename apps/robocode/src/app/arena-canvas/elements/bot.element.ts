@@ -28,6 +28,7 @@ export class BotElement implements DrawableElement {
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
+        ctx.save();
         // use canvas height to match the 2D Cartesian system
         ctx.translate(this.x - this.width / 2, ctx.canvas.height - (this.y - this.height / 2));
         if (DEBUG.enabled) {
@@ -46,8 +47,7 @@ export class BotElement implements DrawableElement {
         this.drawBody(ctx);
         this.drawGun(ctx);
 
-        // Reset transformation matrix to the identity matrix
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.restore();
     }
 
     private drawTooltip(ctx: CanvasRenderingContext2D) {
