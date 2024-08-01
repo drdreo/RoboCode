@@ -48,7 +48,7 @@ export class CanvasService {
     }
 
     renderMousePosition(ctx: CanvasRenderingContext2D, mousePos: Position) {
-        this.mouseElement.update(mousePos);
+        this.mouseElement.update(mousePos, ctx.canvas.height);
         this.mouseElement.draw(ctx);
     }
 
@@ -73,21 +73,9 @@ export class CanvasService {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
 
-    private addBot(id: string) {
-        this.robots.push(new BotElement(id));
-    }
-
-    private getBot(id: string): BotElement | undefined {
-        return this.robots.find((bot) => bot.id === id);
-    }
-
-    private hasBot(id: string): boolean {
-        return this.robots.some((bot) => bot.id === id);
-    }
-
     panCanvas(delta: Position) {
         const { x, y } = delta;
-        const panSpeed = (1 * 1) / this.viewport.zoom;
+        const panSpeed = 1 / this.viewport.zoom;
 
         this.viewport.pan.x += x * panSpeed;
         this.viewport.pan.y += y * panSpeed;
@@ -105,5 +93,17 @@ export class CanvasService {
         ctx.scale(this.viewport.zoom, this.viewport.zoom);
         ctx.translate(this.viewport.pan.x, this.viewport.pan.y);
         // ctx.setTransform(this.viewport.zoom, 0, 0, this.viewport.zoom, this.viewport.pan.x, this.viewport.pan.y);
+    }
+
+    private addBot(id: string) {
+        this.robots.push(new BotElement(id));
+    }
+
+    private getBot(id: string): BotElement | undefined {
+        return this.robots.find((bot) => bot.id === id);
+    }
+
+    private hasBot(id: string): boolean {
+        return this.robots.some((bot) => bot.id === id);
     }
 }
