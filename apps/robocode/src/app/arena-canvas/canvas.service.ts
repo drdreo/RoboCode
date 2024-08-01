@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BotData, BulletData, Position, Viewport } from "@robo-code/shared";
+import { ARENA_SIZE, BotData, BulletData, Position, Viewport } from "@robo-code/shared";
 import { Logger } from "@robo-code/utils";
 import { BotElement } from "./elements/bot.element";
 import { BulletElement } from "./elements/bullet.element";
@@ -57,7 +57,7 @@ export class CanvasService {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         } else {
-            ctx.drawImage(image, 0, 0);
+            ctx.drawImage(image, 0, 0, ARENA_SIZE, ARENA_SIZE);
         }
     }
 

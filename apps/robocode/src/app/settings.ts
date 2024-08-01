@@ -1,7 +1,7 @@
 export const DEBUG = {
     enabled: true,
     gridInit: false,
-    fakeBots: true,
+    fakeBots: false,
 };
 
 export const CANVAS_FONT = "Poppins";
