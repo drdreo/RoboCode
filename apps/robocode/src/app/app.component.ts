@@ -1,19 +1,32 @@
-import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { ArenaCanvasComponent } from "./arena-canvas/arena-canvas.component";
-import { UiModule } from "@robo-code/ui";
+import { CodeUploadComponent } from "./code-upload/code-upload.component";
 
 @Component({
     selector: "rc-root",
     templateUrl: "./app.component.html",
     standalone: true,
-    imports: [UiModule, ArenaCanvasComponent],
-})
-export class AppComponent {
-    constructor(private http: HttpClient) {}
+    imports: [CodeUploadComponent, ArenaCanvasComponent],
+    styles: [
+        `
+            :host {
+                display: grid;
+                grid-template-areas:
+                    "title title"
+                    "arena upload";
+            }
 
-    async test() {
-        console.log("test");
-        await this.http.get("/api").toPromise();
-    }
-}
+            .title {
+                grid-area: title;
+            }
+            rc-arena-canvas {
+                grid-area: arena;
+            }
+
+            rc-code-upload {
+                grid-area: upload;
+            }
+        `,
+    ],
+})
+export class AppComponent {}

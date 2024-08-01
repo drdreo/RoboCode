@@ -2,7 +2,7 @@ import { DrawableElement } from "../../canvas.types";
 import { Position, Size } from "@robo-code/shared";
 import { CANVAS_FONT } from "../../../settings";
 
-const tooltipOffset = 25;
+const tooltipOffset = 15;
 
 export class DebugMouseElement implements DrawableElement {
     public x = 0;
