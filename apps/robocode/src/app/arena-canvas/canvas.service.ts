@@ -1,42 +1,79 @@
 import { Injectable } from "@angular/core";
-import { BotData, BulletData } from "@robo-code/shared";
+import { BotData, BulletData, Position } from "@robo-code/shared";
 import { Logger } from "@robo-code/utils";
 import { BotElement } from "./elements/bot.element";
 import { BulletElement } from "./elements/bullet.element";
+import { DEBUG } from "../settings";
+import { DebugMouseElement } from "./elements/debug/mouse.element";
+import { DebugGridElement } from "./elements/debug/grid.element";
 
 @Injectable({ providedIn: "root" })
 export class CanvasService {
-    private drawableBullet = new BulletElement(); // re-use the same bullet object
-
+    private drawableBullet = new BulletElement(); // re-use the same bullet object for drawing
+    private mouseElement = new DebugMouseElement();
+    private gridElement = new DebugGridElement();
     private robots: BotElement[] = [];
-
-    private initialized = false;
 
     private logger = new Logger("CanvasService");
 
-    constructor() {}
-
-    updateBots(bots: BotData[], context: CanvasRenderingContext2D) {
+    renderBots(ctx: CanvasRenderingContext2D, bots: BotData[]) {
         for (const bot of bots) {
-            const botId = bot.name; // TODO: change name id to real ID
-            if (!this.hasBot(botId)) {
+            if (!this.hasBot(bot.id)) {
                 // if we got new bots, initialize them
-                this.addBot(botId);
+                this.addBot(bot.id);
             }
-            const robot = this.getBot(botId);
+            const robot = this.getBot(bot.id);
             if (!robot) {
-                this.logger.error(`Bot[${botId}] not found`);
+                this.logger.error(`Bot[${bot.id}] not found`);
                 continue;
             }
             robot.update(bot);
-            robot.draw(context);
+            robot.draw(ctx);
         }
     }
 
-    updateBullets(bullets: BulletData[], context: CanvasRenderingContext2D) {
+    renderBullets(ctx: CanvasRenderingContext2D, bullets: BulletData[]) {
         for (const bullet of bullets) {
             this.drawableBullet.update(bullet);
-            this.drawableBullet.draw(context);
+            this.drawableBullet.draw(ctx);
+        }
+    }
+
+    renderMousePosition(ctx: CanvasRenderingContext2D, mousePos: Position) {
+        this.mouseElement.update(mousePos);
+        this.mouseElement.draw(ctx);
+    }
+
+    drawBackground(ctx: CanvasRenderingContext2D, image?: HTMLImageElement) {
+        if (!image) {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            return;
+        }
+        ctx.drawImage(image, 0, 0);
+    }
+
+    drawGrid(ctx: CanvasRenderingContext2D) {
+        this.gridElement.draw(ctx);
+    }
+
+    drawDebugCanvas(ctx: CanvasRenderingContext2D) {
+        this.drawGrid(ctx);
+    }
+
+    clearCanvas(ctx: CanvasRenderingContext2D, preserveTransform = false) {
+        if (preserveTransform) {
+            // Store the current transformation matrix
+            ctx.save();
+            // Use the identity matrix while clearing the canvas
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        if (preserveTransform) {
+            // Restore the transform
+            ctx.restore();
         }
     }
 

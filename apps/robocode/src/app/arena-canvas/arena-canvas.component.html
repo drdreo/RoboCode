@@ -1,14 +1,6 @@
-<rc-background></rc-background>
+<img #backgroundImage src="assets/images/arena_bg.jpg" style="display:none;" />
 
-@if (DEBUG.enabled) {
-    <canvas
-        id="debug-canvas"
-        #debugCanvas
-        [height]="ARENA_SIZE"
-        [width]="ARENA_SIZE"
-        style="border: 1px solid white"
-    ></canvas>
-}
+
 <canvas
     id="arena-canvas"
     #arenaCanvas
@@ -17,6 +9,16 @@
     [width]="ARENA_SIZE"
     style="border: 1px solid white"
 ></canvas>
+
+<!--@if (DEBUG.enabled) {-->
+<!--    <canvas-->
+<!--            id="debug-canvas"-->
+<!--            #debugCanvas-->
+<!--            [height]="ARENA_SIZE"-->
+<!--            [width]="ARENA_SIZE"-->
+<!--            style="border: 1px solid white"-->
+<!--    ></canvas>-->
+<!--}-->
 
 @if (DEBUG.enabled) {
     @if ( bots().length > 0) {
