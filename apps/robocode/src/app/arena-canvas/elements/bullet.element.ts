@@ -1,11 +1,11 @@
-import { BulletData, Viewport } from "@robo-code/shared";
+import { BULLET_SIZE, BulletData, Viewport } from "@robo-code/shared";
 import { DrawableElement } from "../canvas.types";
 
 export class BulletElement implements DrawableElement {
     public x = 0;
     public y = 0;
 
-    private size = 3;
+    private size = BULLET_SIZE;
 
     constructor(private viewport: Viewport) {}
 

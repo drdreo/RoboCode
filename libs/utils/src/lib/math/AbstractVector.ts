@@ -1,5 +1,6 @@
 import { Position } from "@robo-code/shared";
 import { toDegrees } from "./utils";
+import { Vector } from "./Vector";
 
 /**
  * These values are used by the `AbstractVector.round` method to increase
@@ -373,5 +374,9 @@ export abstract class AbstractVector implements Position {
      */
     clone() {
         return new this.ctor(this.x, this.y);
+    }
+
+    perpendicular(): AbstractVector {
+        return new Vector(-this.y, this.x);
     }
 }

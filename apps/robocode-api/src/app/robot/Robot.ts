@@ -2,7 +2,6 @@
 
 // https://natureofcode.com/book/chapter-2-forces/
 
-import { Logger } from "@nestjs/common";
 import {
     BotData,
     BULLET_DAMAGE,
@@ -10,8 +9,8 @@ import {
     ROBOT_HEALTH_DECAY,
     ROBOT_HITBOX_HEIGHT,
     ROBOT_HITBOX_WIDTH,
-    ROBOT_MAX_TURNING_SPEED,
     ROBOT_MAX_SPEED,
+    ROBOT_MAX_TURNING_SPEED,
     ROBOT_SHOOTING_ENERGY_COST,
 } from "@robo-code/shared";
 import { AbstractVector, randomInteger, Vector } from "@robo-code/utils";
@@ -34,12 +33,9 @@ const ROBOT_ROTATION_DECAY = 0.9; // in percentage.. 0.9=10%
  */
 
 export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
-    get name(): string {
-        return this.actualBot.name;
-    }
-
     width = ROBOT_HITBOX_WIDTH;
     height = ROBOT_HITBOX_HEIGHT;
+    rotation = 0; // in degrees
 
     MAX_SPEED = ROBOT_MAX_SPEED;
     MAX_ROTATION = ROBOT_MAX_TURNING_SPEED;
@@ -47,22 +43,14 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     type = CollisionType.DYNAMIC;
     // Collision represents the type of collision another object will receive upon colliding
     collision = CollisionType.DYNAMIC;
+    // Resitution is the bounciness of the collision
     // 0: Perfectly inelastic collision (no bounce, the entities stick together).
     // 1: Perfectly elastic collision (no energy loss, entities bounce back with the same speed).
     restitution = 0.7;
 
     private health = 100;
     private energy = 100;
-    private _rotation = 0;
     private dt: number;
-
-    getHealth(): number {
-        return this.health;
-    }
-
-    getEnergy(): number {
-        return this.energy;
-    }
 
     constructor(
         id: string,
@@ -71,6 +59,18 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     ) {
         super(id);
         this.position = position || new Vector(randomInteger(100, 900), randomInteger(100, 900));
+    }
+
+    get name(): string {
+        return this.actualBot.name;
+    }
+
+    getHealth(): number {
+        return this.health;
+    }
+
+    getEnergy(): number {
+        return this.energy;
     }
 
     public getData(): BotData {
@@ -83,14 +83,6 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
             rotation: this.rotation,
             velocity: this.velocity.round(2).toObject(),
         };
-    }
-
-    get rotation(): number {
-        return this._rotation;
-    }
-
-    get heading(): number {
-        return this._rotation;
     }
 
     isDead(): boolean {
@@ -157,9 +149,9 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     turn(angle: number): void {
         const degree = Math.max(-ROBOT_MAX_TURNING_SPEED, Math.min(angle, ROBOT_MAX_TURNING_SPEED));
 
-        this._rotation = (this._rotation + degree * this.dt) % 360;
-        if (this._rotation < 0) {
-            this._rotation += 360;
+        this.rotation = (this.rotation + degree * this.dt) % 360;
+        if (this.rotation < 0) {
+            this.rotation += 360;
         }
     }
 
@@ -197,9 +189,9 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     private applyRotationDecay(): void {
-        this._rotation *= ROBOT_ROTATION_DECAY;
-        if (Math.abs(this._rotation) < 0.01) {
-            this._rotation = 0;
+        this.rotation *= ROBOT_ROTATION_DECAY;
+        if (Math.abs(this.rotation) < 0.01) {
+            this.rotation = 0;
         }
     }
 

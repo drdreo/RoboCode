@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { ROBOT_MAX_TURNING_SPEED, TICKS_PER_SECOND } from "@robo-code/shared";
+import { TICKS_PER_SECOND } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 import { CollisionType } from "./collision-detector";
 
@@ -15,10 +15,13 @@ export abstract class PhysicsEntity {
     // Position (x, y) - the current position of the entity.
     // Velocity (vx, vy) - the current velocity of the entity.
     // Acceleration (ax, ay) - the acceleration vector provided by the external control.
+    // Rotation (deg) - the current rotation of the entity in degrees
 
     position = new Vector();
     velocity = new Vector();
     acceleration = new Vector();
+
+    rotation = 0;
 
     abstract width: number;
     abstract height: number;
@@ -42,7 +45,7 @@ export abstract class PhysicsEntity {
     }
 
     get top() {
-        return this.y + this.height;
+        return this.y;
     }
 
     get left() {
@@ -54,7 +57,7 @@ export abstract class PhysicsEntity {
     }
 
     get bottom() {
-        return this.y;
+        return this.y - this.height;
     }
 
     get halfWidth() {
@@ -106,10 +109,7 @@ export class Engine {
             this.logger.debug(`${entity.id}: ` + entity.position);
         }
 
-        // let collisions = this.collider.detectCollisions(
-        //     this.player,
-        //     this.collidables
-        // );
+        // let collisions = this.collider.detectCollisions(this.player, this.collidables);
         //
         // if (collisions != null) {
         //     this.solver.resolve(this.player, collisions);

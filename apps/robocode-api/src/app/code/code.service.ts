@@ -2,11 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
 import * as fs from "fs";
 import { rimraf } from "rimraf";
 import { SimulationService } from "../engine/simulation.service";
-import { Juker } from "../robot/test-bots/Juker";
 import { SittingDuck } from "../robot/test-bots/SittingDuck";
-import { Spinner } from "../robot/test-bots/Spinner";
-import { UpAndDown } from "../robot/test-bots/UpAndDown";
-import { Walker } from "../robot/test-bots/Walker";
 import { Compiler } from "./compiler";
 
 const FILE_FOLDER = "assets/upload/";
@@ -22,17 +18,6 @@ export class CodeService implements OnApplicationBootstrap {
 
     constructor(private simulationService: SimulationService) {
         this.registerDebugBot();
-    }
-
-    private registerDebugBot(): void {
-        this.simulationService.registerBot(new UpAndDown());
-        this.simulationService.registerBot(new SittingDuck());
-        this.simulationService.registerBot(new Spinner());
-
-        // const debugBot = this.simulationService.registerBot(new Spinner());
-        // debugBot.actualBot.onDeath = () => {
-        //     this.registerDebugBot();
-        // };
     }
 
     onApplicationBootstrap() {
@@ -72,6 +57,19 @@ export class CodeService implements OnApplicationBootstrap {
 
         console.log(runable);
         this.simulationService.registerBot(new runable());
+    }
+
+    private registerDebugBot(): void {
+        // this.simulationService.registerBot(new UpAndDown());
+        // this.simulationService.registerBot(new SittingDuck());
+
+        this.simulationService.registerBot(new SittingDuck());
+        // this.simulationService.registerBot(new Spinner());
+
+        // const debugBot = this.simulationService.registerBot(new Spinner());
+        // debugBot.actualBot.onDeath = () => {
+        //     this.registerDebugBot();
+        // };
     }
 
     private async clearAllFiles() {

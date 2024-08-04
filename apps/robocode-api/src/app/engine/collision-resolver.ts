@@ -4,7 +4,6 @@ import { Vector } from "@robo-code/utils";
 const STICKY_THRESHOLD = 0.0004;
 
 export class CollisionResolver {
-    // TODO maybe move to a collision solver
     resolveElastic(player: PhysicsEntity, entity: PhysicsEntity) {
         // Find the mid points of the entity and player
         const pMidX = player.getMidX();

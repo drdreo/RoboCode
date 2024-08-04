@@ -8,3 +8,7 @@ export function randomInteger(min: number, max: number) {
 export function toDegrees(rad: number) {
     return (rad * 180.0) / Math.PI;
 }
+
+export function toRadian(degrees: number): number {
+    return degrees * (Math.PI / 180);
+}

@@ -1,5 +1,5 @@
 import { BotData, ROBOT_HEIGHT, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH, ROBOT_WIDTH } from "@robo-code/shared";
-import { Logger } from "@robo-code/utils";
+import { Logger, toRadian } from "@robo-code/utils";
 import { CANVAS_FONT, DEBUG } from "../../settings";
 import { DrawableElement } from "../canvas.types";
 
@@ -32,23 +32,30 @@ export class BotElement implements DrawableElement {
 
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.save();
-        // use canvas height to match the 2D Cartesian system
-        ctx.translate(this.x - this.width / 2, ctx.canvas.height - (this.y - this.height / 2));
+
+        // NOTE: convert to 2D Cartesian system
+        // Move to the center of the entity
+        ctx.translate(this.x, ctx.canvas.height - this.y);
+        // Rotate around the center
+        ctx.rotate(toRadian(this.rotation));
+
+        // Move back by half the width and height to draw the entity correctly
+        ctx.translate(-this.width / 2, -this.height / 2);
+
         if (DEBUG.enabled) {
             this.drawTooltip(ctx);
-        }
-
-        this.drawOrigin(ctx);
-
-        ctx.rotate(this.rotation * (Math.PI / 180));
-
-        if (DEBUG.enabled) {
             this.drawHitbox(ctx);
         }
 
         this.drawWheels(ctx);
         this.drawBody(ctx);
         this.drawGun(ctx);
+
+        if (DEBUG.enabled) {
+            // Move back to the center
+            ctx.translate(this.width / 2, this.height / 2);
+            this.drawOrigin(ctx);
+        }
 
         ctx.restore();
     }
@@ -73,8 +80,7 @@ export class BotElement implements DrawableElement {
     private drawOrigin(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.fillStyle = "red";
-        ctx.fillStyle = "red";
-        ctx.arc(0, 0, 7, 0, 2 * Math.PI);
+        ctx.arc(0, 0, 3, 0, 2 * Math.PI);
         ctx.fill();
     }
 

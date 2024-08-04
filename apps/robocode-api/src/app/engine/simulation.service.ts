@@ -57,8 +57,8 @@ export class SimulationService {
     }
 
     registerBot(bot: any): Robot {
-        const randomY = Math.floor(Math.random() * 700);
-        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(500, randomY));
+        const randomY = Math.floor(Math.random() * 400);
+        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(300, 300));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
         robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
@@ -69,7 +69,7 @@ export class SimulationService {
         // robot info
         robot.actualBot.getX = () => robot.x;
         robot.actualBot.getY = () => robot.y;
-        robot.actualBot.getHeading = () => robot.heading;
+        robot.actualBot.getHeading = () => robot.rotation;
         robot.actualBot.getRotation = () => robot.rotation;
 
         // arena info
@@ -153,6 +153,7 @@ export class SimulationService {
         this.logger.verbose(robot + " died!");
         robot.actualBot.onDeath();
         this.bots = this.bots.filter((b) => b !== robot);
+        this.engine.removeEntity(robot);
     }
 
     private tickBots(dt: number) {
@@ -177,12 +178,12 @@ export class SimulationService {
     private spawnBulletAtRobot(bullet: Bullet, robot: Robot) {
         bullet.isActive = true;
         const { x, y, rotation } = robot;
-        bullet.init(x, y, rotation);
+        bullet.init(x, y, rotation, robot.id);
         this.engine.addEntity(bullet);
     }
 
     private removeBullet(bullet: Bullet) {
-        bullet.isActive = false;
+        bullet.reset();
         this.engine.removeEntity(bullet);
     }
 
@@ -217,23 +218,25 @@ export class SimulationService {
 
         // TODO: collisions should probably done while iterating through all entities instead of again here
 
-        // for (const bot of this.bots) {
-        //     const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
-        //     for (const bullet of bulletHits) {
-        //         this.resolveBotCollision(bot);
-        //         this.resolveBulletCollision(bullet);
-        //     }
-        // }
-
-        // DANGER: Bots should not check against itself
         for (const bot of this.bots) {
-            const botCandiates = this.bots.filter((b) => b.id !== bot.id);
-            const botCollisions = this.collisionDetector.detectCollisions(bot, botCandiates);
-            for (const botCollision of botCollisions) {
-                this.logger.verbose(`Collision between ${bot} and ${botCollision}`);
-                // this.collisionResolver.resolveElastic(bot, botCollision);
+            const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
+            for (const bullet of bulletHits) {
+                console.log(`Bullet from: ${bullet.position} hit bot -` + bot.position);
+
+                this.resolveBotCollision(bot);
+                this.resolveBulletCollision(bullet);
             }
         }
+
+        // DANGER: Bots should not check against itself
+        // for (const bot of this.bots) {
+        //     const botCandiates = this.bots.filter((b) => b.id !== bot.id);
+        //     const botCollisions = this.collisionDetector.detectCollisions(bot, botCandiates);
+        //     for (const botCollision of botCollisions) {
+        //         this.logger.verbose(`Collision between ${bot} and ${botCollision}`);
+        //         // this.collisionResolver.resolveElastic(bot, botCollision);
+        //     }
+        // }
 
         // check if bullet is out of bounds and remove it
         for (const bullet of activeBullets) {

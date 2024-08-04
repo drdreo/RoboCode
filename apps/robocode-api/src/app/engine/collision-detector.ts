@@ -1,4 +1,6 @@
 import { PhysicsEntity } from "./physics-engine";
+import { AbstractVector, toRadian, Vector } from "@robo-code/utils";
+
 export enum CollisionType {
     // KINEMATIC entities are not affected by gravity, and will not allow the solver to solve these elements. Basically static entities.
     KINEMATIC,
@@ -33,13 +35,85 @@ export class CollisionDetector {
         return true;
     }
 
+    // https://dyn4j.org/2010/01/sat/
+    collideSAT(collider: PhysicsEntity, collidee: PhysicsEntity): boolean {
+        return overlaps(collider, collidee);
+    }
+
     detectCollisions(collider: PhysicsEntity, collidees: PhysicsEntity[]): PhysicsEntity[] {
         const collisions: PhysicsEntity[] = [];
         for (let i = 0; i < collidees.length; i++) {
-            if (this.collideRect(collider, collidees[i])) {
+            if (this.collideSAT(collider, collidees[i])) {
                 collisions.push(collidees[i]);
             }
         }
         return collisions;
     }
+}
+
+function getVerticesOfEntity(entity: PhysicsEntity): AbstractVector[] {
+    const hw = entity.width / 2;
+    const hh = entity.height / 2;
+
+    const rot = toRadian(-entity.rotation);
+    const cos = Math.cos(rot);
+    const sin = Math.sin(rot);
+
+    const vertices = [
+        new Vector(entity.position.x + cos * -hw - sin * -hh, entity.position.y + sin * -hw + cos * -hh),
+        new Vector(entity.position.x + cos * hw - sin * -hh, entity.position.y + sin * hw + cos * -hh),
+        new Vector(entity.position.x + cos * hw - sin * hh, entity.position.y + sin * hw + cos * hh),
+        new Vector(entity.position.x + cos * -hw - sin * hh, entity.position.y + sin * -hw + cos * hh),
+    ];
+
+    if (entity.rotation !== 0) {
+        console.log(
+            "Vertices:",
+            vertices.map((v) => v.toString()),
+        );
+    }
+    return vertices;
+}
+
+function getAxesOfEntity(entity: PhysicsEntity): AbstractVector[] {
+    const vertices = getVerticesOfEntity(entity);
+    const axes: AbstractVector[] = [];
+    for (let i = 0; i < vertices.length; i++) {
+        const p1 = vertices[i];
+        const p2 = vertices[(i + 1) % vertices.length];
+        const edge = p1.subtract(p2);
+        axes.push(edge.perpendicular().normalise());
+    }
+    return axes;
+}
+
+function project(axis: AbstractVector, vertices: AbstractVector[]): [number, number] {
+    let min = axis.dot(vertices[0]);
+    let max = min;
+
+    for (let i = 1; i < vertices.length; i++) {
+        const projection = axis.dot(vertices[i]);
+        if (projection < min) {
+            min = projection;
+        } else if (projection > max) {
+            max = projection;
+        }
+    }
+    return [min, max];
+}
+
+function overlaps(collider: PhysicsEntity, collidee: PhysicsEntity): boolean {
+    const axes = getAxesOfEntity(collider).concat(getAxesOfEntity(collidee));
+
+    for (let i = 0; i < axes.length; i++) {
+        const axis = axes[i];
+        const [min1, max1] = project(axis, getVerticesOfEntity(collider));
+        const [min2, max2] = project(axis, getVerticesOfEntity(collidee));
+
+        if (max1 < min2 || max2 < min1) {
+            return false;
+        }
+    }
+
+    return true;
 }
