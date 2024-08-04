@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { rimraf } from "rimraf";
 import { SimulationService } from "../engine/simulation.service";
 import { Compiler } from "./compiler";
+import { SittingDuck } from "../robot/test-bots/SittingDuck";
 import { Spinner } from "../robot/test-bots/Spinner";
 import { UpAndDown } from "../robot/test-bots/UpAndDown";
 
@@ -62,10 +63,10 @@ export class CodeService implements OnApplicationBootstrap {
 
     private registerDebugBot(): void {
         this.simulationService.registerBot(new UpAndDown());
-        // this.simulationService.registerBot(new SittingDuck());
+        this.simulationService.registerBot(new SittingDuck());
 
-        // this.simulationService.registerBot(new SittingDuck());
         this.simulationService.registerBot(new Spinner());
+        // this.simulationService.registerBot(new Spinner());
 
         // const debugBot = this.simulationService.registerBot(new Spinner());
         // debugBot.actualBot.onDeath = () => {

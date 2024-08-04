@@ -13,7 +13,7 @@ import {
     ROBOT_MAX_TURNING_SPEED,
     ROBOT_SHOOTING_ENERGY_COST,
 } from "@robo-code/shared";
-import { AbstractVector, randomInteger, Vector } from "@robo-code/utils";
+import { AbstractVector, randomInteger, toRadian, Vector } from "@robo-code/utils";
 import { environment } from "../../environments/environment";
 import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
@@ -121,9 +121,11 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
         // console.log('forward - ' + amount + this.toString());
 
         // Calculate the angle in radians based on the current rotation
-        const angleInRadians = (-this.rotation + 90) * (Math.PI / 180);
+        const angleInRadians = toRadian(-this.rotation + 90);
         // Calculate the forward vector based on the angle
-        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians)).setMagnitude(forwardForce);
+        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians))
+            .setMagnitude(forwardForce)
+            .limit(this.MAX_SPEED);
 
         this.applyForce(forwardVec);
 

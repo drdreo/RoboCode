@@ -56,9 +56,10 @@ export class SimulationService {
         });
     }
 
-    registerBot(bot: any): Robot {
-        const randomY = Math.floor(Math.random() * 400);
-        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, new Vector(300, 300));
+    registerBot(bot: any, position?: Vector): Robot {
+        const randomY = Math.floor(Math.random() * 700);
+
+        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, position ?? new Vector(randomY, randomY));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
         robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
@@ -221,7 +222,7 @@ export class SimulationService {
         for (const bot of this.bots) {
             const bulletHits = this.collisionDetector.detectCollisions(bot, activeBullets) as Bullet[];
             for (const bullet of bulletHits) {
-                console.log(`Bullet from: ${bullet.position} hit bot -` + bot.position);
+                this.logger.debug(`Bullet from: ${bullet.owner} hit bot -` + bot.name);
 
                 this.resolveBotCollision(bot);
                 this.resolveBulletCollision(bullet);

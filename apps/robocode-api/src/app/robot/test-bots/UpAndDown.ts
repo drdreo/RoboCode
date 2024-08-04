@@ -14,10 +14,10 @@ export class UpAndDown {
 
         if (currentPos < this.origPos - 200) {
             this.forwards = true;
-            // this.shoot();
+            this.shoot();
         } else if (currentPos > this.origPos) {
             this.forwards = false;
-            this.shoot();
+            // this.shoot();
         }
 
         if (this.forwards) {

@@ -10,9 +10,9 @@ export class SittingDuck {
 
     tick() {
         this.lastRot = this.getHeading();
-        if (this.lastRot < 45) {
-            this.turn(10);
-        }
+        // if (this.lastRot < 45) {
+        //     this.turn(10);
+        // }
 
         if (this.lastShot + this.shootInterval < Date.now()) {
             this.shoot();

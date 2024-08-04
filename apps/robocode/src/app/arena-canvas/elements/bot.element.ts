@@ -42,16 +42,14 @@ export class BotElement implements DrawableElement {
         // Move back by half the width and height to draw the entity correctly
         ctx.translate(-this.width / 2, -this.height / 2);
 
-        if (DEBUG.enabled) {
-            this.drawTooltip(ctx);
-            this.drawHitbox(ctx);
-        }
-
         this.drawWheels(ctx);
         this.drawBody(ctx);
         this.drawGun(ctx);
 
         if (DEBUG.enabled) {
+            this.drawTooltip(ctx);
+            this.drawHitbox(ctx);
+
             // Move back to the center
             ctx.translate(this.width / 2, this.height / 2);
             this.drawOrigin(ctx);
@@ -68,8 +66,9 @@ export class BotElement implements DrawableElement {
     }
 
     private drawHitbox(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = "rgba(218,165,32,0.48)";
-        ctx.fillRect(0, 0, ROBOT_HITBOX_WIDTH, ROBOT_HITBOX_HEIGHT);
+        ctx.strokeStyle = "red";
+
+        ctx.strokeRect(0, 0, ROBOT_HITBOX_WIDTH, ROBOT_HITBOX_HEIGHT);
     }
 
     private drawBody(ctx: CanvasRenderingContext2D) {
