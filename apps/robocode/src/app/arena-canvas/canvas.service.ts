@@ -77,12 +77,32 @@ export class CanvasService {
         const { x, y } = delta;
         const panSpeed = 1 / this.viewport.zoom;
 
+        console.log({ delta, zoom: this.viewport.zoom });
         this.viewport.pan.x += x * panSpeed;
         this.viewport.pan.y += y * panSpeed;
     }
 
-    zoomCanvas(delta: number) {
-        this.viewport.zoom = Math.max(delta, 0.1);
+    resetPan() {
+        this.viewport.pan.x = 0;
+        this.viewport.pan.y = 0;
+    }
+
+    zoomCanvas(delta: number, mousePos: Position) {
+        // this.viewport.zoom = Math.max(delta, 0.1);
+
+        const { zoom, pan } = this.viewport;
+        const zoomChange = delta - zoom;
+
+        const offsetX = -mousePos.x * zoomChange;
+        const offsetY = -mousePos.y * zoomChange;
+
+        // Apply the zoom
+        const newZoom = Math.max(delta, 0.1);
+        this.viewport.zoom = newZoom;
+
+        // Adjust the pan to keep the mouse position at the same place on the screen
+        this.viewport.pan.x += offsetX / newZoom;
+        this.viewport.pan.y += offsetY / newZoom;
     }
 
     applyViewportTransformation(ctx: CanvasRenderingContext2D) {

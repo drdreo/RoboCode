@@ -9,20 +9,45 @@
     z-index: 1;
 }
 
+#arena-canvas {
+    border: 1px solid white;
+
+    &:focus {
+        border: 1px solid orange;
+    }
+}
+
 #debug-canvas {
     position: absolute;
 }
 
 .debug-info {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-
-    padding: 5px;
-    width: auto;
-    pointer-events: none;
-
     background-color: rgba(0, 0, 0, 0.63);
     border: 1px lime solid;
+    left: 0;
+    padding: 5px;
+
+    pointer-events: none;
+    position: absolute;
+
+    top: 0;
+    z-index: 2;
+
+    &__robot {
+        table {
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            width: auto;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid;
+        }
+
+        td {
+            width: 150px;
+        }
+    }
 }

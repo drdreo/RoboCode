@@ -28,13 +28,6 @@
             }
         }
     },
-    "implicitDependencies": {
-        ".eslintrc.json": "*",
-        "package.json": {
-            "dependencies": "*",
-            "devDependencies": "*"
-        }
-    },
     "targetDependencies": {
         "build": [
             {

@@ -7,6 +7,7 @@ import {
     model,
     Signal,
     signal,
+    untracked,
     viewChild,
 } from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate, Position } from "@robo-code/shared";
@@ -48,7 +49,7 @@ export class ArenaCanvasComponent {
         this.bullets = toSignal(this.botService.bullets$, { initialValue: [] });
 
         effect(() => {
-            this.canvasService.zoomCanvas(this.zoom());
+            this.canvasService.zoomCanvas(this.zoom(), this.mousePosition());
 
             this.renderCanvas(this.bots(), this.bullets(), this.mousePosition());
         });
@@ -98,8 +99,9 @@ export class ArenaCanvasComponent {
         this.zoomHotkey.set(false);
     }
 
-    onZoomReset($event: any) {
+    onZoomReset() {
         this.zoom.set(1);
+        this.canvasService.resetPan();
     }
 
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {

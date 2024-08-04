@@ -1,17 +1,16 @@
 <img #backgroundImage src="assets/images/arena_bg.jpg" style="display: none" />
 
 <canvas
-    id="arena-canvas"
     #arenaCanvas
-    tabindex="0"
-    (mousemove)="onCanvasMouse($event, arenaCanvas)"
-    (wheel)="onCanvasWheel($event)"
     (keydown.alt)="onZoomHotkey($event)"
     (keyup.alt)="onZoomHotkeyUp($event)"
-    (keyup.z)="onZoomReset($event)"
-    [height]="ARENA_SIZE"
-    [width]="1400"
-    style="border: 1px solid white"
+    (keyup.z)="onZoomReset()"
+    (mousemove)="onCanvasMouse($event, arenaCanvas)"
+    (wheel)="onCanvasWheel($event)"
+    [height]="800"
+    [width]="1200"
+    id="arena-canvas"
+    tabindex="0"
 ></canvas>
 
 <!--@if (DEBUG.enabled) {-->
@@ -29,7 +28,7 @@
         <div class="debug-info">
             @for (bot of bots(); track bot.id) {
                 <div class="debug-info__robot">
-                    <table border="1">
+                    <table>
                         <tr>
                             <th colspan="2">{{ bot.name }}</th>
                         </tr>
@@ -50,7 +49,6 @@
                             <td>{{ bot.velocity.x | number: "1.0-1" }} / {{ bot.velocity.y | number: "1.0-1" }}</td>
                         </tr>
                     </table>
-                    <hr />
                 </div>
             }
         </div>
