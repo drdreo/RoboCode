@@ -66,12 +66,12 @@ function getVerticesOfEntity(entity: PhysicsEntity): AbstractVector[] {
         new Vector(entity.position.x + cos * -hw - sin * hh, entity.position.y + sin * -hw + cos * hh),
     ];
 
-    if (entity.rotation !== 0) {
-        console.log(
-            "Vertices:",
-            vertices.map((v) => v.toString()),
-        );
-    }
+    // if (entity.rotation !== 0) {
+    //     console.log(
+    //         "Vertices:",
+    //         vertices.map((v) => v.toString()),
+    //     );
+    // }
     return vertices;
 }
 

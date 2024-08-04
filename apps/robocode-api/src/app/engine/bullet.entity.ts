@@ -20,7 +20,7 @@ export class Bullet extends PhysicsEntity {
     init(x: number, y: number, heading: number, owner: string): void {
         this.owner = owner; // who shot the bullet
 
-        const headingInRadians = toRadian(heading);
+        const headingInRadians = toRadian(-heading + 90);
 
         const offset = new Vector(BULLET_OFFSET_X, BULLET_OFFSET_Y);
         offset.rotate(-heading);
@@ -33,7 +33,7 @@ export class Bullet extends PhysicsEntity {
 
     reset() {
         this.isActive = false;
-        this.position.setAxes(0, 0);
-        this.velocity.setAxes(0, 0);
+        this.position.zero();
+        this.velocity.zero();
     }
 }
