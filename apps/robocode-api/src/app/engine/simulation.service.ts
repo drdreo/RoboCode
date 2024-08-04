@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ARENA_SIZE, BotsUpdate, BulletData, TICKS_PER_SECOND } from "@robo-code/shared";
 import { Vector } from "@robo-code/utils";
 import { timer } from "rxjs";
-import { Robot } from "../robot/Robot";
+import { RobotEntity } from "../robot/robot.entity";
 import { IRobotHitEvent, IRobotScanEven } from "../robot/robot.types";
 import { Bullet } from "./bullet.entity";
 import { CollisionDetector } from "./collision-detector";
@@ -17,7 +17,7 @@ let BULLET_COUNTER = 0;
 export class SimulationService {
     tick$ = timer(0, TICKS_PER_SECOND);
 
-    private bots: Robot[] = [];
+    private bots: RobotEntity[] = [];
     private bullets: Bullet[] = new Array<Bullet>(50);
 
     private engine = new Engine();
@@ -44,7 +44,7 @@ export class SimulationService {
             const frameTime = newTime - this.lastStepTime;
 
             // TODO: Measure distance accuracy
-            this.measureBotDistanceAccuracy(newTime);
+            // this.measureBotDistanceAccuracy(newTime);
 
             this.tickBots(frameTime);
 
@@ -56,10 +56,10 @@ export class SimulationService {
         });
     }
 
-    registerBot(bot: any, position?: Vector): Robot {
+    registerBot(bot: any, position?: Vector): RobotEntity {
         const randomY = Math.floor(Math.random() * 700);
 
-        const robot = new Robot("robot_" + ENTITY_COUNTER++, bot, position ?? new Vector(randomY, randomY));
+        const robot = new RobotEntity("robot_" + ENTITY_COUNTER++, bot, position ?? new Vector(randomY, randomY));
         // robot actions
         robot.actualBot.scan = () => this.scan(robot);
         robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
@@ -89,7 +89,7 @@ export class SimulationService {
         return robot;
     }
 
-    scan(robot: Robot) {
+    scan(robot: RobotEntity) {
         this.logger.verbose(robot + " scanning!");
 
         const otherBot = this.bots.find((b) => b !== robot);
@@ -105,7 +105,7 @@ export class SimulationService {
         }
     }
 
-    shootBullet(robot: Robot) {
+    shootBullet(robot: RobotEntity) {
         this.logger.debug(robot + " shooting bullet!");
 
         const availableBullet = this.bullets.find(isInactive);
@@ -150,7 +150,7 @@ export class SimulationService {
         }
     }
 
-    private killBot(robot: Robot) {
+    private killBot(robot: RobotEntity) {
         this.logger.verbose(robot + " died!");
         robot.actualBot.onDeath();
         this.bots = this.bots.filter((b) => b !== robot);
@@ -176,7 +176,7 @@ export class SimulationService {
         }
     }
 
-    private spawnBulletAtRobot(bullet: Bullet, robot: Robot) {
+    private spawnBulletAtRobot(bullet: Bullet, robot: RobotEntity) {
         bullet.isActive = true;
         const { x, y, rotation } = robot;
         bullet.init(x, y, rotation, robot.id);
@@ -196,7 +196,7 @@ export class SimulationService {
         }
     }
 
-    private resolveBotCollision(robot: Robot) {
+    private resolveBotCollision(robot: RobotEntity) {
         robot.bulletHit();
         const died = robot.isDead();
         if (died) {

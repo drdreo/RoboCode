@@ -4,7 +4,7 @@ import webpack from "webpack";
 
 export class Compiler {
     getCode(source: string) {
-        // const base = await fs.promises.readFile('apps/robocode-backend/src/app/robot/Robot.ts', 'utf-8');
+        // const base = await fs.promises.readFile('apps/robocode-backend/src/app/robot/robot.entity.ts', 'utf-8');
         const code = typescript.transpile(source);
         return eval(code); // evil
     }

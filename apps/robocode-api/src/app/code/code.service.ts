@@ -66,6 +66,7 @@ export class CodeService implements OnApplicationBootstrap {
         this.simulationService.registerBot(new SittingDuck());
 
         this.simulationService.registerBot(new Spinner());
+
         // this.simulationService.registerBot(new Spinner());
 
         // const debugBot = this.simulationService.registerBot(new Spinner());

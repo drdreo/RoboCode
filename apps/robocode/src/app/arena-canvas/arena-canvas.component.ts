@@ -7,7 +7,6 @@ import {
     model,
     Signal,
     signal,
-    untracked,
     viewChild,
 } from "@angular/core";
 import { ARENA_SIZE, BotsUpdate, BulletsUpdate, Position } from "@robo-code/shared";
@@ -111,7 +110,7 @@ export class ArenaCanvasComponent {
         this.canvasService.drawBackground(ctx, this.backgroundImageRef()?.nativeElement);
 
         if (DEBUG.enabled) {
-            this.canvasService.drawDebugCanvas(ctx);
+            // this.canvasService.drawDebugCanvas(ctx);
             this.canvasService.renderMousePosition(ctx, mousePosition);
         }
 

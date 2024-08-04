@@ -47,11 +47,12 @@ export class BotElement implements DrawableElement {
         this.drawGun(ctx);
 
         if (DEBUG.enabled) {
-            this.drawTooltip(ctx);
             this.drawHitbox(ctx);
 
             // Move back to the center
             ctx.translate(this.width / 2, this.height / 2);
+
+            this.drawTooltip(ctx);
             this.drawOrigin(ctx);
         }
 
@@ -59,10 +60,34 @@ export class BotElement implements DrawableElement {
     }
 
     private drawTooltip(ctx: CanvasRenderingContext2D) {
-        const text = `${this.name} ${Math.floor(this.health)}/${this.energy} - [${Math.floor(this.x)},${Math.floor(this.y)}] (${Math.floor(this.rotation)})`;
+        ctx.rotate(-toRadian(this.rotation));
+
+        // pointer from origin
+        ctx.beginPath();
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(0, 0);
+        ctx.lineTo(15, -45);
+        ctx.stroke();
+
+        // Name
+        const nameOffset = -20;
+        const nameText = `${this.name}`;
         ctx.font = `15px ${CANVAS_FONT}`;
-        ctx.fillStyle = "#000000";
-        ctx.fillText(text, -20, -20);
+        ctx.fillStyle = "#FFFFFF";
+        const textWidth = ctx.measureText(nameText).width;
+        ctx.fillText(nameText, nameOffset, -50);
+
+        // Health
+        const healthText = `${Math.floor(this.health)}/${this.energy}`;
+        ctx.fillStyle = this.health > 75 ? "green" : this.health > 35 ? "yellow" : "red";
+        ctx.fillText(healthText, nameOffset + textWidth + 5, -50);
+
+        // Position
+        const statsText = `[${Math.floor(this.x)}, ${Math.floor(this.y)}] (${Math.floor(this.rotation)})`;
+        ctx.font = `10px ${CANVAS_FONT}`;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(statsText, -20, -70);
     }
 
     private drawHitbox(ctx: CanvasRenderingContext2D) {

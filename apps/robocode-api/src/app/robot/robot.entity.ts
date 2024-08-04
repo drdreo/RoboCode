@@ -11,6 +11,7 @@ import {
     ROBOT_HITBOX_WIDTH,
     ROBOT_MAX_SPEED,
     ROBOT_MAX_TURNING_SPEED,
+    ROBOT_MOVEMENT_ENERGY_COST,
     ROBOT_SHOOTING_ENERGY_COST,
 } from "@robo-code/shared";
 import { AbstractVector, randomInteger, toRadian, Vector } from "@robo-code/utils";
@@ -32,7 +33,7 @@ const ROBOT_ROTATION_DECAY = 0.9; // in percentage.. 0.9=10%
  Positive y is up.
  */
 
-export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
+export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotActions {
     width = ROBOT_HITBOX_WIDTH;
     height = ROBOT_HITBOX_HEIGHT;
     rotation = 0; // in degrees
@@ -76,9 +77,9 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     public getData(): BotData {
         return {
             id: this.id,
-            name: this.actualBot.name || "Robot", // TODO: this data should be sent once
+            name: this.actualBot.name || "RobotEntity", // TODO: this data should be sent once
             health: this.health,
-            energy: +this.energy.toFixed(3),
+            energy: +this.energy.toFixed(0),
             position: this.position.toObject(),
             rotation: this.rotation,
             velocity: this.velocity.round(2).toObject(),
@@ -198,6 +199,6 @@ export class Robot extends PhysicsEntity implements IRobotStats, IRobotActions {
     }
 
     private consumeMovementEnergy() {
-        this.energy -= this.velocity.magnitude() * 0.01;
+        this.energy -= this.velocity.magnitude() * ROBOT_MOVEMENT_ENERGY_COST;
     }
 }
