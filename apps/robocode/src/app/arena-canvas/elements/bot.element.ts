@@ -49,9 +49,10 @@ export class BotElement implements DrawableElement {
         // Move back by half the width and height to draw the entity correctly
         ctx.translate(-this.width / 2, -this.height / 2);
 
-        this.drawWheels(ctx);
-        this.drawBody(ctx);
-        this.drawGun(ctx);
+        this.drawImageBody(ctx);
+        // this.drawWheels(ctx);
+        // this.drawBody(ctx);
+        // this.drawGun(ctx);
 
         if (DEBUG.enabled) {
             this.drawHitbox(ctx);
@@ -106,6 +107,26 @@ export class BotElement implements DrawableElement {
     private drawBody(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = "#5a5a9f";
         ctx.fillRect(0, 0, this.width, this.height);
+    }
+
+    private drawImageBody(ctx: CanvasRenderingContext2D) {
+        // TANK 4
+        // const hull = new Image();
+        // hull.src = "assets/images/tanks/hull4.png";
+        // ctx.drawImage(hull, 40, 33, 22, 40, 0, 0, this.width, this.height);
+        //
+        // const turret = new Image();
+        // turret.src = "assets/images/tanks/turret4.png";
+        // ctx.drawImage(turret, 45, 31, 12, 25, 4, -12, 25, 50);
+
+        // TANK 3
+        const hull = new Image();
+        hull.src = "assets/images/tanks/hull3.png";
+        ctx.drawImage(hull, 36, 31, 28, 48, 0, 0, this.width, this.height);
+
+        const turret = new Image();
+        turret.src = "assets/images/tanks/turret3.png";
+        ctx.drawImage(turret, 40, 16, 20, 52, 7, -12, 20, 50);
     }
 
     private drawOrigin(ctx: CanvasRenderingContext2D) {
