@@ -1,10 +1,10 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    computed,
     effect,
     ElementRef,
-    input,
+    inject,
+    model,
     Signal,
     signal,
     viewChild,
@@ -15,6 +15,7 @@ import { DEBUG } from "../settings";
 import { CanvasService } from "./canvas.service";
 import { AsyncPipe, DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { HotkeyService, UiModule } from "@robo-code/ui";
 
 @Component({
     selector: "rc-arena-canvas",
@@ -22,7 +23,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
     styleUrls: ["./arena-canvas.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [AsyncPipe, DecimalPipe, NgOptimizedImage],
+    imports: [AsyncPipe, DecimalPipe, NgOptimizedImage, UiModule],
 })
 export class ArenaCanvasComponent {
     canvasRef = viewChild<ElementRef<HTMLCanvasElement>>("arenaCanvas");
@@ -32,17 +33,17 @@ export class ArenaCanvasComponent {
     bots: Signal<BotsUpdate>;
     bullets: Signal<BulletsUpdate>;
 
-    zoom = input(1);
-    mousePosition = signal<Position>({ x: 0, y: 0 });
-    private previousMousePosition: Position | undefined;
-
+    zoom = model<number>(1);
     protected readonly DEBUG = DEBUG;
     protected readonly ARENA_SIZE = ARENA_SIZE;
+    private zoomHotkey = signal(false);
+    private mousePosition = signal<Position>({ x: 0, y: 0 });
+    private previousMousePosition: Position | undefined;
+    private readonly botService = inject(BotService);
+    private readonly canvasService = inject(CanvasService);
+    private readonly hotkeyService = inject(HotkeyService);
 
-    constructor(
-        private botService: BotService,
-        private canvasService: CanvasService,
-    ) {
+    constructor() {
         this.bots = toSignal(this.botService.bots$, { initialValue: [] });
         this.bullets = toSignal(this.botService.bullets$, { initialValue: [] });
 
@@ -64,6 +65,7 @@ export class ArenaCanvasComponent {
             x: ((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
             y: ((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
         });
+
         const currentPosition = this.mousePosition();
 
         // buttons:1 --> left mouse button
@@ -78,9 +80,26 @@ export class ArenaCanvasComponent {
         this.previousMousePosition = currentPosition;
     }
 
-    onCanvasScroll(evt: any, canvas: HTMLCanvasElement) {
-        // TODO: do scroll on mouse
-        console.log(evt);
+    onCanvasWheel(evt: WheelEvent) {
+        const hotkeyEnabled = this.zoomHotkey();
+        if (hotkeyEnabled) {
+            const zoomValue = this.zoom() + -evt.deltaY / 1000;
+            this.zoom.set(zoomValue);
+        }
+    }
+
+    onZoomHotkey(evt: Event) {
+        evt.preventDefault();
+        this.zoomHotkey.set(true);
+    }
+
+    onZoomHotkeyUp(evt: Event) {
+        evt.preventDefault();
+        this.zoomHotkey.set(false);
+    }
+
+    onZoomReset($event: any) {
+        this.zoom.set(1);
     }
 
     private renderCanvas(bots: BotsUpdate, bullets: BulletsUpdate, mousePosition: Position): void {

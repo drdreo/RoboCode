@@ -1,7 +1,9 @@
 export const DEBUG = {
     enabled: true,
+    // renders a grid on the canvas
     gridInit: false,
-    fakeBots: false,
+    // when enabled, mocked bots will be used instead of the socket updates
+    fakeBots: true,
 };
 
 export const CANVAS_FONT = "Poppins";

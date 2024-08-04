@@ -1,9 +1,14 @@
-<img #backgroundImage src="assets/images/arena_bg.jpg" style="display:none;" />
+<img #backgroundImage src="assets/images/arena_bg.jpg" style="display: none" />
 
 <canvas
     id="arena-canvas"
     #arenaCanvas
+    tabindex="0"
     (mousemove)="onCanvasMouse($event, arenaCanvas)"
+    (wheel)="onCanvasWheel($event)"
+    (keydown.alt)="onZoomHotkey($event)"
+    (keyup.alt)="onZoomHotkeyUp($event)"
+    (keyup.z)="onZoomReset($event)"
     [height]="ARENA_SIZE"
     [width]="1400"
     style="border: 1px solid white"
@@ -20,9 +25,9 @@
 <!--}-->
 
 @if (DEBUG.enabled) {
-    @if ( bots().length > 0) {
+    @if (bots().length > 0) {
         <div class="debug-info">
-            @for (bot of  bots(); track bot.id) {
+            @for (bot of bots(); track bot.id) {
                 <div class="debug-info__robot">
                     <table border="1">
                         <tr>
@@ -46,7 +51,6 @@
                         </tr>
                     </table>
                     <hr />
-
                 </div>
             }
         </div>

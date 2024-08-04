@@ -82,10 +82,7 @@ export class CanvasService {
     }
 
     zoomCanvas(delta: number) {
-        this.viewport.zoom = delta;
-        if (this.viewport.zoom < 0.1) {
-            this.viewport.zoom = 0.1;
-        }
+        this.viewport.zoom = Math.max(delta, 0.1);
     }
 
     applyViewportTransformation(ctx: CanvasRenderingContext2D) {
