@@ -36,3 +36,10 @@ Pseudo code:
 3. Detect Collisions
 4. Resolve Collisions
 ```
+
+
+# Credits
+
+## Assets
+### Tanks
+- [Tanks](https://jimhatama.itch.io/ww2-pixel-top-view-tanks) by [Jimhatama](https://www.patreon.com/jimhatama)

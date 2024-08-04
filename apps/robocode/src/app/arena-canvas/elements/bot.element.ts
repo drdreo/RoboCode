@@ -1,4 +1,11 @@
-import { BotData, ROBOT_HEIGHT, ROBOT_HITBOX_HEIGHT, ROBOT_HITBOX_WIDTH, ROBOT_WIDTH } from "@robo-code/shared";
+import {
+    ARENA_SIZE,
+    BotData,
+    ROBOT_HEIGHT,
+    ROBOT_HITBOX_HEIGHT,
+    ROBOT_HITBOX_WIDTH,
+    ROBOT_WIDTH,
+} from "@robo-code/shared";
 import { Logger, toRadian } from "@robo-code/utils";
 import { CANVAS_FONT, DEBUG } from "../../settings";
 import { DrawableElement } from "../canvas.types";
@@ -35,7 +42,7 @@ export class BotElement implements DrawableElement {
 
         // NOTE: convert to 2D Cartesian system
         // Move to the center of the entity
-        ctx.translate(this.x, ctx.canvas.height - this.y);
+        ctx.translate(this.x, ARENA_SIZE - this.y);
         // Rotate around the center
         ctx.rotate(toRadian(this.rotation));
 

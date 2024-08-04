@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ARENA_SIZE, BotsUpdate, BulletData, TICKS_PER_SECOND } from "@robo-code/shared";
-import { Vector } from "@robo-code/utils";
+import { randomInteger, Vector } from "@robo-code/utils";
 import { timer } from "rxjs";
 import { RobotEntity } from "../robot/robot.entity";
 import { IRobotHitEvent, IRobotScanEven } from "../robot/robot.types";
@@ -57,7 +57,7 @@ export class SimulationService {
     }
 
     registerBot(bot: any, position?: Vector): RobotEntity {
-        const randomY = Math.floor(Math.random() * 700);
+        const randomY = randomInteger(200, 700);
 
         const robot = new RobotEntity("robot_" + ENTITY_COUNTER++, bot, position ?? new Vector(randomY, randomY));
         // robot actions

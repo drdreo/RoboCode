@@ -1,4 +1,4 @@
-import { BULLET_SIZE, BulletData, Viewport } from "@robo-code/shared";
+import { ARENA_SIZE, BULLET_SIZE, BulletData, Viewport } from "@robo-code/shared";
 import { DrawableElement } from "../canvas.types";
 
 export class BulletElement implements DrawableElement {
@@ -22,7 +22,7 @@ export class BulletElement implements DrawableElement {
         ctx.save();
         const offset = this.size / 2;
         const posX = this.x + offset;
-        const posY = ctx.canvas.height - this.y + offset;
+        const posY = ARENA_SIZE - this.y + offset;
 
         ctx.translate(posX, posY);
 

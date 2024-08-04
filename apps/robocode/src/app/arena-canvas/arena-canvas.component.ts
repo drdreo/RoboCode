@@ -55,9 +55,6 @@ export class ArenaCanvasComponent {
     }
 
     onCanvasMouse(evt: MouseEvent, canvas: HTMLCanvasElement) {
-        if (!DEBUG.enabled) {
-            return;
-        }
         const rect = canvas.getBoundingClientRect();
 
         // translate to 2D Cartesian coordinate system
@@ -110,12 +107,15 @@ export class ArenaCanvasComponent {
         this.canvasService.drawBackground(ctx, this.backgroundImageRef()?.nativeElement);
 
         if (DEBUG.enabled) {
-            // this.canvasService.drawDebugCanvas(ctx);
-            this.canvasService.renderMousePosition(ctx, mousePosition);
+            this.canvasService.drawDebugCanvas(ctx);
         }
 
         this.canvasService.renderBots(ctx, bots);
         this.canvasService.renderBullets(ctx, bullets);
+
+        if (DEBUG.enabled) {
+            this.canvasService.renderMousePosition(ctx, mousePosition);
+        }
 
         ctx.restore();
     }

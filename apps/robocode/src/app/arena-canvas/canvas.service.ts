@@ -48,7 +48,7 @@ export class CanvasService {
     }
 
     renderMousePosition(ctx: CanvasRenderingContext2D, mousePos: Position) {
-        this.mouseElement.update(mousePos, ctx.canvas.height);
+        this.mouseElement.update(mousePos);
         this.mouseElement.draw(ctx);
     }
 
