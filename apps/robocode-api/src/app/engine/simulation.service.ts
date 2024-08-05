@@ -18,7 +18,7 @@ let BULLET_COUNTER = 0;
 export class SimulationService {
     tick$ = timer(0, TICKS_PER_SECOND);
     // TODO: find a better spot for this
-    manualBot: ManualRobotEntity;
+    manualBot?: ManualRobotEntity;
 
     private bots: RobotEntity[] = [];
     private bullets: Bullet[] = new Array<Bullet>(50);
@@ -69,9 +69,7 @@ export class SimulationService {
 
     registerManualBot() {
         this.manualBot = new ManualRobotEntity("manual_robot");
-
-        this.bots.push(this.manualBot);
-        this.engine.addEntity(this.manualBot);
+        this.registerBot(this.manualBot);
     }
 
     scan(robot: RobotEntity) {

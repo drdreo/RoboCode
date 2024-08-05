@@ -52,10 +52,9 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
     // 0: Perfectly inelastic collision (no bounce, the entities stick together).
     // 1: Perfectly elastic collision (no energy loss, entities bounce back with the same speed).
     restitution = 0.7;
-
+    protected dt: number;
     private health = 100;
     private energy = 100;
-    private dt: number;
 
     constructor(
         id: string,
@@ -152,8 +151,8 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
 
     turn(angle: number): void {
         const degree = Math.max(-ROBOT_MAX_TURNING_SPEED, Math.min(angle, ROBOT_MAX_TURNING_SPEED));
-
         this.rotation = (this.rotation + degree * this.dt) % 360;
+
         if (this.rotation < 0) {
             this.rotation += 360;
         }

@@ -36,6 +36,9 @@ export class BotGateway {
 
     @SubscribeMessage(SocketEvents.ManualInput)
     handleMessage(client: any, { commands }: ManualInputData) {
+        if (!this.simulationService.manualBot) {
+            return;
+        }
         this.simulationService.manualBot.activeCommands = commands;
     }
 }

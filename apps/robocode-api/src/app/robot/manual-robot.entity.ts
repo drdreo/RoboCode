@@ -9,7 +9,8 @@ export class ManualRobotEntity extends RobotEntity {
         super(id, { name: "ManualBot" }, position);
     }
 
-    override tick() {
+    override tick(dt: number) {
+        this.dt = dt;
         for (const command of this.activeCommands) {
             switch (command) {
                 case "forwards":
@@ -19,10 +20,10 @@ export class ManualRobotEntity extends RobotEntity {
                     this.backward(1);
                     break;
                 case "left":
-                    this.turn(-10);
+                    this.turn(-1);
                     break;
                 case "right":
-                    this.turn(10);
+                    this.turn(1);
                     break;
                 case "shoot":
                     // not worth to change the event flow for this. Shooting is intercepted outside
