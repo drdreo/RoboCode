@@ -38,13 +38,17 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
     height = ROBOT_HITBOX_HEIGHT;
     rotation = 0; // in degrees
 
+    // Name of the Robot
+    name: string;
+
     MAX_SPEED = ROBOT_MAX_SPEED;
     MAX_ROTATION = ROBOT_MAX_TURNING_SPEED;
 
+    // this entity collision type upon colliding
     type = CollisionType.DYNAMIC;
-    // Collision represents the type of collision another object will receive upon colliding
+    // collision represents the type of collision another object will receive upon colliding
     collision = CollisionType.DYNAMIC;
-    // Resitution is the bounciness of the collision
+    // Restitution is the bounciness of the collision
     // 0: Perfectly inelastic collision (no bounce, the entities stick together).
     // 1: Perfectly elastic collision (no energy loss, entities bounce back with the same speed).
     restitution = 0.7;
@@ -59,11 +63,8 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
         position?: Vector,
     ) {
         super(id);
+        this.name = actualBot.name || "RobotEntity";
         this.position = position || new Vector(randomInteger(100, 900), randomInteger(100, 900));
-    }
-
-    get name(): string {
-        return this.actualBot.name;
     }
 
     getHealth(): number {
@@ -77,7 +78,7 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
     public getData(): BotData {
         return {
             id: this.id,
-            name: this.actualBot.name || "RobotEntity", // TODO: this data should be sent once
+            name: this.name, // TODO: this data should be sent once
             health: this.health,
             energy: +this.energy.toFixed(0),
             position: this.position.toObject(),

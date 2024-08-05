@@ -22,11 +22,20 @@ export class BotElement implements DrawableElement {
 
     private logger = new Logger("BotElement");
 
+    private assets = {
+        hull: new Image(),
+        turret: new Image(),
+    };
+
     constructor(
         public id: string,
         public name: string,
     ) {
         this.logger.verbose(`Created BotElement[${id}]`);
+
+        // TANK 3
+        this.assets.hull.src = "assets/images/tanks/hull3.png";
+        this.assets.turret.src = "assets/images/tanks/turret3.png";
     }
 
     update(data: BotData) {
@@ -119,14 +128,9 @@ export class BotElement implements DrawableElement {
         // turret.src = "assets/images/tanks/turret4.png";
         // ctx.drawImage(turret, 45, 31, 12, 25, 4, -12, 25, 50);
 
-        // TANK 3
-        const hull = new Image();
-        hull.src = "assets/images/tanks/hull3.png";
-        ctx.drawImage(hull, 36, 31, 28, 48, 0, 0, this.width, this.height);
+        ctx.drawImage(this.assets.hull, 36, 31, 28, 48, 0, 0, this.width, this.height);
 
-        const turret = new Image();
-        turret.src = "assets/images/tanks/turret3.png";
-        ctx.drawImage(turret, 40, 16, 20, 52, 7, -12, 20, 50);
+        ctx.drawImage(this.assets.turret, 40, 16, 20, 52, 7, -12, 20, 50);
     }
 
     private drawOrigin(ctx: CanvasRenderingContext2D) {

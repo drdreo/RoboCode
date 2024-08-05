@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ARENA_SIZE, BotsUpdate, BulletData, TICKS_PER_SECOND } from "@robo-code/shared";
-import { randomInteger, Vector } from "@robo-code/utils";
+import { Vector } from "@robo-code/utils";
 import { timer } from "rxjs";
 import { RobotEntity } from "../robot/robot.entity";
 import { IRobotHitEvent, IRobotScanEven } from "../robot/robot.types";
@@ -9,6 +9,7 @@ import { CollisionDetector } from "./collision-detector";
 import { Engine } from "./physics-engine";
 import { hasEnergyToShoot, isActive, isInactive, NOOP } from "./sim.utils";
 import { CollisionResolver } from "./collision-resolver";
+import { ManualRobotEntity } from "../robot/manual-robot.entity";
 
 let ENTITY_COUNTER = 0;
 let BULLET_COUNTER = 0;
@@ -16,10 +17,11 @@ let BULLET_COUNTER = 0;
 @Injectable()
 export class SimulationService {
     tick$ = timer(0, TICKS_PER_SECOND);
+    // TODO: find a better spot for this
+    manualBot: ManualRobotEntity;
 
     private bots: RobotEntity[] = [];
     private bullets: Bullet[] = new Array<Bullet>(50);
-
     private engine = new Engine();
     private collisionDetector = new CollisionDetector();
     private collisionResolver = new CollisionResolver();
@@ -57,36 +59,19 @@ export class SimulationService {
     }
 
     registerBot(bot: any, position?: Vector): RobotEntity {
-        const randomY = randomInteger(200, 700);
-
-        const robot = new RobotEntity("robot_" + ENTITY_COUNTER++, bot, position ?? new Vector(randomY, randomY));
-        // robot actions
-        robot.actualBot.scan = () => this.scan(robot);
-        robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
-        robot.actualBot.forward = (amount) => robot.forward(amount);
-        robot.actualBot.backward = (amount) => robot.backward(amount);
-        robot.actualBot.turn = (amount) => robot.turn(amount);
-
-        // robot info
-        robot.actualBot.getX = () => robot.x;
-        robot.actualBot.getY = () => robot.y;
-        robot.actualBot.getHeading = () => robot.rotation;
-        robot.actualBot.getRotation = () => robot.rotation;
-
-        // arena info
-        robot.actualBot.getArenaWidth = () => ARENA_SIZE;
-        robot.actualBot.getArenaHeight = () => ARENA_SIZE;
-
-        // robot event handlers
-        robot.actualBot.onCrash = robot.actualBot.onCrash ?? NOOP;
-        robot.actualBot.onHit = robot.actualBot.onHit ?? NOOP;
-        robot.actualBot.onDeath = robot.actualBot.onDeath ?? NOOP;
-        robot.actualBot.onWin = robot.actualBot.onWin ?? NOOP;
-        robot.actualBot.onScannedRobot = robot.actualBot.onScannedRobot ?? NOOP;
+        const robot = new RobotEntity("robot_" + ENTITY_COUNTER++, bot, position);
+        this.patchActualBotAPI(robot);
 
         this.bots.push(robot);
         this.engine.addEntity(robot);
         return robot;
+    }
+
+    registerManualBot() {
+        this.manualBot = new ManualRobotEntity("manual_robot");
+
+        this.bots.push(this.manualBot);
+        this.engine.addEntity(this.manualBot);
     }
 
     scan(robot: RobotEntity) {
@@ -128,6 +113,32 @@ export class SimulationService {
 
     getActiveBullets(): BulletData[] {
         return this.bullets.filter(isActive).map((b) => ({ position: b.position.toObject() }));
+    }
+
+    private patchActualBotAPI(robot: RobotEntity) {
+        // robot actions
+        robot.actualBot.scan = () => this.scan(robot);
+        robot.actualBot.shoot = () => (hasEnergyToShoot(robot.getEnergy()) ? this.shootBullet(robot) : NOOP);
+        robot.actualBot.forward = (amount: number) => robot.forward(amount);
+        robot.actualBot.backward = (amount: number) => robot.backward(amount);
+        robot.actualBot.turn = (amount: number) => robot.turn(amount);
+
+        // robot info
+        robot.actualBot.getX = () => robot.x;
+        robot.actualBot.getY = () => robot.y;
+        robot.actualBot.getHeading = () => robot.rotation;
+        robot.actualBot.getRotation = () => robot.rotation;
+
+        // arena info
+        robot.actualBot.getArenaWidth = () => ARENA_SIZE;
+        robot.actualBot.getArenaHeight = () => ARENA_SIZE;
+
+        // robot event handlers
+        robot.actualBot.onCrash = robot.actualBot.onCrash ?? NOOP;
+        robot.actualBot.onHit = robot.actualBot.onHit ?? NOOP;
+        robot.actualBot.onDeath = robot.actualBot.onDeath ?? NOOP;
+        robot.actualBot.onWin = robot.actualBot.onWin ?? NOOP;
+        robot.actualBot.onScannedRobot = robot.actualBot.onScannedRobot ?? NOOP;
     }
 
     private measureBotDistanceAccuracy(timestamp: number) {

@@ -1,5 +1,7 @@
 <h1 class="title">RoboCode
-    <input type="range" min="0.1" max="2" step="0.02" [(ngModel)]="zoom">
+    <input [(ngModel)]="zoom" max="2" min="0.1" step="0.02" type="range">
 </h1>
 <rc-arena-canvas [zoom]="zoom()"/>
 <rc-code-upload/>
+
+<rc-manual-controls/>

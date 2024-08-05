@@ -7,6 +7,7 @@ import { CodeService } from "./code/code.service";
 import { BotGateway } from "./robot/bot.gateway";
 import { SimulationService } from "./engine/simulation.service";
 import { UploadController } from "./upload/upload.controller";
+import { BotController } from "./robot/bot.controller";
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import { UploadController } from "./upload/upload.controller";
             dest: "assets/upload",
         }),
     ],
-    controllers: [AppController, UploadController],
+    controllers: [AppController, UploadController, BotController],
     providers: [AppService, CodeService, SimulationService, BotGateway],
 })
 export class AppModule {}

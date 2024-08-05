@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { SocketEvents } from "@robo-code/shared";
+import { ManualInputData, SocketEvents } from "@robo-code/shared";
 import { Server } from "socket.io";
 import { CodeService } from "../code/code.service";
 import { SimulationService } from "../engine/simulation.service";
@@ -34,8 +34,8 @@ export class BotGateway {
         this.sendToAll(SocketEvents.BulletsUpdate, this.simulationService.getActiveBullets());
     }
 
-    @SubscribeMessage("message")
-    handleMessage(client: any, payload: any): string {
-        return "Hello world!";
+    @SubscribeMessage(SocketEvents.ManualInput)
+    handleMessage(client: any, { commands }: ManualInputData) {
+        this.simulationService.manualBot.activeCommands = commands;
     }
 }

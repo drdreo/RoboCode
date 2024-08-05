@@ -77,7 +77,6 @@ export class CanvasService {
         const { x, y } = delta;
         const panSpeed = 1 / this.viewport.zoom;
 
-        console.log({ delta, zoom: this.viewport.zoom });
         this.viewport.pan.x += x * panSpeed;
         this.viewport.pan.y += y * panSpeed;
     }
