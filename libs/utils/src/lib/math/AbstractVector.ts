@@ -1,5 +1,5 @@
 import { Position } from "@robo-code/shared";
-import { toDegrees } from "./utils";
+import { toDegrees, toRadian } from "./utils";
 import { Vector } from "./Vector";
 
 /**
@@ -326,15 +326,12 @@ export abstract class AbstractVector implements Position {
      * Rotates the vector by provided degrees
      */
     rotate(degrees: number) {
-        const rads = (degrees * Math.PI) / 180;
+        const rads = toRadian(degrees);
         const cos = Math.cos(rads);
         const sin = Math.sin(rads);
 
-        const ox = this.x;
-        const oy = this.y;
-
-        this.x = ox * cos - oy * sin;
-        this.y = ox * sin + oy * cos;
+        this.x = this.x * cos - this.y * sin;
+        this.y = this.x * sin + this.y * cos;
 
         return this;
     }

@@ -39,6 +39,11 @@ export class BotGateway {
         if (!this.simulationService.manualBot) {
             return;
         }
+        const shouldShoot = commands.includes("shoot");
+        if (shouldShoot) {
+            console.log(this.simulationService.manualBot.position);
+            this.simulationService.shootBullet(this.simulationService.manualBot);
+        }
         this.simulationService.manualBot.activeCommands = commands;
     }
 }

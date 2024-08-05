@@ -14,8 +14,10 @@ export const ROBOT_HITBOX_HEIGHT = ROBOT_HEIGHT;
 export const ROBOT_ENERGY_GAIN = 0.1;
 export const ROBOT_SHOOTING_ENERGY_COST = 5;
 export const ROBOT_SHOOTING_MIN_ENERGY = 10;
-export const ROBOT_MAX_SPEED = 4; // 5 units per second
-export const ROBOT_MAX_TURNING_SPEED = 0.055; // 0.075 was before
+export const ROBOT_SPEED_MAX = 4; // 5 units per second
+export const ROBOT_SPEED_DECAY = 0.95; // (friction/drag)
+export const ROBOT_ROTATION_SPEED_MAX = 0.055; // 0.075 was before
+export const ROBOT_ROTATION_DECAY = 0.9; // friction in percentage.. 0.9=10%
 export const ROBOT_MOVEMENT_ENERGY_COST = 0.01;
 
 /**

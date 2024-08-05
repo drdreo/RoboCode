@@ -20,10 +20,10 @@ export class ManualRobotEntity extends RobotEntity {
                     this.backward(1);
                     break;
                 case "left":
-                    this.turn(-1);
+                    this.turn(-5);
                     break;
                 case "right":
-                    this.turn(1);
+                    this.turn(5);
                     break;
                 case "shoot":
                     // not worth to change the event flow for this. Shooting is intercepted outside

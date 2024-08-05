@@ -69,7 +69,11 @@ export class SimulationService {
 
     registerManualBot() {
         this.manualBot = new ManualRobotEntity("manual_robot");
-        this.registerBot(this.manualBot);
+        this.patchActualBotAPI(this.manualBot);
+
+        this.bots.push(this.manualBot);
+        this.engine.addEntity(this.manualBot);
+        return this.manualBot;
     }
 
     scan(robot: RobotEntity) {
@@ -89,7 +93,7 @@ export class SimulationService {
     }
 
     shootBullet(robot: RobotEntity) {
-        this.logger.debug(robot + " shooting bullet!");
+        this.logger.verbose(robot + " shooting bullet!");
 
         const availableBullet = this.bullets.find(isInactive);
         if (!availableBullet) {

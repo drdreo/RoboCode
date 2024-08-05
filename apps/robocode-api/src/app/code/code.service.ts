@@ -5,6 +5,7 @@ import { SimulationService } from "../engine/simulation.service";
 import { Compiler } from "./compiler";
 import { SittingDuck } from "../robot/test-bots/SittingDuck";
 import { Vector } from "@robo-code/utils";
+import { Spinner } from "../robot/test-bots/Spinner";
 
 const FILE_FOLDER = "assets/upload/";
 
@@ -64,7 +65,7 @@ export class CodeService implements OnApplicationBootstrap {
         // this.simulationService.registerBot(new UpAndDown());
         this.simulationService.registerBot(new SittingDuck(), new Vector(100, 100));
         // this.simulationService.registerBot(new SittingDuck());
-        // this.simulationService.registerBot(new Spinner());
+        this.simulationService.registerBot(new Spinner());
         // this.simulationService.registerBot(new Spinner());
         // const debugBot = this.simulationService.registerBot(new Spinner());
         // debugBot.actualBot.onDeath = () => {

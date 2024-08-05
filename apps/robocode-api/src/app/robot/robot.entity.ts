@@ -9,10 +9,12 @@ import {
     ROBOT_HEALTH_DECAY,
     ROBOT_HITBOX_HEIGHT,
     ROBOT_HITBOX_WIDTH,
-    ROBOT_MAX_SPEED,
-    ROBOT_MAX_TURNING_SPEED,
     ROBOT_MOVEMENT_ENERGY_COST,
+    ROBOT_ROTATION_DECAY,
+    ROBOT_ROTATION_SPEED_MAX,
     ROBOT_SHOOTING_ENERGY_COST,
+    ROBOT_SPEED_DECAY,
+    ROBOT_SPEED_MAX,
 } from "@robo-code/shared";
 import { AbstractVector, randomInteger, toRadian, Vector } from "@robo-code/utils";
 import { environment } from "../../environments/environment";
@@ -20,7 +22,6 @@ import { PhysicsEntity } from "../engine/physics-engine";
 import { IRobotActions, IRobotStats } from "./robot.types";
 import { CollisionType } from "../engine/collision-detector";
 
-const ROBOT_ROTATION_DECAY = 0.9; // in percentage.. 0.9=10%
 /**
  The basic robot class that you will extend to create your own robots.
  Please note the following standards will be used:
@@ -41,8 +42,9 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
     // Name of the Robot
     name: string;
 
-    MAX_SPEED = ROBOT_MAX_SPEED;
-    MAX_ROTATION = ROBOT_MAX_TURNING_SPEED;
+    MAX_SPEED = ROBOT_SPEED_MAX;
+    SPEED_DECAY = ROBOT_SPEED_DECAY;
+    MAX_ROTATION = ROBOT_ROTATION_SPEED_MAX;
 
     // this entity collision type upon colliding
     type = CollisionType.DYNAMIC;
@@ -119,43 +121,28 @@ export class RobotEntity extends PhysicsEntity implements IRobotStats, IRobotAct
         const forwardForce = amount;
 
         // forwardForce = Math.max(forwardForce, 0);
-        // console.log('forward - ' + amount + this.toString());
 
-        // Calculate the angle in radians based on the current rotation
         const angleInRadians = toRadian(-this.rotation + 90);
         // Calculate the forward vector based on the angle
-        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians))
-            .setMagnitude(forwardForce)
-            .limit(this.MAX_SPEED);
+        const forwardVec = new Vector(Math.cos(angleInRadians), Math.sin(angleInRadians)).setMagnitude(forwardForce);
 
         this.applyForce(forwardVec);
-
-        // Apply forward acceleration in the direction the player is facing
-        // const angleInRadians = (this.rotation - 90) * (Math.PI / 180);
-        // const accelerationX = Math.cos(angleInRadians) * forwardForce;
-        // const accelerationY = Math.sin(angleInRadians) * forwardForce;
-        //
-        // this.acceleration.setX(accelerationX);
-        // this.acceleration.setY(accelerationY);
-        // this.acceleration.limit(this.maxforce);
-
-        // this.update()
     }
 
     backward(amount: number): void {
-        const force = amount;
-
-        // console.log('backward - ' + amount + this.toString());
-        this.forward(-force);
+        this.forward(-amount);
     }
 
     turn(angle: number): void {
-        const degree = Math.max(-ROBOT_MAX_TURNING_SPEED, Math.min(angle, ROBOT_MAX_TURNING_SPEED));
+        const degree = Math.max(-ROBOT_ROTATION_SPEED_MAX, Math.min(angle, ROBOT_ROTATION_SPEED_MAX));
         this.rotation = (this.rotation + degree * this.dt) % 360;
 
         if (this.rotation < 0) {
             this.rotation += 360;
         }
+
+        // Rotate velocity to match new direction
+        this.velocity.rotate(-degree);
     }
 
     /**

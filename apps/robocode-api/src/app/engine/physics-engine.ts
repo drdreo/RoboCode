@@ -27,6 +27,7 @@ export abstract class PhysicsEntity {
     abstract height: number;
     abstract MAX_SPEED: number;
     abstract MAX_ROTATION: number;
+    abstract SPEED_DECAY: number;
 
     abstract type: CollisionType;
     // collision represents the type of collision another object will receive upon colliding
@@ -99,7 +100,10 @@ export class Engine {
         // console.log(this.frameToSecondFactor);
         for (const entity of this.entities) {
             // adjust vectors to be in units / frame rather than units / s
-            entity.velocity.add(entity.acceleration.mult(this.frameToSecondFactor)).limit(entity.MAX_SPEED);
+            entity.velocity
+                .add(entity.acceleration.mult(this.frameToSecondFactor))
+                .limit(entity.MAX_SPEED)
+                .multiplyByScalar(entity.SPEED_DECAY);
 
             // update position
             entity.position.add(entity.velocity.clone().mult(this.frameToSecondFactor));

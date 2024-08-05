@@ -11,6 +11,7 @@ export class Bullet extends PhysicsEntity {
     height = BULLET_SIZE;
 
     MAX_SPEED = BULLET_SPEED;
+    SPEED_DECAY = 1; // no bullet decay
     MAX_ROTATION = BULLET_ROTATION;
 
     type = CollisionType.KINEMATIC;

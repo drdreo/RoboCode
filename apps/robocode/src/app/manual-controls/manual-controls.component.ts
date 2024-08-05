@@ -17,48 +17,49 @@ export class ManualControlsComponent {
         this.manualControlService.spawnManualRobot();
     }
 
-    @HostListener("document:keydown.w")
+    @HostListener("window:keydown.w")
     private onWPress() {
         this.manualControlService.addCommand("forwards");
     }
 
-    @HostListener("document:keyup.w")
+    @HostListener("window:keyup.w")
     private onWRelease() {
         this.manualControlService.removeCommand("forwards");
     }
 
-    @HostListener("document:keydown.d")
-    private onDPress() {
+    @HostListener("window:keydown.d", ["$event"])
+    private onDPress(e: Event) {
         this.manualControlService.addCommand("right");
     }
 
-    @HostListener("document:keyup.d")
+    @HostListener("window:keyup.d")
     private onDRelease() {
         this.manualControlService.removeCommand("right");
     }
 
-    @HostListener("document:keydown.a")
+    @HostListener("window:keydown.a")
     private onAPress() {
         this.manualControlService.addCommand("left");
     }
 
-    @HostListener("document:keyup.a")
+    @HostListener("window:keyup.a")
     private onARelease() {
         this.manualControlService.removeCommand("left");
     }
 
-    @HostListener("document:keydown.s")
+    @HostListener("window:keydown.s")
     private onSPress() {
         this.manualControlService.addCommand("backwards");
     }
 
-    @HostListener("document:keyup.a")
+    @HostListener("window:keyup.a")
     private onSRelease() {
         this.manualControlService.removeCommand("backwards");
     }
 
-    @HostListener("document:keyup.space")
-    private onSpaceRelease() {
+    @HostListener("window:keyup.space", ["$event"])
+    private onSpaceRelease(e: Event) {
+        e.preventDefault();
         this.manualControlService.addCommand("shoot");
     }
 }
