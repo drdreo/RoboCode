@@ -18,7 +18,7 @@ export class Bullet extends PhysicsEntity {
     collision = CollisionType.DISPLACE;
     restitution = 0.2;
 
-    // TODO: I dont trust this rotation initialization
+    // TODO: I dont trust this rotation initialization, but wayne
     init(position: Vector, heading: number, owner: string): void {
         this.owner = owner; // who shot the bullet
         const headingInRadians = toRadian(-heading + 90);
