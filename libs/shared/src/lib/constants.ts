@@ -33,5 +33,5 @@ export const BULLET_DAMAGE = 13;
 export const BULLET_SPEED = 15;
 export const BULLET_ROTATION = 0;
 export const BULLET_SIZE = 3;
-export const BULLET_OFFSET_Y = ROBOT_HITBOX_HEIGHT / 2 + BULLET_SIZE / 2;
-export const BULLET_OFFSET_X = -BULLET_SIZE / 2;
+export const BULLET_OFFSET_Y = ROBOT_HITBOX_HEIGHT / 2 + BULLET_SIZE;
+export const BULLET_OFFSET_X = ROBOT_HEIGHT / 2 - BULLET_SIZE;

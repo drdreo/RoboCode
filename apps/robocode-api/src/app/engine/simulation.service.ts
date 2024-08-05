@@ -191,8 +191,8 @@ export class SimulationService {
 
     private spawnBulletAtRobot(bullet: Bullet, robot: RobotEntity) {
         bullet.isActive = true;
-        const { x, y, rotation } = robot;
-        bullet.init(x, y, rotation, robot.id);
+        const { position, rotation } = robot;
+        bullet.init(position, rotation, robot.id);
         this.engine.addEntity(bullet);
     }
 

@@ -18,14 +18,15 @@ export class Bullet extends PhysicsEntity {
     collision = CollisionType.DISPLACE;
     restitution = 0.2;
 
-    init(x: number, y: number, heading: number, owner: string): void {
+    // TODO: I dont trust this rotation initialization
+    init(position: Vector, heading: number, owner: string): void {
         this.owner = owner; // who shot the bullet
-
         const headingInRadians = toRadian(-heading + 90);
 
-        const offset = new Vector(BULLET_OFFSET_X, BULLET_OFFSET_Y);
-        offset.rotate(-heading);
-        this.position.setAxes(x, y).add(offset);
+        // Calculate offset based on the tank's heading
+        const offsetX = BULLET_OFFSET_X * Math.cos(headingInRadians);
+        const offsetY = BULLET_OFFSET_Y * Math.sin(headingInRadians);
+        this.position.setAxes(position.x + offsetX, position.y + offsetY);
 
         const speedX = this.MAX_SPEED * Math.cos(headingInRadians);
         const speedY = this.MAX_SPEED * Math.sin(headingInRadians);
