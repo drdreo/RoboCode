@@ -12,54 +12,63 @@ import { ManualControlService } from "./manual-control.service";
 })
 export class ManualControlsComponent {
     private readonly manualControlService = inject(ManualControlService);
+    private keys: { [key: string]: boolean } = {};
 
     spawnManualRobot() {
         this.manualControlService.spawnManualRobot();
     }
 
-    @HostListener("window:keydown.w")
-    private onWPress() {
-        this.manualControlService.addCommand("forwards");
+    @HostListener("window:keydown", ["$event"])
+    onKeyDown(event: KeyboardEvent) {
+        console.log(event);
+        this.keys[event.key.toLowerCase()] = true;
+        this.updateCommands();
     }
 
-    @HostListener("window:keyup.w")
-    private onWRelease() {
-        this.manualControlService.removeCommand("forwards");
-    }
-
-    @HostListener("window:keydown.d", ["$event"])
-    private onDPress(e: Event) {
-        this.manualControlService.addCommand("right");
-    }
-
-    @HostListener("window:keyup.d")
-    private onDRelease() {
-        this.manualControlService.removeCommand("right");
-    }
-
-    @HostListener("window:keydown.a")
-    private onAPress() {
-        this.manualControlService.addCommand("left");
-    }
-
-    @HostListener("window:keyup.a")
-    private onARelease() {
-        this.manualControlService.removeCommand("left");
-    }
-
-    @HostListener("window:keydown.s")
-    private onSPress() {
-        this.manualControlService.addCommand("backwards");
-    }
-
-    @HostListener("window:keyup.a")
-    private onSRelease() {
-        this.manualControlService.removeCommand("backwards");
+    @HostListener("window:keyup", ["$event"])
+    onKeyUp(event: KeyboardEvent) {
+        console.log(event);
+        this.keys[event.key.toLowerCase()] = false;
+        this.updateCommands();
     }
 
     @HostListener("window:keyup.space", ["$event"])
     private onSpaceRelease(e: Event) {
         e.preventDefault();
         this.manualControlService.addCommand("shoot");
+    }
+
+    private updateCommands() {
+        if (this.keys["w"]) {
+            this.manualControlService.addCommand("forwards");
+        } else {
+            this.manualControlService.removeCommand("forwards");
+        }
+
+        if (this.keys["s"]) {
+            this.manualControlService.addCommand("backwards");
+        } else {
+            this.manualControlService.removeCommand("backwards");
+        }
+
+        if (this.keys["d"]) {
+            this.manualControlService.addCommand("right");
+        } else {
+            this.manualControlService.removeCommand("right");
+        }
+
+        if (this.keys["a"]) {
+            this.manualControlService.addCommand("left");
+        } else {
+            this.manualControlService.removeCommand("left");
+        }
+
+        if (this.keys[" "]) {
+            this.manualControlService.addCommand("shoot");
+        } else {
+            this.manualControlService.removeCommand("shoot");
+        }
+
+        console.log(this.keys);
     }
 }

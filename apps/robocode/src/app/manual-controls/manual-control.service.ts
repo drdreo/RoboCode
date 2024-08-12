@@ -26,6 +26,5 @@ export class ManualControlService {
 
     private sendManualInputCommands() {
         this.socket.emit(SocketEvents.ManualInput, { commands: [...this.activeCommands] } as ManualInputData);
-        this.activeCommands.clear();
     }
 }
