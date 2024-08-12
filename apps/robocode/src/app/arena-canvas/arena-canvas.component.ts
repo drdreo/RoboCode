@@ -81,7 +81,9 @@ export class ArenaCanvasComponent {
         const hotkeyEnabled = this.zoomHotkey();
         if (hotkeyEnabled) {
             const zoomValue = this.zoom() + -evt.deltaY / 1000;
-            this.zoom.set(zoomValue);
+            if (zoomValue > 0) {
+                this.zoom.set(zoomValue);
+            }
         }
     }
 

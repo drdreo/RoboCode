@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BotsUpdate, BulletsUpdate, SocketEvents } from "@robo-code/shared";
 import { Socket } from "ngx-socket-io";
-import { Observable, of } from "rxjs";
+import { distinctUntilChanged, Observable, of } from "rxjs";
 import { DEBUG } from "./settings";
 
 const debugBots: BotsUpdate = [
@@ -46,8 +46,8 @@ export class BotService {
             return;
         }
 
-        this.bots$ = this.onBotsUpdate();
-        this.bullets$ = this.onBulletsUpdate();
+        this.bots$ = this.onBotsUpdate().pipe(distinctUntilChanged(botUpdateChanged));
+        this.bullets$ = this.onBulletsUpdate().pipe(distinctUntilChanged(bulletUpdateChanged));
     }
 
     private onBotsUpdate() {
@@ -57,4 +57,58 @@ export class BotService {
     private onBulletsUpdate() {
         return this.socket.fromEvent<BulletsUpdate>(SocketEvents.BulletsUpdate);
     }
+}
+
+function botUpdateChanged(prev: BotsUpdate, curr: BotsUpdate): boolean {
+    if (prev.length !== curr.length) {
+        return false;
+    }
+
+    for (let i = 0; i < prev.length; i++) {
+        const prevBot = prev[i];
+        const currBot = curr[i];
+
+        if (prevBot.id !== currBot.id) {
+            return false;
+        }
+
+        if (prevBot.health !== currBot.health) {
+            return false;
+        }
+
+        if (prevBot.energy !== currBot.energy) {
+            return false;
+        }
+
+        if (prevBot.position.x !== currBot.position.x || prevBot.position.y !== currBot.position.y) {
+            return false;
+        }
+
+        if (prevBot.rotation !== currBot.rotation) {
+            return false;
+        }
+
+        if (prevBot.velocity.x !== currBot.velocity.x || prevBot.velocity.y !== currBot.velocity.y) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function bulletUpdateChanged(prev: BulletsUpdate, curr: BulletsUpdate): boolean {
+    if (prev.length !== curr.length) {
+        return false;
+    }
+
+    for (let i = 0; i < prev.length; i++) {
+        const prevBullet = prev[i];
+        const currBullet = curr[i];
+
+        if (prevBullet.position.x !== currBullet.position.x || prevBullet.position.y !== currBullet.position.y) {
+            return false;
+        }
+    }
+
+    return true;
 }

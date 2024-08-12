@@ -1,7 +1,7 @@
 /**
  * ARENA CONSTANTS
  */
-export const ARENA_SIZE = 1000;
+export const ARENA_SIZE = 2000;
 
 /**
  * ROBOT CONSTANTS

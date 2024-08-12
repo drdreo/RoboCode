@@ -5,6 +5,7 @@ import { BotElement } from "./elements/bot.element";
 import { BulletElement } from "./elements/bullet.element";
 import { DebugMouseElement } from "./elements/debug/mouse.element";
 import { DebugGridElement } from "./elements/debug/grid.element";
+import { DEBUG } from "../settings";
 
 @Injectable({ providedIn: "root" })
 export class CanvasService {
@@ -66,7 +67,9 @@ export class CanvasService {
     }
 
     drawDebugCanvas(ctx: CanvasRenderingContext2D) {
-        this.drawGrid(ctx);
+        if (DEBUG.grid) {
+            this.drawGrid(ctx);
+        }
     }
 
     clearCanvas(ctx: CanvasRenderingContext2D) {
@@ -86,17 +89,16 @@ export class CanvasService {
         this.viewport.pan.y = 0;
     }
 
-    zoomCanvas(delta: number, mousePos: Position) {
-        // this.viewport.zoom = Math.max(delta, 0.1);
-
-        const { zoom, pan } = this.viewport;
-        const zoomChange = delta - zoom;
+    zoomCanvas(newZoom: number, mousePos: Position) {
+        const zoomChange = newZoom - this.viewport.zoom;
+        if (newZoom < 0 || zoomChange === 0) {
+            return;
+        }
 
         const offsetX = -mousePos.x * zoomChange;
         const offsetY = -mousePos.y * zoomChange;
 
         // Apply the zoom
-        const newZoom = Math.max(delta, 0.1);
         this.viewport.zoom = newZoom;
 
         // Adjust the pan to keep the mouse position at the same place on the screen
