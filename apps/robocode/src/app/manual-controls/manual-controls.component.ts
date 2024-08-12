@@ -20,22 +20,14 @@ export class ManualControlsComponent {
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: KeyboardEvent) {
-        console.log(event);
         this.keys[event.key.toLowerCase()] = true;
         this.updateCommands();
     }
 
     @HostListener("window:keyup", ["$event"])
     onKeyUp(event: KeyboardEvent) {
-        console.log(event);
         this.keys[event.key.toLowerCase()] = false;
         this.updateCommands();
-    }
-
-    @HostListener("window:keyup.space", ["$event"])
-    private onSpaceRelease(e: Event) {
-        e.preventDefault();
-        this.manualControlService.addCommand("shoot");
     }
 
     private updateCommands() {

@@ -101,9 +101,7 @@ export class CanvasService {
         // Apply the zoom
         this.viewport.zoom = newZoom;
 
-        // Adjust the pan to keep the mouse position at the same place on the screen
-        this.viewport.pan.x += offsetX / newZoom;
-        this.viewport.pan.y += offsetY / newZoom;
+        this.panCanvas({ x: offsetX, y: offsetY });
     }
 
     applyViewportTransformation(ctx: CanvasRenderingContext2D) {
@@ -111,6 +109,22 @@ export class CanvasService {
         ctx.scale(this.viewport.zoom, this.viewport.zoom);
         ctx.translate(this.viewport.pan.x, this.viewport.pan.y);
         // ctx.setTransform(this.viewport.zoom, 0, 0, this.viewport.zoom, this.viewport.pan.x, this.viewport.pan.y);
+    }
+
+    focusBot(bots: BotData[]) {
+        const player = bots.find((bot) => bot.id === "manual_robot");
+        if (player) {
+            const viewportCenterX = ARENA_SIZE / 2;
+            const viewportCenterY = ARENA_SIZE / 2;
+
+            // Calculate the difference between player's position and the center of the viewport
+            const panX = viewportCenterX - player.position.x;
+            const panY = player.position.y - viewportCenterY;
+
+            // Pan the canvas to center the player
+            this.viewport.pan.x = panX;
+            this.viewport.pan.y = panY;
+        }
     }
 
     private addBot(id: string, name: string) {

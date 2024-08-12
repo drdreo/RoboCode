@@ -17,6 +17,8 @@ import { AsyncPipe, DecimalPipe, NgOptimizedImage } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { HotkeyService, UiModule } from "@robo-code/ui";
 
+const STICK_TO_PLAYER = false; // WIP
+
 @Component({
     selector: "rc-arena-canvas",
     templateUrl: "./arena-canvas.component.html",
@@ -119,6 +121,9 @@ export class ArenaCanvasComponent {
             this.canvasService.renderMousePosition(ctx, mousePosition);
         }
 
+        if (STICK_TO_PLAYER) {
+            this.canvasService.focusBot(bots);
+        }
         ctx.restore();
     }
 
